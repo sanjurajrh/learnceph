@@ -1,0 +1,570 @@
+[student@workstation ~]$ lab start deploy-deploy
+
+Starting lab.
+
+ · Checking lab systems ................................................................................................................................................................................. SUCCESS
+ · Destroy the existing cluster ......................................................................................................................................................................... SUCCESS
+ · Remove /var/log/ceph folder .......................................................................................................................................................................... SUCCESS
+ · Remove cluster folder ................................................................................................................................................................................ SUCCESS
+ · Stop ceph target ..................................................................................................................................................................................... SUCCESS
+ · Disable ceph target .................................................................................................................................................................................. SUCCESS
+ · Remove ceph target ................................................................................................................................................................................... SUCCESS
+ · Restart systemctl daemon ............................................................................................................................................................................. SUCCESS
+ · Kill all 'admin' processes ........................................................................................................................................................................... SUCCESS
+
+[student@workstation ~]$ ssh admin@serverc
+Warning: Permanently added 'serverc,172.25.250.12' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[admin@serverc ~]$ sudo -i 
+[root@serverc ~]# yum install cephadm-ansible 
+Red Hat Ansible 2.9                                                                                                                                                                246 kB/s | 2.3 kB     00:00    
+Red Hat Ceph Suite                                                                                                                                                                 1.4 MB/s | 2.1 kB     00:00    
+Red Hat Enterprise Linux 8.4 BaseOS (dvd)                                                                                                                                          1.9 MB/s | 2.8 kB     00:00    
+Red Hat Enterprise Linux 8.4 AppStream (dvd)                                                                                                                                       2.0 MB/s | 3.2 kB     00:00    
+Dependencies resolved.
+===================================================================================================================================================================================================================
+ Package                                        Architecture                         Version                                             Repository                                                           Size
+===================================================================================================================================================================================================================
+Installing:
+ cephadm-ansible                                noarch                               0.1-1.g5a4412f.el8cp                                rhceph-5-tools-for-rhel-8-x86_64-rpms                                16 k
+Installing dependencies:
+ ansible                                        noarch                               2.9.25-1.el8ae                                      ansible-2.9-for-rhel-8-x86_64-rpms                                   17 M
+ sshpass                                        x86_64                               1.06-3.el8ae                                        ansible-2.9-for-rhel-8-x86_64-rpms                                   27 k
+Installing weak dependencies:
+ python3-jmespath                               noarch                               0.9.0-11.el8                                        rhel-8.4-for-x86_64-appstream-rpms                                   45 k
+
+Transaction Summary
+===================================================================================================================================================================================================================
+Install  4 Packages
+
+Total download size: 17 M
+Installed size: 96 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/4): cephadm-ansible-0.1-1.g5a4412f.el8cp.noarch.rpm                                                                                                                             1.2 MB/s |  16 kB     00:00    
+(2/4): sshpass-1.06-3.el8ae.x86_64.rpm                                                                                                                                             1.3 MB/s |  27 kB     00:00    
+(3/4): ansible-2.9.25-1.el8ae.noarch.rpm                                                                                                                                            71 MB/s |  17 MB     00:00    
+(4/4): python3-jmespath-0.9.0-11.el8.noarch.rpm                                                                                                                                    198 kB/s |  45 kB     00:00    
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                                               70 MB/s |  17 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                                                                                                                                                           1/1 
+  Installing       : python3-jmespath-0.9.0-11.el8.noarch                                                                                                                                                      1/4 
+  Installing       : sshpass-1.06-3.el8ae.x86_64                                                                                                                                                               2/4 
+  Installing       : ansible-2.9.25-1.el8ae.noarch                                                                                                                                                             3/4 
+  Installing       : cephadm-ansible-0.1-1.g5a4412f.el8cp.noarch                                                                                                                                               4/4 
+  Running scriptlet: cephadm-ansible-0.1-1.g5a4412f.el8cp.noarch                                                                                                                                               4/4 
+  Verifying        : sshpass-1.06-3.el8ae.x86_64                                                                                                                                                               1/4 
+  Verifying        : ansible-2.9.25-1.el8ae.noarch                                                                                                                                                             2/4 
+  Verifying        : cephadm-ansible-0.1-1.g5a4412f.el8cp.noarch                                                                                                                                               3/4 
+  Verifying        : python3-jmespath-0.9.0-11.el8.noarch                                                                                                                                                      4/4 
+
+Installed:
+  ansible-2.9.25-1.el8ae.noarch                  cephadm-ansible-0.1-1.g5a4412f.el8cp.noarch                  python3-jmespath-0.9.0-11.el8.noarch                  sshpass-1.06-3.el8ae.x86_64                 
+
+Complete!
+[root@serverc ~]# rpm -ql cephadm-ansible 
+/usr/share/cephadm-ansible
+/usr/share/cephadm-ansible/ansible.cfg
+/usr/share/cephadm-ansible/ceph-defaults
+/usr/share/cephadm-ansible/ceph-defaults/README.md
+/usr/share/cephadm-ansible/ceph-defaults/defaults
+/usr/share/cephadm-ansible/ceph-defaults/defaults/main.yml
+/usr/share/cephadm-ansible/ceph-defaults/meta
+/usr/share/cephadm-ansible/ceph-defaults/meta/main.yml
+/usr/share/cephadm-ansible/cephadm-preflight.yml
+/usr/share/cephadm-ansible/cephadm-purge-cluster.yml
+/usr/share/doc/cephadm-ansible
+/usr/share/doc/cephadm-ansible/README.md
+/usr/share/licenses/cephadm-ansible
+/usr/share/licenses/cephadm-ansible/LICENSE
+[root@serverc ~]# cd /usr/share/cephadm-ansible
+[root@serverc cephadm-ansible]# pwd
+/usr/share/cephadm-ansible
+[root@serverc cephadm-ansible]# ls
+ansible.cfg  cephadm-preflight.yml  cephadm-purge-cluster.yml  ceph-defaults
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# vim hosts
+[root@serverc cephadm-ansible]# cat hosts
+clienta.lab.example.com
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# ansible-playbook -i hosts cephadm-preflight.yml --extra-vars "ceph_origin="
+[WARNING]: log file at /root/ansible/ansible.log is not writeable and we cannot create it, aborting
+
+
+PLAY [all] ********************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ********************************************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:09 -0400 (0:00:00.019)       0:00:00.019 ********** 
+ok: [serverc.lab.example.com]
+ok: [servere.lab.example.com]
+ok: [clienta.lab.example.com]
+ok: [serverd.lab.example.com]
+
+TASK [enable red hat storage tools repository] ********************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:01.437)       0:00:01.457 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [clienta.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph community repository stable key] *****************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.087)       0:00:01.544 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph stable community repository] *********************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.080)       0:00:01.625 ********** 
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [clienta.lab.example.com]
+skipping: [serverd.lab.example.com]
+
+TASK [configure red hat ceph stable noarch community repository] **************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.086)       0:00:01.711 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [fetch ceph red hat development repository] ******************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.096)       0:00:01.808 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure ceph red hat development repository] **************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.089)       0:00:01.897 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+
+TASK [remove ceph_stable repositories] ****************************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.083)       0:00:01.981 ********** 
+skipping: [clienta.lab.example.com] => (item=ceph_stable) 
+skipping: [clienta.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [servere.lab.example.com] => (item=ceph_stable) 
+skipping: [servere.lab.example.com] => (item=ceph_stable_noarch) 
+
+TASK [install epel-release] ***************************************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.104)       0:00:02.086 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [install prerequisites packages] *****************************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:11 -0400 (0:00:00.094)       0:00:02.180 ********** 
+changed: [serverc.lab.example.com]
+changed: [serverd.lab.example.com]
+changed: [servere.lab.example.com]
+changed: [clienta.lab.example.com]
+
+TASK [ensure chronyd is running] **********************************************************************************************************************************************************************************
+Friday 18 March 2022  10:32:23 -0400 (0:00:11.143)       0:00:13.324 ********** 
+ok: [serverc.lab.example.com]
+ok: [clienta.lab.example.com]
+ok: [servere.lab.example.com]
+ok: [serverd.lab.example.com]
+
+PLAY RECAP ********************************************************************************************************************************************************************************************************
+clienta.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverc.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverd.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+servere.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+
+Friday 18 March 2022  10:32:23 -0400 (0:00:00.681)       0:00:14.005 ********** 
+=============================================================================== 
+install prerequisites packages ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 11.14s
+Gathering Facts -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 1.44s
+ensure chronyd is running ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.68s
+remove ceph_stable repositories ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.10s
+configure red hat ceph stable noarch community repository -------------------------------------------------------------------------------------------------------------------------------------------------- 0.10s
+install epel-release --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.09s
+fetch ceph red hat development repository ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 0.09s
+enable red hat storage tools repository -------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.09s
+configure red hat ceph stable community repository --------------------------------------------------------------------------------------------------------------------------------------------------------- 0.09s
+configure ceph red hat development repository -------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+configure red hat ceph community repository stable key ----------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# ls
+ansible.cfg  cephadm-preflight.yml  cephadm-purge-cluster.yml  ceph-defaults  hosts
+[root@serverc cephadm-ansible]# cd /root/
+[root@serverc ~]# ls
+-  ansible  ceph
+[root@serverc ~]# ls ceph/
+initial-config-primary-cluster.yaml
+[root@serverc ~]# cat ceph/initial-config-primary-cluster.yaml 
+service_type: host
+addr: 172.25.250.10
+hostname: clienta.lab.example.com
+---
+service_type: host
+addr: 172.25.250.12
+hostname: serverc.lab.example.com
+---
+service_type: host
+addr: 172.25.250.13
+hostname: serverd.lab.example.com
+---
+service_type: host
+addr: 172.25.250.14
+hostname: servere.lab.example.com
+---
+service_type: mon
+placement:
+  hosts:
+    - clienta.lab.example.com
+    - serverc.lab.example.com
+    - serverd.lab.example.com
+    - servere.lab.example.com
+---
+service_type: rgw
+service_id: realm.zone
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com
+---
+service_type: mgr
+placement:
+  hosts:
+    - clienta.lab.example.com
+    - serverc.lab.example.com
+    - serverd.lab.example.com
+    - servere.lab.example.com
+---
+service_type: osd
+service_id: default_drive_group
+placement:
+  host_pattern: 'server*'
+data_devices:
+  paths:
+    - /dev/vdb
+    - /dev/vdc
+    - /dev/vdd
+[root@serverc ~]# cd /root/ceph/
+[root@serverc ceph]# cephadm bootstrap --help 
+usage: cephadm bootstrap [-h] [--config CONFIG] [--mon-id MON_ID]
+                         [--mon-addrv MON_ADDRV] [--mon-ip MON_IP]
+                         [--mgr-id MGR_ID] [--fsid FSID]
+                         [--output-dir OUTPUT_DIR]
+                         [--output-keyring OUTPUT_KEYRING]
+                         [--output-config OUTPUT_CONFIG]
+                         [--output-pub-ssh-key OUTPUT_PUB_SSH_KEY]
+                         [--skip-ssh]
+                         [--initial-dashboard-user INITIAL_DASHBOARD_USER]
+                         [--initial-dashboard-password INITIAL_DASHBOARD_PASSWORD]
+                         [--ssl-dashboard-port SSL_DASHBOARD_PORT]
+                         [--dashboard-key DASHBOARD_KEY]
+                         [--dashboard-crt DASHBOARD_CRT]
+                         [--ssh-config SSH_CONFIG]
+                         [--ssh-private-key SSH_PRIVATE_KEY]
+                         [--ssh-public-key SSH_PUBLIC_KEY]
+                         [--ssh-user SSH_USER] [--skip-mon-network]
+                         [--skip-dashboard] [--dashboard-password-noupdate]
+                         [--no-minimize-config] [--skip-ping-check]
+                         [--skip-pull] [--skip-firewalld] [--allow-overwrite]
+                         [--allow-fqdn-hostname] [--allow-mismatched-release]
+                         [--skip-prepare-host] [--orphan-initial-daemons]
+                         [--skip-monitoring-stack] [--apply-spec APPLY_SPEC]
+                         [--shared_ceph_folder CEPH_SOURCE_FOLDER]
+                         [--registry-url REGISTRY_URL]
+                         [--registry-username REGISTRY_USERNAME]
+                         [--registry-password REGISTRY_PASSWORD]
+                         [--registry-json REGISTRY_JSON] [--with-exporter]
+                         [--exporter-config EXPORTER_CONFIG]
+                         [--cluster-network CLUSTER_NETWORK]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG, -c CONFIG
+                        ceph conf file to incorporate
+  --mon-id MON_ID       mon id (default: local hostname)
+  --mon-addrv MON_ADDRV
+                        mon IPs (e.g.,
+                        [v2:localipaddr:3300,v1:localipaddr:6789])
+  --mon-ip MON_IP       mon IP
+  --mgr-id MGR_ID       mgr id (default: randomly generated)
+  --fsid FSID           cluster FSID
+  --output-dir OUTPUT_DIR
+                        directory to write config, keyring, and pub key files
+  --output-keyring OUTPUT_KEYRING
+                        location to write keyring file with new cluster admin
+                        and mon keys
+  --output-config OUTPUT_CONFIG
+                        location to write conf file to connect to new cluster
+  --output-pub-ssh-key OUTPUT_PUB_SSH_KEY
+                        location to write the cluster's public SSH key
+  --skip-ssh            skip setup of ssh key on local host
+  --initial-dashboard-user INITIAL_DASHBOARD_USER
+                        Initial user for the dashboard
+  --initial-dashboard-password INITIAL_DASHBOARD_PASSWORD
+                        Initial password for the initial dashboard user
+  --ssl-dashboard-port SSL_DASHBOARD_PORT
+                        Port number used to connect with dashboard using SSL
+  --dashboard-key DASHBOARD_KEY
+                        Dashboard key
+  --dashboard-crt DASHBOARD_CRT
+                        Dashboard certificate
+  --ssh-config SSH_CONFIG
+                        SSH config
+  --ssh-private-key SSH_PRIVATE_KEY
+                        SSH private key
+  --ssh-public-key SSH_PUBLIC_KEY
+                        SSH public key
+  --ssh-user SSH_USER   set user for SSHing to cluster hosts, passwordless
+                        sudo will be needed for non-root users
+  --skip-mon-network    set mon public_network based on bootstrap mon ip
+  --skip-dashboard      do not enable the Ceph Dashboard
+  --dashboard-password-noupdate
+                        stop forced dashboard password change
+  --no-minimize-config  do not assimilate and minimize the config file
+  --skip-ping-check     do not verify that mon IP is pingable
+  --skip-pull           do not pull the latest image before bootstrapping
+  --skip-firewalld      Do not configure firewalld
+  --allow-overwrite     allow overwrite of existing --output-*
+                        config/keyring/ssh files
+  --allow-fqdn-hostname
+                        allow hostname that is fully-qualified (contains ".")
+  --allow-mismatched-release
+                        allow bootstrap of ceph that doesn't match this
+                        version of cephadm
+  --skip-prepare-host   Do not prepare host
+  --orphan-initial-daemons
+                        Set mon and mgr service to `unmanaged`, Do not create
+                        the crash service
+  --skip-monitoring-stack
+                        Do not automatically provision monitoring stack
+                        (prometheus, grafana, alertmanager, node-exporter)
+  --apply-spec APPLY_SPEC
+                        Apply cluster spec after bootstrap (copy ssh key, add
+                        hosts and apply services)
+  --shared_ceph_folder CEPH_SOURCE_FOLDER
+                        Development mode. Several folders in containers are
+                        volumes mapped to different sub-folders in the ceph
+                        source folder
+  --registry-url REGISTRY_URL
+                        url for custom registry
+  --registry-username REGISTRY_USERNAME
+                        username for custom registry
+  --registry-password REGISTRY_PASSWORD
+                        password for custom registry
+  --registry-json REGISTRY_JSON
+                        json file with custom registry login info (URL,
+                        Username, Password)
+  --with-exporter       Automatically deploy cephadm metadata exporter to each
+                        node
+  --exporter-config EXPORTER_CONFIG
+                        Exporter configuration information in JSON format
+                        (providing: key, crt, token, port information)
+  --cluster-network CLUSTER_NETWORK
+                        subnet to use for cluster replication, recovery and
+                        heartbeats (in CIDR notation network/mask)
+[root@serverc ceph]# cephadm bootstrap --mon-ip--mon-ip=172.25.250.12 --apply-spec initial-config-primary-cluster.yaml --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.lab.example.com --registry-username registry --registry-password redhat 
+usage: cephadm [-h] [--image IMAGE] [--docker] [--data-dir DATA_DIR]
+               [--log-dir LOG_DIR] [--logrotate-dir LOGROTATE_DIR]
+               [--unit-dir UNIT_DIR] [--verbose] [--timeout TIMEOUT]
+               [--retry RETRY] [--env ENV] [--no-container-init]
+               {version,pull,inspect-image,ls,list-networks,adopt,rm-daemon,rm-cluster,run,shell,enter,ceph-volume,zap-osds,unit,logs,bootstrap,deploy,check-host,prepare-host,add-repo,rm-repo,install,registry-login,gather-facts,exporter,host-maintenance,verify-prereqs}
+               ...
+cephadm: error: unrecognized arguments: --mon-ip--mon-ip=172.25.250.12
+[root@serverc ceph]# cephadm bootstrap --mon-ip=172.25.250.12 --apply-spec initial-config-primary-cluster.yaml --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.lab.example.com --registry-username registry --registry-password redhat 
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman|docker (/bin/podman) is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: 1bcaf430-a6c9-11ec-918b-52540000fa0c
+Verifying IP 172.25.250.12 port 3300 ...
+Verifying IP 172.25.250.12 port 6789 ...
+Mon IP 172.25.250.12 is in CIDR network 172.25.250.0/24
+- internal network (--cluster-network) has not been provided, OSD replication will default to the public_network
+Logging into custom registry.
+Pulling container image registry.redhat.io/rhceph/rhceph-5-rhel8:latest...
+Ceph version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+Extracting ceph user uid/gid from container image...
+Creating initial keys...
+Creating initial monmap...
+Creating mon...
+firewalld ready
+Waiting for mon to start...
+Waiting for mon...
+mon is available
+Assimilating anything we can from ceph.conf...
+Generating new minimal ceph.conf...
+Restarting the monitor...
+Setting mon public_network to 172.25.250.0/24
+Wrote config to /etc/ceph/ceph.conf
+Wrote keyring to /etc/ceph/ceph.client.admin.keyring
+Creating mgr...
+Verifying port 9283 ...
+firewalld ready
+firewalld ready
+Waiting for mgr to start...
+Waiting for mgr...
+mgr not available, waiting (1/15)...
+mgr not available, waiting (2/15)...
+mgr not available, waiting (3/15)...
+mgr is available
+Enabling cephadm module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 5...
+mgr epoch 5 is available
+Setting orchestrator backend to cephadm...
+Generating ssh key...
+Wrote public SSH key to /etc/ceph/ceph.pub
+Adding key to root@localhost authorized_keys...
+Adding host serverc.lab.example.com...
+Deploying mon service with default placement...
+Deploying mgr service with default placement...
+Deploying crash service with default placement...
+Enabling mgr prometheus module...
+Deploying prometheus service with default placement...
+Deploying grafana service with default placement...
+Deploying node-exporter service with default placement...
+Deploying alertmanager service with default placement...
+Enabling the dashboard module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 13...
+mgr epoch 13 is available
+Generating a dashboard self-signed certificate...
+Creating initial admin user...
+Fetching dashboard port number...
+firewalld ready
+Ceph Dashboard is now available at:
+
+	     URL: https://serverc.lab.example.com:8443/
+	    User: admin
+	Password: redhat
+
+Applying initial-config-primary-cluster.yaml to cluster
+Adding ssh key to clienta.lab.example.com
+Adding ssh key to serverd.lab.example.com
+Adding ssh key to servere.lab.example.com
+Added host 'clienta.lab.example.com' with addr '172.25.250.10'
+Added host 'serverc.lab.example.com' with addr '172.25.250.12'
+Added host 'serverd.lab.example.com' with addr '172.25.250.13'
+Added host 'servere.lab.example.com' with addr '172.25.250.14'
+Scheduled mon update...
+Scheduled rgw.realm.zone update...
+Scheduled mgr update...
+Scheduled osd.default_drive_group update...
+
+You can access the Ceph CLI with:
+
+	sudo /sbin/cephadm shell --fsid 1bcaf430-a6c9-11ec-918b-52540000fa0c -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+
+Please consider enabling telemetry to help improve Ceph:
+
+	ceph telemetry on
+
+For more information see:
+
+	https://docs.ceph.com/docs/pacific/mgr/telemetry/
+
+Bootstrap complete.
+[root@serverc ceph]# cephadm  shell
+Inferring fsid 1bcaf430-a6c9-11ec-918b-52540000fa0c
+Inferring config /var/lib/ceph/1bcaf430-a6c9-11ec-918b-52540000fa0c/mon.serverc.lab.example.com/config
+Using recent ceph image registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff
+WARNING: The same type, major and minor should not be used for multiple devices.
+WARNING: The same type, major and minor should not be used for multiple devices.
+WARNING: The same type, major and minor should not be used for multiple devices.
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     1bcaf430-a6c9-11ec-918b-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 4 daemons, quorum serverc.lab.example.com,clienta,serverd,servere (age 105s)
+    mgr: serverc.lab.example.com.vatlmp(active, since 3m), standbys: serverd.jjhxyg, clienta.dulidq, servere.zrflgk
+    osd: 9 osds: 9 up (since 2m), 9 in (since 2m)
+    rgw: 2 daemons active (2 hosts, 1 zones)
+ 
+  data:
+    pools:   5 pools, 127 pgs
+    objects: 189 objects, 4.9 KiB
+    usage:   57 MiB used, 90 GiB / 90 GiB avail
+    pgs:     127 active+clean
+ 
+  progress:
+ 
+[ceph: root@serverc /]# ceph orch host label add client.lab.example.com _admin
+Error EINVAL: host client.lab.example.com does not exist
+[ceph: root@serverc /]# ceph orch host label add clienta.lab.example.com _admin
+Added label _admin to host clienta.lab.example.com
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# exit
+exit
+[root@serverc ceph]# cd /etc/ceph/
+[root@serverc ceph]# ls
+ceph.client.admin.keyring  ceph.conf  ceph.pub  podman-auth.json  rbdmap
+[root@serverc ceph]# scp ceph.client.admin.keyring root@clienta:/etc/ceph/
+ceph.client.admin.keyring                                                                                                                                                        100%   63    79.0KB/s   00:00    
+[root@serverc ceph]# 
+[root@serverc ceph]# 
+[root@serverc ceph]# scp ceph.conf root@clienta:/etc/ceph/
+ceph.conf                                                                                                                                                                        100%  177   225.6KB/s   00:00    
+[root@serverc ceph]# 
+[root@serverc ceph]# 
+[root@serverc ceph]# exit
+logout
+[admin@serverc ~]$ exit
+logout
+Connection to serverc closed.
+[student@workstation ~]$ ssh admin@clienta
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri Mar 18 10:04:11 2022 from 172.25.250.9
+[admin@clienta ~]$ sudo cephadm shell
+Inferring fsid 1bcaf430-a6c9-11ec-918b-52540000fa0c
+Inferring config /var/lib/ceph/1bcaf430-a6c9-11ec-918b-52540000fa0c/mon.clienta/config
+Using recent ceph image registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff
+[ceph: root@clienta /]# ceph health 
+HEALTH_OK
+[ceph: root@clienta /]# 
+[ceph: root@clienta /]# exit
+exit
+[admin@clienta ~]$ exit
+logout
+Connection to clienta closed.
+[student@workstation ~]$ lab finish deploy-deploy 
+
+Finishing lab.
+
+ · Checking lab systems ................................................................................................................................................................................. SUCCESS
+
+[student@workstation ~]$ 

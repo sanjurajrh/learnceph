@@ -1,0 +1,253 @@
+[student@workstation ~]$ lab start intro-arch 
+
+Starting lab.
+
+ · Checking lab systems ................................................................................................................................................................................. SUCCESS
+
+[student@workstation ~]$ ssh admin@clienta
+Warning: Permanently added 'clienta,172.25.250.10' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[admin@clienta ~]$ sudo -i 
+[root@clienta ~]# cephadm
+No command specified; pass -h or --help for usage
+[root@clienta ~]# cephadm--help
+-bash: cephadm--help: command not found
+[root@clienta ~]# cephadm --help
+usage: cephadm [-h] [--image IMAGE] [--docker] [--data-dir DATA_DIR]
+               [--log-dir LOG_DIR] [--logrotate-dir LOGROTATE_DIR]
+               [--unit-dir UNIT_DIR] [--verbose] [--timeout TIMEOUT]
+               [--retry RETRY] [--env ENV] [--no-container-init]
+               {version,pull,inspect-image,ls,list-networks,adopt,rm-daemon,rm-cluster,run,shell,enter,ceph-volume,zap-osds,unit,logs,bootstrap,deploy,check-host,prepare-host,add-repo,rm-repo,install,registry-login,gather-facts,exporter,host-maintenance,verify-prereqs}
+               ...
+
+Bootstrap Ceph daemons with systemd and containers.
+
+positional arguments:
+  {version,pull,inspect-image,ls,list-networks,adopt,rm-daemon,rm-cluster,run,shell,enter,ceph-volume,zap-osds,unit,logs,bootstrap,deploy,check-host,prepare-host,add-repo,rm-repo,install,registry-login,gather-facts,exporter,host-maintenance,verify-prereqs}
+                        sub-command
+    version             get ceph version from container
+    pull                pull latest image version
+    inspect-image       inspect local container image
+    ls                  list daemon instances on this host
+    list-networks       list IP networks
+    adopt               adopt daemon deployed with a different tool
+    rm-daemon           remove daemon instance
+    rm-cluster          remove all daemons for a cluster
+    run                 run a ceph daemon, in a container, in the foreground
+    shell               run an interactive shell inside a daemon container
+    enter               run an interactive shell inside a running daemon
+                        container
+    ceph-volume         run ceph-volume inside a container
+    zap-osds            zap all OSDs associated with a particular fsid
+    unit                operate on the daemon's systemd unit
+    logs                print journald logs for a daemon container
+    bootstrap           bootstrap a cluster (mon + mgr daemons)
+    deploy              deploy a daemon
+    check-host          check host configuration
+    prepare-host        prepare a host for cephadm use
+    add-repo            configure package repository
+    rm-repo             remove package repository configuration
+    install             install ceph package(s)
+    registry-login      log host into authenticated registry
+    gather-facts        gather and return host related information (JSON
+                        format)
+    exporter            Start cephadm in exporter mode (web service),
+                        providing host/daemon/disk metadata
+    host-maintenance    Manage the maintenance state of a host
+    verify-prereqs      verify system prerequisites for a given service are
+                        met on this host
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --image IMAGE         container image. Can also be set via the
+                        "CEPHADM_IMAGE" env var (default: None)
+  --docker              use docker instead of podman (default: False)
+  --data-dir DATA_DIR   base directory for daemon data (default:
+                        /var/lib/ceph)
+  --log-dir LOG_DIR     base directory for daemon logs (default:
+                        /var/log/ceph)
+  --logrotate-dir LOGROTATE_DIR
+                        location of logrotate configuration files (default:
+                        /etc/logrotate.d)
+  --unit-dir UNIT_DIR   base directory for systemd units (default:
+                        /etc/systemd/system)
+  --verbose, -v         Show debug-level log messages (default: False)
+  --timeout TIMEOUT     timeout in seconds (default: None)
+  --retry RETRY         max number of retries (default: 15)
+  --env ENV, -e ENV     set environment variable (default: [])
+  --no-container-init   Do not run podman/docker with `--init` (default:
+                        False)
+[root@clienta ~]# cephadm shell --help
+usage: cephadm shell [-h] [--fsid FSID] [--name NAME] [--config CONFIG]
+                     [--keyring KEYRING] [--mount MOUNT [MOUNT ...]]
+                     [--env ENV]
+                     ...
+
+positional arguments:
+  command               command (optional)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --fsid FSID           cluster FSID
+  --name NAME, -n NAME  daemon name (type.id)
+  --config CONFIG, -c CONFIG
+                        ceph.conf to pass through to the container
+  --keyring KEYRING, -k KEYRING
+                        ceph.keyring to pass through to the container
+  --mount MOUNT [MOUNT ...], -m MOUNT [MOUNT ...]
+                        mount a file or directory in the container. Support
+                        multiple mounts. ie: `--mount /foo /bar:/bar`. When no
+                        destination is passed, default is /mnt
+  --env ENV, -e ENV     set environment variable
+[root@clienta ~]# cephadm shell -- ceph orch ls 
+Inferring fsid 2ae6d05a-229a-11ec-925e-52540000fa0c
+Inferring config /var/lib/ceph/2ae6d05a-229a-11ec-925e-52540000fa0c/mon.clienta/config
+Using recent ceph image registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff
+NAME                     RUNNING  REFRESHED  AGE  PLACEMENT                                                                                        
+alertmanager                 1/1  3m ago     5M   count:1                                                                                          
+crash                        4/4  3m ago     5M   *                                                                                                
+grafana                      1/1  3m ago     5M   count:1                                                                                          
+mgr                          4/4  3m ago     5M   clienta.lab.example.com;serverc.lab.example.com;serverd.lab.example.com;servere.lab.example.com  
+mon                          4/4  3m ago     5M   clienta.lab.example.com;serverc.lab.example.com;serverd.lab.example.com;servere.lab.example.com  
+node-exporter                4/4  3m ago     5M   *                                                                                                
+osd.default_drive_group     9/12  3m ago     5M   server*                                                                                          
+prometheus                   1/1  3m ago     5M   count:1                                                                                          
+rgw.realm.zone               2/2  3m ago     4M   serverc.lab.example.com;serverd.lab.example.com                                                  
+[root@clienta ~]# cephadm shell
+Inferring fsid 2ae6d05a-229a-11ec-925e-52540000fa0c
+Inferring config /var/lib/ceph/2ae6d05a-229a-11ec-925e-52540000fa0c/mon.clienta/config
+Using recent ceph image registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff
+[ceph: root@clienta /]# ceph orch ls 
+NAME                     RUNNING  REFRESHED  AGE  PLACEMENT                                                                                        
+alertmanager                 1/1  3m ago     5M   count:1                                                                                          
+crash                        4/4  3m ago     5M   *                                                                                                
+grafana                      1/1  3m ago     5M   count:1                                                                                          
+mgr                          4/4  3m ago     5M   clienta.lab.example.com;serverc.lab.example.com;serverd.lab.example.com;servere.lab.example.com  
+mon                          4/4  3m ago     5M   clienta.lab.example.com;serverc.lab.example.com;serverd.lab.example.com;servere.lab.example.com  
+node-exporter                4/4  3m ago     5M   *                                                                                                
+osd.default_drive_group     9/12  3m ago     5M   server*                                                                                          
+prometheus                   1/1  3m ago     5M   count:1                                                                                          
+rgw.realm.zone               2/2  3m ago     4M   serverc.lab.example.com;serverd.lab.example.com                                                  
+[ceph: root@clienta /]# ceph orch ps 
+NAME                                HOST                     STATUS         REFRESHED  AGE  PORTS          VERSION           IMAGE ID      CONTAINER ID  
+alertmanager.serverc                serverc.lab.example.com  running (14m)  3m ago     5M   *:9093 *:9094  0.20.0            4c997545e699  d930d6c88419  
+crash.clienta                       clienta.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  51ca144eca2c  
+crash.serverc                       serverc.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  4939b1f51971  
+crash.serverd                       serverd.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  184d3b297a07  
+crash.servere                       servere.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  0452efdb5b04  
+grafana.serverc                     serverc.lab.example.com  running (14m)  3m ago     5M   *:3000         6.7.4             09cf77100f6a  08364fcca38a  
+mgr.clienta.nncugs                  clienta.lab.example.com  running (14m)  3m ago     5M   *:8443 *:9283  16.2.0-117.el8cp  2142b60d7974  5d0424060e66  
+mgr.serverc.lab.example.com.aiqepd  serverc.lab.example.com  running (14m)  3m ago     5M   *:9283         16.2.0-117.el8cp  2142b60d7974  3e5afdd32ee8  
+mgr.serverd.klrkci                  serverd.lab.example.com  running (14m)  3m ago     5M   *:8443 *:9283  16.2.0-117.el8cp  2142b60d7974  c489b3947dda  
+mgr.servere.kjwyko                  servere.lab.example.com  running (14m)  3m ago     5M   *:8443 *:9283  16.2.0-117.el8cp  2142b60d7974  b1a9a723bf83  
+mon.clienta                         clienta.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  1b3494430c62  
+mon.serverc.lab.example.com         serverc.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  fb78216b3be0  
+mon.serverd                         serverd.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  9249bfa32c61  
+mon.servere                         servere.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  29b17abdbc42  
+node-exporter.clienta               clienta.lab.example.com  running (14m)  3m ago     4M   *:9100         0.18.1            68b1be7484d4  1f44c3fa86a6  
+node-exporter.serverc               serverc.lab.example.com  running (14m)  3m ago     5M   *:9100         0.18.1            68b1be7484d4  f79e50741587  
+node-exporter.serverd               serverd.lab.example.com  running (14m)  3m ago     4M   *:9100         0.18.1            68b1be7484d4  144465fc7e72  
+node-exporter.servere               servere.lab.example.com  running (14m)  3m ago     4M   *:9100         0.18.1            68b1be7484d4  c6c0336e0807  
+osd.0                               serverc.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  7f8eb58158d2  
+osd.1                               serverc.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  38e5cca1e9e4  
+osd.2                               serverc.lab.example.com  running (14m)  3m ago     5M   -              16.2.0-117.el8cp  2142b60d7974  ceda0eae5153  
+osd.3                               serverd.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  d80500a1f438  
+osd.4                               servere.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  8dc3a2e84d05  
+osd.5                               serverd.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  c15cf7f7aa05  
+osd.6                               servere.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  ea53e9590497  
+osd.7                               serverd.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  b83e8be0b5b2  
+osd.8                               servere.lab.example.com  running (14m)  3m ago     4M   -              16.2.0-117.el8cp  2142b60d7974  aad73b6c550b  
+prometheus.serverc                  serverc.lab.example.com  running (14m)  3m ago     5M   *:9095         2.22.2            deca4dcb80bb  9bd8e279f914  
+rgw.realm.zone.serverc.bqwjcv       serverc.lab.example.com  running (14m)  3m ago     4M   *:80           16.2.0-117.el8cp  2142b60d7974  40d103d630f3  
+rgw.realm.zone.serverd.kfmflx       serverd.lab.example.com  running (14m)  3m ago     4M   *:80           16.2.0-117.el8cp  2142b60d7974  bad38f4ede8f  
+[ceph: root@clienta /]# ceph health
+HEALTH_OK
+[ceph: root@clienta /]# ceph status
+  cluster:
+    id:     2ae6d05a-229a-11ec-925e-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 4 daemons, quorum serverc.lab.example.com,clienta,serverd,servere (age 14m)
+    mgr: clienta.nncugs(active, since 14m), standbys: serverd.klrkci, servere.kjwyko, serverc.lab.example.com.aiqepd
+    osd: 9 osds: 9 up (since 14m), 9 in (since 4M)
+    rgw: 2 daemons active (2 hosts, 1 zones)
+ 
+  data:
+    pools:   5 pools, 105 pgs
+    objects: 221 objects, 4.9 KiB
+    usage:   181 MiB used, 90 GiB / 90 GiB avail
+    pgs:     105 active+clean
+ 
+[ceph: root@clienta /]# ceph mon dump 
+epoch 4
+fsid 2ae6d05a-229a-11ec-925e-52540000fa0c
+last_changed 2021-10-01T09:33:53.880442+0000
+created 2021-10-01T09:30:30.146231+0000
+min_mon_release 16 (pacific)
+election_strategy: 1
+0: [v2:172.25.250.12:3300/0,v1:172.25.250.12:6789/0] mon.serverc.lab.example.com
+1: [v2:172.25.250.10:3300/0,v1:172.25.250.10:6789/0] mon.clienta
+2: [v2:172.25.250.13:3300/0,v1:172.25.250.13:6789/0] mon.serverd
+3: [v2:172.25.250.14:3300/0,v1:172.25.250.14:6789/0] mon.servere
+dumped monmap epoch 4
+[ceph: root@clienta /]# ceph mgr stat
+{
+    "epoch": 32,
+    "available": true,
+    "active_name": "clienta.nncugs",
+    "num_standby": 3
+}
+[ceph: root@clienta /]# ceph osd pool ls 
+device_health_metrics
+.rgw.root
+default.rgw.log
+default.rgw.control
+default.rgw.meta
+[ceph: root@clienta /]# ceph pg stat
+105 pgs: 105 active+clean; 4.9 KiB data, 181 MiB used, 90 GiB / 90 GiB avail
+[ceph: root@clienta /]# ceph osd status 
+ID  HOST                      USED  AVAIL  WR OPS  WR DATA  RD OPS  RD DATA  STATE      
+ 0  serverc.lab.example.com  13.7M  9.98G      0        0       0        0   exists,up  
+ 1  serverc.lab.example.com  23.4M  9.97G      0        0       0        0   exists,up  
+ 2  serverc.lab.example.com  23.5M  9.97G      0        0       0        0   exists,up  
+ 3  serverd.lab.example.com  22.1M  9.97G      0        0       0        0   exists,up  
+ 4  servere.lab.example.com  25.1M  9.97G      0        0       0        0   exists,up  
+ 5  serverd.lab.example.com  25.2M  9.97G      0        0       0        0   exists,up  
+ 6  servere.lab.example.com  13.7M  9.98G      0        0       1        0   exists,up  
+ 7  serverd.lab.example.com  12.7M  9.98G      0        0       0        0   exists,up  
+ 8  servere.lab.example.com  21.0M  9.97G      0        0       0        0   exists,up  
+[ceph: root@clienta /]# ceph osd crush tree
+ID  CLASS  WEIGHT   TYPE NAME       
+-1         0.08817  root default    
+-3         0.02939      host serverc
+ 0    hdd  0.00980          osd.0   
+ 1    hdd  0.00980          osd.1   
+ 2    hdd  0.00980          osd.2   
+-5         0.02939      host serverd
+ 3    hdd  0.00980          osd.3   
+ 5    hdd  0.00980          osd.5   
+ 7    hdd  0.00980          osd.7   
+-7         0.02939      host servere
+ 4    hdd  0.00980          osd.4   
+ 6    hdd  0.00980          osd.6   
+ 8    hdd  0.00980          osd.8   
+[ceph: root@clienta /]# exit
+exit
+[root@clienta ~]# exit
+logout
+[admin@clienta ~]$ exit
+logout
+Connection to clienta closed.
+[student@workstation ~]$ lab finish intro-arch 
+
+Finishing lab.
+
+ · Checking lab systems ................................................................................................................ SUCCESS
+
+[student@workstation ~]$ 
+

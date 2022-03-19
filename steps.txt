@@ -1,0 +1,1709 @@
+[student@workstation ~]$ lab start deploy-review
+
+Starting lab.
+
+ · Destroy the existing cluster ......................................................................................................................................................................... SUCCESS
+ · Remove /var/log/ceph folder .......................................................................................................................................................................... SUCCESS
+ · Remove cluster folder ................................................................................................................................................................................ SUCCESS
+ · Stop ceph target ..................................................................................................................................................................................... SUCCESS
+ · Disable ceph target .................................................................................................................................................................................. SUCCESS
+ · Remove ceph target ................................................................................................................................................................................... SUCCESS
+ · Restart systemctl daemon ............................................................................................................................................................................. SUCCESS
+ · Kill all 'admin' processes ........................................................................................................................................................................... SUCCESS
+ · Ensure cephadm-ansible package is installed .......................................................................................................................................................... SUCCESS
+ · Create cephadm-ansible hosts file .................................................................................................................................................................... SUCCESS
+
+[student@workstation ~]$ ssh admin@serverc
+Warning: Permanently added 'serverc,172.25.250.12' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[admin@serverc ~]$ sudo -i 
+[root@serverc ~]# yum list cephadm -ansible 
+usage: yum list [-c [config file]] [-q] [-v] [--version]
+                [--installroot [path]] [--nodocs] [--noplugins]
+                [--enableplugin [plugin]] [--disableplugin [plugin]]
+                [--releasever RELEASEVER] [--setopt SETOPTS] [--skip-broken]
+                [-h] [--allowerasing] [-b | --nobest] [-C] [-R [minutes]]
+                [-d [debug level]] [--debugsolver] [--showduplicates]
+                [-e ERRORLEVEL] [--obsoletes]
+                [--rpmverbosity [debug level name]] [-y] [--assumeno]
+                [--enablerepo [repo]] [--disablerepo [repo] | --repo [repo]]
+                [--enable | --disable] [-x [package]]
+                [--disableexcludes [repo]] [--repofrompath [repo,path]]
+                [--noautoremove] [--nogpgcheck] [--color COLOR] [--refresh]
+                [-4] [-6] [--destdir DESTDIR] [--downloadonly]
+                [--comment COMMENT] [--bugfix] [--enhancement] [--newpackage]
+                [--security] [--advisory ADVISORY] [--bz BUGZILLA]
+                [--cve CVES]
+                [--sec-severity {Critical,Important,Moderate,Low}]
+                [--forcearch ARCH]
+                [--all | --available | --installed | --extras | --updates | --upgrades | --autoremove | --recent]
+                [PACKAGE [PACKAGE ...]]
+yum list: error: unrecognized arguments: -ansible
+[root@serverc ~]# yum list cephadm-ansible 
+Last metadata expiration check: 0:00:44 ago on Sat 19 Mar 2022 12:17:09 AM EDT.
+Installed Packages
+cephadm-ansible.noarch                                                                 0.1-1.g5a4412f.el8cp                                                                  @rhceph-5-tools-for-rhel-8-x86_64-rpms
+[root@serverc ~]# rpm -ql cephadm-ansible
+/usr/share/cephadm-ansible
+/usr/share/cephadm-ansible/ansible.cfg
+/usr/share/cephadm-ansible/ceph-defaults
+/usr/share/cephadm-ansible/ceph-defaults/README.md
+/usr/share/cephadm-ansible/ceph-defaults/defaults
+/usr/share/cephadm-ansible/ceph-defaults/defaults/main.yml
+/usr/share/cephadm-ansible/ceph-defaults/meta
+/usr/share/cephadm-ansible/ceph-defaults/meta/main.yml
+/usr/share/cephadm-ansible/cephadm-preflight.yml
+/usr/share/cephadm-ansible/cephadm-purge-cluster.yml
+/usr/share/doc/cephadm-ansible
+/usr/share/doc/cephadm-ansible/README.md
+/usr/share/licenses/cephadm-ansible
+/usr/share/licenses/cephadm-ansible/LICENSE
+[root@serverc ~]# cd /usr/share/cephadm-ansible/
+[root@serverc cephadm-ansible]# ls
+ansible.cfg  cephadm-preflight.yml  cephadm-purge-cluster.yml  ceph-defaults
+[root@serverc cephadm-ansible]# cat /tmp/hosts 
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# ansible-playbook -i /tmp/hosts cephadm-preflight.yml -e "ceph_origin="
+[WARNING]: log file at /root/ansible/ansible.log is not writeable and we cannot create it, aborting
+
+
+PLAY [all] ********************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ********************************************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:26 -0400 (0:00:00.024)       0:00:00.025 ******** 
+ok: [serverd.lab.example.com]
+ok: [serverc.lab.example.com]
+ok: [servere.lab.example.com]
+
+TASK [enable red hat storage tools repository] ********************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:02.432)       0:00:02.457 ******** 
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+
+TASK [configure red hat ceph community repository stable key] *****************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.073)       0:00:02.531 ******** 
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [serverd.lab.example.com]
+
+TASK [configure red hat ceph stable community repository] *********************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.069)       0:00:02.600 ******** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph stable noarch community repository] **************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.075)       0:00:02.676 ******** 
+skipping: [serverd.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [fetch ceph red hat development repository] ******************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.084)       0:00:02.760 ******** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure ceph red hat development repository] **************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.077)       0:00:02.837 ******** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [remove ceph_stable repositories] ****************************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.069)       0:00:02.907 ******** 
+skipping: [serverc.lab.example.com] => (item=ceph_stable) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [servere.lab.example.com] => (item=ceph_stable) 
+skipping: [servere.lab.example.com] => (item=ceph_stable_noarch) 
+
+TASK [install epel-release] ***************************************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.085)       0:00:02.992 ******** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [install prerequisites packages] *****************************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:29 -0400 (0:00:00.073)       0:00:03.065 ******** 
+changed: [serverc.lab.example.com]
+changed: [serverd.lab.example.com]
+changed: [servere.lab.example.com]
+
+TASK [ensure chronyd is running] **********************************************************************************************************************************************************************************
+Saturday 19 March 2022  00:18:41 -0400 (0:00:11.459)       0:00:14.524 ******** 
+ok: [serverc.lab.example.com]
+ok: [serverd.lab.example.com]
+ok: [servere.lab.example.com]
+
+PLAY RECAP ********************************************************************************************************************************************************************************************************
+serverc.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverd.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+servere.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+
+Saturday 19 March 2022  00:18:41 -0400 (0:00:00.604)       0:00:15.129 ******** 
+=============================================================================== 
+install prerequisites packages ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 11.46s
+Gathering Facts -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 2.43s
+ensure chronyd is running ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.60s
+remove ceph_stable repositories ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.09s
+configure red hat ceph stable noarch community repository -------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+fetch ceph red hat development repository ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 0.08s
+configure red hat ceph stable community repository --------------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+enable red hat storage tools repository -------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.07s
+install epel-release --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.07s
+configure ceph red hat development repository -------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.07s
+configure red hat ceph community repository stable key ----------------------------------------------------------------------------------------------------------------------------------------------------- 0.07s
+[root@serverc cephadm-ansible]# cephadm bootstrap --help 
+usage: cephadm bootstrap [-h] [--config CONFIG] [--mon-id MON_ID]
+                         [--mon-addrv MON_ADDRV] [--mon-ip MON_IP]
+                         [--mgr-id MGR_ID] [--fsid FSID]
+                         [--output-dir OUTPUT_DIR]
+                         [--output-keyring OUTPUT_KEYRING]
+                         [--output-config OUTPUT_CONFIG]
+                         [--output-pub-ssh-key OUTPUT_PUB_SSH_KEY]
+                         [--skip-ssh]
+                         [--initial-dashboard-user INITIAL_DASHBOARD_USER]
+                         [--initial-dashboard-password INITIAL_DASHBOARD_PASSWORD]
+                         [--ssl-dashboard-port SSL_DASHBOARD_PORT]
+                         [--dashboard-key DASHBOARD_KEY]
+                         [--dashboard-crt DASHBOARD_CRT]
+                         [--ssh-config SSH_CONFIG]
+                         [--ssh-private-key SSH_PRIVATE_KEY]
+                         [--ssh-public-key SSH_PUBLIC_KEY]
+                         [--ssh-user SSH_USER] [--skip-mon-network]
+                         [--skip-dashboard] [--dashboard-password-noupdate]
+                         [--no-minimize-config] [--skip-ping-check]
+                         [--skip-pull] [--skip-firewalld] [--allow-overwrite]
+                         [--allow-fqdn-hostname] [--allow-mismatched-release]
+                         [--skip-prepare-host] [--orphan-initial-daemons]
+                         [--skip-monitoring-stack] [--apply-spec APPLY_SPEC]
+                         [--shared_ceph_folder CEPH_SOURCE_FOLDER]
+                         [--registry-url REGISTRY_URL]
+                         [--registry-username REGISTRY_USERNAME]
+                         [--registry-password REGISTRY_PASSWORD]
+                         [--registry-json REGISTRY_JSON] [--with-exporter]
+                         [--exporter-config EXPORTER_CONFIG]
+                         [--cluster-network CLUSTER_NETWORK]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG, -c CONFIG
+                        ceph conf file to incorporate
+  --mon-id MON_ID       mon id (default: local hostname)
+  --mon-addrv MON_ADDRV
+                        mon IPs (e.g.,
+                        [v2:localipaddr:3300,v1:localipaddr:6789])
+  --mon-ip MON_IP       mon IP
+  --mgr-id MGR_ID       mgr id (default: randomly generated)
+  --fsid FSID           cluster FSID
+  --output-dir OUTPUT_DIR
+                        directory to write config, keyring, and pub key files
+  --output-keyring OUTPUT_KEYRING
+                        location to write keyring file with new cluster admin
+                        and mon keys
+  --output-config OUTPUT_CONFIG
+                        location to write conf file to connect to new cluster
+  --output-pub-ssh-key OUTPUT_PUB_SSH_KEY
+                        location to write the cluster's public SSH key
+  --skip-ssh            skip setup of ssh key on local host
+  --initial-dashboard-user INITIAL_DASHBOARD_USER
+                        Initial user for the dashboard
+  --initial-dashboard-password INITIAL_DASHBOARD_PASSWORD
+                        Initial password for the initial dashboard user
+  --ssl-dashboard-port SSL_DASHBOARD_PORT
+                        Port number used to connect with dashboard using SSL
+  --dashboard-key DASHBOARD_KEY
+                        Dashboard key
+  --dashboard-crt DASHBOARD_CRT
+                        Dashboard certificate
+  --ssh-config SSH_CONFIG
+                        SSH config
+  --ssh-private-key SSH_PRIVATE_KEY
+                        SSH private key
+  --ssh-public-key SSH_PUBLIC_KEY
+                        SSH public key
+  --ssh-user SSH_USER   set user for SSHing to cluster hosts, passwordless
+                        sudo will be needed for non-root users
+  --skip-mon-network    set mon public_network based on bootstrap mon ip
+  --skip-dashboard      do not enable the Ceph Dashboard
+  --dashboard-password-noupdate
+                        stop forced dashboard password change
+  --no-minimize-config  do not assimilate and minimize the config file
+  --skip-ping-check     do not verify that mon IP is pingable
+  --skip-pull           do not pull the latest image before bootstrapping
+  --skip-firewalld      Do not configure firewalld
+  --allow-overwrite     allow overwrite of existing --output-*
+                        config/keyring/ssh files
+  --allow-fqdn-hostname
+                        allow hostname that is fully-qualified (contains ".")
+  --allow-mismatched-release
+                        allow bootstrap of ceph that doesn't match this
+                        version of cephadm
+  --skip-prepare-host   Do not prepare host
+  --orphan-initial-daemons
+                        Set mon and mgr service to `unmanaged`, Do not create
+                        the crash service
+  --skip-monitoring-stack
+                        Do not automatically provision monitoring stack
+                        (prometheus, grafana, alertmanager, node-exporter)
+  --apply-spec APPLY_SPEC
+                        Apply cluster spec after bootstrap (copy ssh key, add
+                        hosts and apply services)
+  --shared_ceph_folder CEPH_SOURCE_FOLDER
+                        Development mode. Several folders in containers are
+                        volumes mapped to different sub-folders in the ceph
+                        source folder
+  --registry-url REGISTRY_URL
+                        url for custom registry
+  --registry-username REGISTRY_USERNAME
+                        username for custom registry
+  --registry-password REGISTRY_PASSWORD
+                        password for custom registry
+  --registry-json REGISTRY_JSON
+                        json file with custom registry login info (URL,
+                        Username, Password)
+  --with-exporter       Automatically deploy cephadm metadata exporter to each
+                        node
+  --exporter-config EXPORTER_CONFIG
+                        Exporter configuration information in JSON format
+                        (providing: key, crt, token, port information)
+  --cluster-network CLUSTER_NETWORK
+                        subnet to use for cluster replication, recovery and
+                        heartbeats (in CIDR notation network/mask)
+[root@serverc cephadm-ansible]# cephadm bootstrap --registry-url registry.redhat.io --registry-username registry --registry-password redhat --allow-fqdn-hostname --dashboard-password-noupdate --initial-dashboard-password redhat --mon-ip 172.25.250.12 
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman|docker (/bin/podman) is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: e6f94a90-a73b-11ec-96ae-52540000fa0c
+Verifying IP 172.25.250.12 port 3300 ...
+Verifying IP 172.25.250.12 port 6789 ...
+Mon IP 172.25.250.12 is in CIDR network 172.25.250.0/24
+- internal network (--cluster-network) has not been provided, OSD replication will default to the public_network
+Logging into custom registry.
+Pulling container image registry.redhat.io/rhceph/rhceph-5-rhel8:latest...
+Ceph version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+Extracting ceph user uid/gid from container image...
+Creating initial keys...
+Creating initial monmap...
+Creating mon...
+firewalld ready
+Waiting for mon to start...
+Waiting for mon...
+mon is available
+Assimilating anything we can from ceph.conf...
+Generating new minimal ceph.conf...
+Restarting the monitor...
+Setting mon public_network to 172.25.250.0/24
+Wrote config to /etc/ceph/ceph.conf
+Wrote keyring to /etc/ceph/ceph.client.admin.keyring
+Creating mgr...
+Verifying port 9283 ...
+firewalld ready
+firewalld ready
+Waiting for mgr to start...
+Waiting for mgr...
+mgr not available, waiting (1/15)...
+mgr not available, waiting (2/15)...
+mgr not available, waiting (3/15)...
+mgr is available
+Enabling cephadm module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 5...
+mgr epoch 5 is available
+Setting orchestrator backend to cephadm...
+Generating ssh key...
+Wrote public SSH key to /etc/ceph/ceph.pub
+Adding key to root@localhost authorized_keys...
+Adding host serverc.lab.example.com...
+Deploying mon service with default placement...
+Deploying mgr service with default placement...
+Deploying crash service with default placement...
+Enabling mgr prometheus module...
+Deploying prometheus service with default placement...
+Deploying grafana service with default placement...
+Deploying node-exporter service with default placement...
+Deploying alertmanager service with default placement...
+Enabling the dashboard module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 13...
+mgr epoch 13 is available
+Generating a dashboard self-signed certificate...
+Creating initial admin user...
+Fetching dashboard port number...
+firewalld ready
+Ceph Dashboard is now available at:
+
+	     URL: https://serverc.lab.example.com:8443/
+	    User: admin
+	Password: redhat
+
+You can access the Ceph CLI with:
+
+	sudo /sbin/cephadm shell --fsid e6f94a90-a73b-11ec-96ae-52540000fa0c -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+
+Please consider enabling telemetry to help improve Ceph:
+
+	ceph telemetry on
+
+For more information see:
+
+	https://docs.ceph.com/docs/pacific/mgr/telemetry/
+
+Bootstrap complete.
+[root@serverc cephadm-ansible]# cephadm shell
+Inferring fsid e6f94a90-a73b-11ec-96ae-52540000fa0c
+Inferring config /var/lib/ceph/e6f94a90-a73b-11ec-96ae-52540000fa0c/mon.serverc.lab.example.com/config
+Using recent ceph image registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff
+[ceph: root@serverc /]# ceph status 
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 1 daemons, quorum serverc.lab.example.com (age 72s)
+    mgr: serverc.lab.example.com.krjufq(active, since 16s)
+    osd: 0 osds: 0 up, 0 in
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   0 B used, 0 B / 0 B avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch host label add serverd.lab.example.com 
+Invalid command: missing required parameter label(<string>)
+orch host label add <hostname> <label> :  Add a host label
+Error EINVAL: invalid command
+[ceph: root@serverc /]# ceph orch host label add serverc.lab.example.com _admin
+Added label _admin to host serverc.lab.example.com
+[ceph: root@serverc /]# ceph orch host                                         
+no valid command found; 9 closest matches:
+orch host add <hostname> [<addr>] [<labels>...] [--maintenance]
+orch host rm <hostname>
+orch host set-addr <hostname> <addr>
+orch host ls [--format {plain|json|json-pretty|yaml}]
+orch host label add <hostname> <label>
+orch host label rm <hostname> <label>
+orch host ok-to-stop <hostname>
+orch host maintenance enter <hostname> [--force]
+orch host maintenance exit <hostname>
+Error EINVAL: invalid command
+[ceph: root@serverc /]# ceph orch host add serverd.lab.example.com 
+Error EINVAL: Failed to connect to serverd.lab.example.com (serverd.lab.example.com).
+Please make sure that the host is reachable and accepts connections using the cephadm SSH key
+
+To add the cephadm SSH key to the host:
+> ceph cephadm get-pub-key > ~/ceph.pub
+> ssh-copy-id -f -i ~/ceph.pub root@serverd.lab.example.com
+
+To check that the host is reachable:
+> ceph cephadm get-ssh-config > ssh_config
+> ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+> chmod 0600 ~/cephadm_private_key
+> ssh -F ssh_config -i ~/cephadm_private_key root@serverd.lab.example.com
+[ceph: root@serverc /]# ceph cephadm get-pub-key > ~/ceph-pub
+[ceph: root@serverc /]# ssh-copy-id -f -i ~/ceph-pub root@serverd.lab.example.com 
+
+/usr/bin/ssh-copy-id: ERROR: failed to open ID file '/root/ceph-pub.pub': No such file or directory
+[ceph: root@serverc /]# ssh-copy-id -f -i ~/ceph.pub root@serverd.lab.example.com 
+
+/usr/bin/ssh-copy-id: ERROR: failed to open ID file '/root/ceph.pub': No such file or directory
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph cephadm get-pub-key > ~/ceph.pub
+[ceph: root@serverc /]# ssh-copy-id -f -i ~/ceph.pub root@serverd.lab.example.com 
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/ceph.pub"
+The authenticity of host 'serverd.lab.example.com (172.25.250.13)' can't be established.
+ECDSA key fingerprint is SHA256:NJAyJMx8B2AeIYHRnVLAuJ1XZwblomyOKowyfTwGrTY.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+root@serverd.lab.example.com's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'root@serverd.lab.example.com'"
+and check to make sure that only the key(s) you wanted were added.
+
+[ceph: root@serverc /]# ceph cephadm get-ssh-config > ssh_config
+[ceph: root@serverc /]# ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+[ceph: root@serverc /]# chmod 0600 ~/cephadm_private_key
+[ceph: root@serverc /]# ssh -F ssh_config -i ~/cephadm_private_key root@serverd.lab.example.com
+Warning: Permanently added 'serverd.lab.example.com,172.25.250.13' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last failed login: Sat Mar 19 00:24:59 EDT 2022 from 172.25.250.12 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+[root@serverd ~]# logout
+Connection to serverd.lab.example.com closed.
+[ceph: root@serverc /]# ceph orch host add serverd.lab.example.com
+Added host 'serverd.lab.example.com' with addr '172.25.250.13'
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ssh-copy-id -f -i ~/ceph.pub root@servere.lab.example.com 
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/ceph.pub"
+The authenticity of host 'servere.lab.example.com (172.25.250.14)' can't be established.
+ECDSA key fingerprint is SHA256:NJAyJMx8B2AeIYHRnVLAuJ1XZwblomyOKowyfTwGrTY.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+root@servere.lab.example.com's password: 
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'root@servere.lab.example.com'"
+and check to make sure that only the key(s) you wanted were added.
+
+[ceph: root@serverc /]# ssh -F ssh_config -i ~/cephadm_private_key root@servere.lab.example.com
+Warning: Permanently added 'servere.lab.example.com,172.25.250.14' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[root@servere ~]# logout
+Connection to servere.lab.example.com closed.
+[ceph: root@serverc /]# ceph orch host add servere.lab.example.com
+Added host 'servere.lab.example.com' with addr '172.25.250.14'
+[ceph: root@serverc /]# ceph orch host ls
+HOST                     ADDR           LABELS  STATUS  
+serverc.lab.example.com  172.25.250.12  _admin          
+serverd.lab.example.com  172.25.250.13                  
+servere.lab.example.com  172.25.250.14                  
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            OSD count 0 < osd_pool_default_size 3
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 8s)
+    mgr: serverc.lab.example.com.krjufq(active, since 7m), standbys: serverd.vxuxni
+    osd: 0 osds: 0 up, 0 in
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   0 B used, 0 B / 0 B avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch --help
+
+ General usage: 
+ ==============
+usage: ceph [-h] [-c CEPHCONF] [-i INPUT_FILE] [-o OUTPUT_FILE]
+            [--setuser SETUSER] [--setgroup SETGROUP] [--id CLIENT_ID]
+            [--name CLIENT_NAME] [--cluster CLUSTER]
+            [--admin-daemon ADMIN_SOCKET] [-s] [-w] [--watch-debug]
+            [--watch-info] [--watch-sec] [--watch-warn] [--watch-error]
+            [-W WATCH_CHANNEL] [--version] [--verbose] [--concise]
+            [-f {json,json-pretty,xml,xml-pretty,plain,yaml}]
+            [--connect-timeout CLUSTER_TIMEOUT] [--block] [--period PERIOD]
+
+Ceph administration tool
+
+optional arguments:
+  -h, --help            request mon help
+  -c CEPHCONF, --conf CEPHCONF
+                        ceph configuration file
+  -i INPUT_FILE, --in-file INPUT_FILE
+                        input file, or "-" for stdin
+  -o OUTPUT_FILE, --out-file OUTPUT_FILE
+                        output file, or "-" for stdout
+  --setuser SETUSER     set user file permission
+  --setgroup SETGROUP   set group file permission
+  --id CLIENT_ID, --user CLIENT_ID
+                        client id for authentication
+  --name CLIENT_NAME, -n CLIENT_NAME
+                        client name for authentication
+  --cluster CLUSTER     cluster name
+  --admin-daemon ADMIN_SOCKET
+                        submit admin-socket commands ("help" for help)
+  -s, --status          show cluster status
+  -w, --watch           watch live cluster changes
+  --watch-debug         watch debug events
+  --watch-info          watch info events
+  --watch-sec           watch security events
+  --watch-warn          watch warn events
+  --watch-error         watch error events
+  -W WATCH_CHANNEL, --watch-channel WATCH_CHANNEL
+                        watch live cluster changes on a specific channel
+                        (e.g., cluster, audit, cephadm, or '*' for all)
+  --version, -v         display version
+  --verbose             make verbose
+  --concise             make less verbose
+  -f {json,json-pretty,xml,xml-pretty,plain,yaml}, --format {json,json-pretty,xml,xml-pretty,plain,yaml}
+  --connect-timeout CLUSTER_TIMEOUT
+                        set a timeout for connecting to the cluster
+  --block               block until completion (scrub and deep-scrub only)
+  --period PERIOD, -p PERIOD
+                        polling period, default 1.0 second (for polling
+                        commands only)
+
+ Local commands: 
+ ===============
+
+ping <mon.id>           Send simple presence/life test to a mon
+                        <mon.id> may be 'mon.*' for all mons
+daemon {type.id|path} <cmd>
+                        Same as --admin-daemon, but auto-find admin socket
+daemonperf {type.id | path} [stat-pats] [priority] [<interval>] [<count>]
+daemonperf {type.id | path} list|ls [stat-pats] [priority]
+                        Get selected perf stats from daemon/admin socket
+                        Optional shell-glob comma-delim match string stat-pats
+                        Optional selection priority (can abbreviate name):
+                         critical, interesting, useful, noninteresting, debug
+                        List shows a table of all available stats
+                        Run <count> times (default forever),
+                         once per <interval> seconds (default 1)
+    
+
+ Monitor commands: 
+ =================
+orch apply [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|mds|rgw| Update the size or placement for a service or apply a large yaml spec
+ nfs|iscsi|cephadm-exporter] [<placement>] [--dry-run] [--format {plain|json|json-pretty|yaml}] [--       
+ unmanaged] [--no-overwrite]                                                                              
+orch apply iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>] [--unmanaged] [--dry- Scale an iSCSI service
+ run] [--format {plain|json|json-pretty|yaml}] [--no-overwrite]                                           
+orch apply mds <fs_name> [<placement>] [--dry-run] [--unmanaged] [--format {plain|json|json-pretty|       Update the number of MDS instances for the given fs_name
+ yaml}] [--no-overwrite]                                                                                  
+orch apply nfs <svc_id> <pool> [<namespace>] [<placement>] [--format {plain|json|json-pretty|yaml}] [--   Scale an NFS service
+ dry-run] [--unmanaged] [--no-overwrite]                                                                  
+orch apply osd [--all-available-devices] [--format {plain|json|json-pretty|yaml}] [--unmanaged] [--dry-   Create OSD daemon(s) using a drive group spec
+ run] [--no-overwrite]                                                                                    
+orch apply rgw <svc_id> [<realm>] [<zone>] [<port:int>] [--ssl] [<placement>] [--dry-run] [--format       Update the number of RGW instances for the given zone
+ {plain|json|json-pretty|yaml}] [--unmanaged] [--no-overwrite]                                            
+orch cancel                                                                                               cancels ongoing operations
+
+ProgressReferences might get stuck. Let's unstuck them.
+orch daemon add [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|    Add daemon(s)
+ mds|rgw|nfs|iscsi|cephadm-exporter] [<placement>]                                                        
+orch daemon add iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>]                  Start iscsi daemon(s)
+orch daemon add mds <fs_name> [<placement>]                                                               Start MDS daemon(s)
+orch daemon add nfs <svc_id> <pool> [<namespace>] [<placement>]                                           Start NFS daemon(s)
+orch daemon add osd [<svc_arg>]                                                                           Create an OSD service. Either --svc_arg=host:drives
+orch daemon add rgw <svc_id> [<port:int>] [--ssl] [<placement>]                                           Start RGW daemon(s)
+orch daemon redeploy <name> [<image>]                                                                     Redeploy a daemon (with a specifc image)
+orch daemon rm <names>... [--force]                                                                       Remove specific daemon(s)
+orch daemon start|stop|restart|reconfig <name>                                                            Start, stop, restart, (redeploy,) or reconfig a specific daemon
+orch device ls [<hostname>...] [--format {plain|json|json-pretty|yaml}] [--refresh] [--wide]              List devices on a host
+orch device zap <hostname> <path> [--force]                                                               Zap (erase!) a device so it can be re-used
+orch host add <hostname> [<addr>] [<labels>...] [--maintenance]                                           Add a host
+orch host label add <hostname> <label>                                                                    Add a host label
+orch host label rm <hostname> <label>                                                                     Remove a host label
+orch host ls [--format {plain|json|json-pretty|yaml}]                                                     List hosts
+orch host maintenance enter <hostname> [--force]                                                          Prepare a host for maintenance by shutting down and disabling all Ceph daemons (cephadm only)
+orch host maintenance exit <hostname>                                                                     Return a host from maintenance, restarting all Ceph daemons (cephadm only)
+orch host ok-to-stop <hostname>                                                                           Check if the specified host can be safely stopped without reducing availability
+orch host rm <hostname>                                                                                   Remove a host
+orch host set-addr <hostname> <addr>                                                                      Update a host address
+orch ls [<service_type>] [<service_name>] [--export] [--format {plain|json|json-pretty|yaml}] [--refresh] List services known to orchestrator
+orch osd rm <svc_id>... [--replace] [--force]                                                             Remove OSD services
+orch osd rm status [--format {plain|json|json-pretty|yaml}]                                               status of OSD removal operation
+orch osd rm stop <svc_id>...                                                                              Remove OSD services
+orch pause                                                                                                Pause orchestrator background work
+orch ps [<hostname>] [<service_name>] [<daemon_type>] [<daemon_id>] [--format {plain|json|json-pretty|    List daemons known to orchestrator
+ yaml}] [--refresh]                                                                                       
+orch resume                                                                                               Resume orchestrator background work (if paused)
+orch rm <service_name> [--force]                                                                          Remove a service
+orch set backend [<module_name>]                                                                          Select orchestrator module backend
+orch start|stop|restart|redeploy|reconfig <service_name>                                                  Start, stop, restart, redeploy, or reconfig an entire service (i.e. all daemons)
+orch status [--detail] [--format {plain|json|json-pretty|yaml}]                                           Report configured backend and its status
+orch upgrade check [<image>] [<ceph_version>]                                                             Check service versions vs available and target containers
+orch upgrade pause                                                                                        Pause an in-progress upgrade
+orch upgrade resume                                                                                       Resume paused upgrade
+orch upgrade start [<image>] [<ceph_version>]                                                             Initiate upgrade
+orch upgrade status                                                                                       Check service versions vs available and target containers
+orch upgrade stop                                                                                         Stop an in-progress upgrade
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch host ls    
+HOST                     ADDR           LABELS  STATUS  
+serverc.lab.example.com  172.25.250.12  _admin          
+serverd.lab.example.com  172.25.250.13                  
+servere.lab.example.com  172.25.250.14                  
+[ceph: root@serverc /]# ceph orch host label add serverd.lab.example.com serverd.lab.example.com 
+Added label serverd.lab.example.com to host serverd.lab.example.com
+[ceph: root@serverc /]# ceph orch host label add servere.lab.example.com servere.lab.example.com 
+Added label servere.lab.example.com to host servere.lab.example.com
+[ceph: root@serverc /]# ceph orch host ls
+HOST                     ADDR           LABELS                   STATUS  
+serverc.lab.example.com  172.25.250.12  _admin                           
+serverd.lab.example.com  172.25.250.13  serverd.lab.example.com          
+servere.lab.example.com  172.25.250.14  servere.lab.example.com          
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            OSD count 0 < osd_pool_default_size 3
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 2m)
+    mgr: serverc.lab.example.com.krjufq(active, since 9m), standbys: serverd.vxuxni
+    osd: 0 osds: 0 up, 0 in
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   0 B used, 0 B / 0 B avail
+    pgs:     
+ 
+[ceph: root@serverc /]# vim /tmp/mgr.yaml
+bash: vim: command not found
+[ceph: root@serverc /]# vi /tmp/mgr.yaml
+[ceph: root@serverc /]# cat /tmp/mgr.yaml
+service_type: mgr
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com 
+    - servere.lab.example.com
+[ceph: root@serverc /]# ceph orch apply -i /tmp/mgr.yaml
+Scheduled mgr update...
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            OSD count 0 < osd_pool_default_size 3
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 5m)
+    mgr: serverc.lab.example.com.krjufq(active, since 12m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 0 osds: 0 up, 0 in
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   0 B used, 0 B / 0 B avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdb
+Created osd(s) 0 on host 'serverc.lab.example.com'
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            OSD count 1 < osd_pool_default_size 3
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 7m)
+    mgr: serverc.lab.example.com.krjufq(active, since 14m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 1 osds: 1 up (since 3s), 1 in (since 15s)
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   4.8 MiB used, 10 GiB / 10 GiB avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdc
+Created osd(s) 1 on host 'serverc.lab.example.com'
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            OSD count 2 < osd_pool_default_size 3
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 7m)
+    mgr: serverc.lab.example.com.krjufq(active, since 14m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 2 osds: 2 up (since 1.41316s), 2 in (since 12s)
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   4.9 MiB used, 10 GiB / 10 GiB avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vde
+
+
+
+
+
+
+
+Created osd(s) 2 on host 'serverc.lab.example.com'
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 8m)
+    mgr: serverc.lab.example.com.krjufq(active, since 15m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 3 osds: 3 up (since 1.42501s), 3 in (since 13s)
+ 
+  data:
+    pools:   0 pools, 0 pgs
+    objects: 0 objects, 0 B
+    usage:   9.8 MiB used, 20 GiB / 20 GiB avail
+    pgs:     
+ 
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdd
+Created osd(s) 3 on host 'serverc.lab.example.com'
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 8m)
+    mgr: serverc.lab.example.com.krjufq(active, since 15m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 4 osds: 4 up (since 0.435612s), 4 in (since 12s)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   15 MiB used, 30 GiB / 30 GiB avail
+    pgs:     100.000% pgs not active
+             1 undersized+peered
+ 
+[ceph: root@serverc /]# ceph orch daemon --help 
+
+ General usage: 
+ ==============
+usage: ceph [-h] [-c CEPHCONF] [-i INPUT_FILE] [-o OUTPUT_FILE]
+            [--setuser SETUSER] [--setgroup SETGROUP] [--id CLIENT_ID]
+            [--name CLIENT_NAME] [--cluster CLUSTER]
+            [--admin-daemon ADMIN_SOCKET] [-s] [-w] [--watch-debug]
+            [--watch-info] [--watch-sec] [--watch-warn] [--watch-error]
+            [-W WATCH_CHANNEL] [--version] [--verbose] [--concise]
+            [-f {json,json-pretty,xml,xml-pretty,plain,yaml}]
+            [--connect-timeout CLUSTER_TIMEOUT] [--block] [--period PERIOD]
+
+Ceph administration tool
+
+optional arguments:
+  -h, --help            request mon help
+  -c CEPHCONF, --conf CEPHCONF
+                        ceph configuration file
+  -i INPUT_FILE, --in-file INPUT_FILE
+                        input file, or "-" for stdin
+  -o OUTPUT_FILE, --out-file OUTPUT_FILE
+                        output file, or "-" for stdout
+  --setuser SETUSER     set user file permission
+  --setgroup SETGROUP   set group file permission
+  --id CLIENT_ID, --user CLIENT_ID
+                        client id for authentication
+  --name CLIENT_NAME, -n CLIENT_NAME
+                        client name for authentication
+  --cluster CLUSTER     cluster name
+  --admin-daemon ADMIN_SOCKET
+                        submit admin-socket commands ("help" for help)
+  -s, --status          show cluster status
+  -w, --watch           watch live cluster changes
+  --watch-debug         watch debug events
+  --watch-info          watch info events
+  --watch-sec           watch security events
+  --watch-warn          watch warn events
+  --watch-error         watch error events
+  -W WATCH_CHANNEL, --watch-channel WATCH_CHANNEL
+                        watch live cluster changes on a specific channel
+                        (e.g., cluster, audit, cephadm, or '*' for all)
+  --version, -v         display version
+  --verbose             make verbose
+  --concise             make less verbose
+  -f {json,json-pretty,xml,xml-pretty,plain,yaml}, --format {json,json-pretty,xml,xml-pretty,plain,yaml}
+  --connect-timeout CLUSTER_TIMEOUT
+                        set a timeout for connecting to the cluster
+  --block               block until completion (scrub and deep-scrub only)
+  --period PERIOD, -p PERIOD
+                        polling period, default 1.0 second (for polling
+                        commands only)
+
+ Local commands: 
+ ===============
+
+ping <mon.id>           Send simple presence/life test to a mon
+                        <mon.id> may be 'mon.*' for all mons
+daemon {type.id|path} <cmd>
+                        Same as --admin-daemon, but auto-find admin socket
+daemonperf {type.id | path} [stat-pats] [priority] [<interval>] [<count>]
+daemonperf {type.id | path} list|ls [stat-pats] [priority]
+                        Get selected perf stats from daemon/admin socket
+                        Optional shell-glob comma-delim match string stat-pats
+                        Optional selection priority (can abbreviate name):
+                         critical, interesting, useful, noninteresting, debug
+                        List shows a table of all available stats
+                        Run <count> times (default forever),
+                         once per <interval> seconds (default 1)
+    
+
+ Monitor commands: 
+ =================
+orch daemon add [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|    Add daemon(s)
+ mds|rgw|nfs|iscsi|cephadm-exporter] [<placement>]                                                        
+orch daemon add iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>]                  Start iscsi daemon(s)
+orch daemon add mds <fs_name> [<placement>]                                                               Start MDS daemon(s)
+orch daemon add nfs <svc_id> <pool> [<namespace>] [<placement>]                                           Start NFS daemon(s)
+orch daemon add osd [<svc_arg>]                                                                           Create an OSD service. Either --svc_arg=host:drives
+orch daemon add rgw <svc_id> [<port:int>] [--ssl] [<placement>]                                           Start RGW daemon(s)
+orch daemon redeploy <name> [<image>]                                                                     Redeploy a daemon (with a specifc image)
+orch daemon rm <names>... [--force]                                                                       Remove specific daemon(s)
+orch daemon start|stop|restart|reconfig <name>                                                            Start, stop, restart, (redeploy,) or reconfig a specific daemon
+[ceph: root@serverc /]# ceph orch daemon rm osd serverc.lab.example.com:/dev/vde
+Error EINVAL: osd is not a valid daemon name
+[ceph: root@serverc /]# ceph orch daemon ls 
+Invalid command: ls not in start|stop|restart|reconfig
+orch daemon start|stop|restart|reconfig <name> :  Start, stop, restart, (redeploy,) or reconfig a specific daemon
+Error EINVAL: invalid command
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch --help     
+
+ General usage: 
+ ==============
+usage: ceph [-h] [-c CEPHCONF] [-i INPUT_FILE] [-o OUTPUT_FILE]
+            [--setuser SETUSER] [--setgroup SETGROUP] [--id CLIENT_ID]
+            [--name CLIENT_NAME] [--cluster CLUSTER]
+            [--admin-daemon ADMIN_SOCKET] [-s] [-w] [--watch-debug]
+            [--watch-info] [--watch-sec] [--watch-warn] [--watch-error]
+            [-W WATCH_CHANNEL] [--version] [--verbose] [--concise]
+            [-f {json,json-pretty,xml,xml-pretty,plain,yaml}]
+            [--connect-timeout CLUSTER_TIMEOUT] [--block] [--period PERIOD]
+
+Ceph administration tool
+
+optional arguments:
+  -h, --help            request mon help
+  -c CEPHCONF, --conf CEPHCONF
+                        ceph configuration file
+  -i INPUT_FILE, --in-file INPUT_FILE
+                        input file, or "-" for stdin
+  -o OUTPUT_FILE, --out-file OUTPUT_FILE
+                        output file, or "-" for stdout
+  --setuser SETUSER     set user file permission
+  --setgroup SETGROUP   set group file permission
+  --id CLIENT_ID, --user CLIENT_ID
+                        client id for authentication
+  --name CLIENT_NAME, -n CLIENT_NAME
+                        client name for authentication
+  --cluster CLUSTER     cluster name
+  --admin-daemon ADMIN_SOCKET
+                        submit admin-socket commands ("help" for help)
+  -s, --status          show cluster status
+  -w, --watch           watch live cluster changes
+  --watch-debug         watch debug events
+  --watch-info          watch info events
+  --watch-sec           watch security events
+  --watch-warn          watch warn events
+  --watch-error         watch error events
+  -W WATCH_CHANNEL, --watch-channel WATCH_CHANNEL
+                        watch live cluster changes on a specific channel
+                        (e.g., cluster, audit, cephadm, or '*' for all)
+  --version, -v         display version
+  --verbose             make verbose
+  --concise             make less verbose
+  -f {json,json-pretty,xml,xml-pretty,plain,yaml}, --format {json,json-pretty,xml,xml-pretty,plain,yaml}
+  --connect-timeout CLUSTER_TIMEOUT
+                        set a timeout for connecting to the cluster
+  --block               block until completion (scrub and deep-scrub only)
+  --period PERIOD, -p PERIOD
+                        polling period, default 1.0 second (for polling
+                        commands only)
+
+ Local commands: 
+ ===============
+
+ping <mon.id>           Send simple presence/life test to a mon
+                        <mon.id> may be 'mon.*' for all mons
+daemon {type.id|path} <cmd>
+                        Same as --admin-daemon, but auto-find admin socket
+daemonperf {type.id | path} [stat-pats] [priority] [<interval>] [<count>]
+daemonperf {type.id | path} list|ls [stat-pats] [priority]
+                        Get selected perf stats from daemon/admin socket
+                        Optional shell-glob comma-delim match string stat-pats
+                        Optional selection priority (can abbreviate name):
+                         critical, interesting, useful, noninteresting, debug
+                        List shows a table of all available stats
+                        Run <count> times (default forever),
+                         once per <interval> seconds (default 1)
+    
+
+ Monitor commands: 
+ =================
+orch apply [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|mds|rgw| Update the size or placement for a service or apply a large yaml spec
+ nfs|iscsi|cephadm-exporter] [<placement>] [--dry-run] [--format {plain|json|json-pretty|yaml}] [--       
+ unmanaged] [--no-overwrite]                                                                              
+orch apply iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>] [--unmanaged] [--dry- Scale an iSCSI service
+ run] [--format {plain|json|json-pretty|yaml}] [--no-overwrite]                                           
+orch apply mds <fs_name> [<placement>] [--dry-run] [--unmanaged] [--format {plain|json|json-pretty|       Update the number of MDS instances for the given fs_name
+ yaml}] [--no-overwrite]                                                                                  
+orch apply nfs <svc_id> <pool> [<namespace>] [<placement>] [--format {plain|json|json-pretty|yaml}] [--   Scale an NFS service
+ dry-run] [--unmanaged] [--no-overwrite]                                                                  
+orch apply osd [--all-available-devices] [--format {plain|json|json-pretty|yaml}] [--unmanaged] [--dry-   Create OSD daemon(s) using a drive group spec
+ run] [--no-overwrite]                                                                                    
+orch apply rgw <svc_id> [<realm>] [<zone>] [<port:int>] [--ssl] [<placement>] [--dry-run] [--format       Update the number of RGW instances for the given zone
+ {plain|json|json-pretty|yaml}] [--unmanaged] [--no-overwrite]                                            
+orch cancel                                                                                               cancels ongoing operations
+
+ProgressReferences might get stuck. Let's unstuck them.
+orch daemon add [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|    Add daemon(s)
+ mds|rgw|nfs|iscsi|cephadm-exporter] [<placement>]                                                        
+orch daemon add iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>]                  Start iscsi daemon(s)
+orch daemon add mds <fs_name> [<placement>]                                                               Start MDS daemon(s)
+orch daemon add nfs <svc_id> <pool> [<namespace>] [<placement>]                                           Start NFS daemon(s)
+orch daemon add osd [<svc_arg>]                                                                           Create an OSD service. Either --svc_arg=host:drives
+orch daemon add rgw <svc_id> [<port:int>] [--ssl] [<placement>]                                           Start RGW daemon(s)
+orch daemon redeploy <name> [<image>]                                                                     Redeploy a daemon (with a specifc image)
+orch daemon rm <names>... [--force]                                                                       Remove specific daemon(s)
+orch daemon start|stop|restart|reconfig <name>                                                            Start, stop, restart, (redeploy,) or reconfig a specific daemon
+orch device ls [<hostname>...] [--format {plain|json|json-pretty|yaml}] [--refresh] [--wide]              List devices on a host
+orch device zap <hostname> <path> [--force]                                                               Zap (erase!) a device so it can be re-used
+orch host add <hostname> [<addr>] [<labels>...] [--maintenance]                                           Add a host
+orch host label add <hostname> <label>                                                                    Add a host label
+orch host label rm <hostname> <label>                                                                     Remove a host label
+orch host ls [--format {plain|json|json-pretty|yaml}]                                                     List hosts
+orch host maintenance enter <hostname> [--force]                                                          Prepare a host for maintenance by shutting down and disabling all Ceph daemons (cephadm only)
+orch host maintenance exit <hostname>                                                                     Return a host from maintenance, restarting all Ceph daemons (cephadm only)
+orch host ok-to-stop <hostname>                                                                           Check if the specified host can be safely stopped without reducing availability
+orch host rm <hostname>                                                                                   Remove a host
+orch host set-addr <hostname> <addr>                                                                      Update a host address
+orch ls [<service_type>] [<service_name>] [--export] [--format {plain|json|json-pretty|yaml}] [--refresh] List services known to orchestrator
+orch osd rm <svc_id>... [--replace] [--force]                                                             Remove OSD services
+orch osd rm status [--format {plain|json|json-pretty|yaml}]                                               status of OSD removal operation
+orch osd rm stop <svc_id>...                                                                              Remove OSD services
+orch pause                                                                                                Pause orchestrator background work
+orch ps [<hostname>] [<service_name>] [<daemon_type>] [<daemon_id>] [--format {plain|json|json-pretty|    List daemons known to orchestrator
+ yaml}] [--refresh]                                                                                       
+orch resume                                                                                               Resume orchestrator background work (if paused)
+orch rm <service_name> [--force]                                                                          Remove a service
+orch set backend [<module_name>]                                                                          Select orchestrator module backend
+orch start|stop|restart|redeploy|reconfig <service_name>                                                  Start, stop, restart, redeploy, or reconfig an entire service (i.e. all daemons)
+orch status [--detail] [--format {plain|json|json-pretty|yaml}]                                           Report configured backend and its status
+orch upgrade check [<image>] [<ceph_version>]                                                             Check service versions vs available and target containers
+orch upgrade pause                                                                                        Pause an in-progress upgrade
+orch upgrade resume                                                                                       Resume paused upgrade
+orch upgrade start [<image>] [<ceph_version>]                                                             Initiate upgrade
+orch upgrade status                                                                                       Check service versions vs available and target containers
+orch upgrade stop                                                                                         Stop an in-progress upgrade
+[ceph: root@serverc /]# ceph orch ls     
+NAME           RUNNING  REFRESHED  AGE  PLACEMENT                                                                
+alertmanager       1/1  105s ago   17m  count:1                                                                  
+crash              3/3  10m ago    17m  *                                                                        
+grafana            1/1  105s ago   17m  count:1                                                                  
+mgr                3/3  10m ago    5m   serverc.lab.example.com;serverd.lab.example.com;servere.lab.example.com  
+mon                3/5  10m ago    17m  count:5                                                                  
+node-exporter      3/3  10m ago    17m  *                                                                        
+osd.unmanaged      4/4  105s ago   -    <unmanaged>                                                              
+prometheus         1/1  105s ago   17m  count:1                                                                  
+[ceph: root@serverc /]# ceph orch osd rm serverc.lab.example.com 
+Unable to find OSDs: ['serverc.lab.example.com']
+[ceph: root@serverc /]# ceph orch osd rm serverc.lab.example.com:/dev/vde
+Unable to find OSDs: ['serverc.lab.example.com:/dev/vde']
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            Reduced data availability: 1 pg inactive
+            Degraded data redundancy: 1 pg undersized
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 11m)
+    mgr: serverc.lab.example.com.krjufq(active, since 18m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 4 osds: 4 up (since 2m), 4 in (since 2m)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   20 MiB used, 40 GiB / 40 GiB avail
+    pgs:     100.000% pgs not active
+             1 undersized+peered
+ 
+[ceph: root@serverc /]# ceph orch status 
+Backend: cephadm
+Available: Yes
+Paused: No
+[ceph: root@serverc /]# ceph orch status --detail 
+Backend: cephadm
+Available: Yes
+Paused: No
+Host Parallelism: 10
+[ceph: root@serverc /]# ceph config dump 
+WHO     MASK  LEVEL     OPTION                                 VALUE                                                                                                             RO
+global        basic     container_image                        registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff  * 
+  mon         advanced  auth_allow_insecure_global_id_reclaim  false                                                                                                               
+  mon         advanced  public_network                         172.25.250.0/24                                                                                                   * 
+  mgr         advanced  mgr/cephadm/container_init             True                                                                                                              * 
+  mgr         advanced  mgr/cephadm/migration_current          2                                                                                                                 * 
+  mgr         advanced  mgr/cephadm/registry_password          redhat                                                                                                            * 
+  mgr         advanced  mgr/cephadm/registry_url               registry.redhat.io                                                                                                * 
+  mgr         advanced  mgr/cephadm/registry_username          registry                                                                                                          * 
+  mgr         advanced  mgr/dashboard/ALERTMANAGER_API_HOST    http://172.25.250.12:9093                                                                                         * 
+  mgr         advanced  mgr/dashboard/GRAFANA_API_SSL_VERIFY   false                                                                                                             * 
+  mgr         advanced  mgr/dashboard/GRAFANA_API_URL          https://172.25.250.12:3000                                                                                        * 
+  mgr         advanced  mgr/dashboard/PROMETHEUS_API_HOST      http://172.25.250.12:9095                                                                                         * 
+  mgr         advanced  mgr/dashboard/ssl_server_port          8443                                                                                                              * 
+  mgr         advanced  mgr/orchestrator/orchestrator          cephadm                                                                                                             
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.03918  root default                               
+-3         0.03918      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph-
+ceph-authtool                ceph-crash                   ceph-erasure-code-tool       ceph-mgr                     ceph-osd                     ceph-run                     
+ceph-bluestore-tool          ceph-create-keys             ceph-immutable-object-cache  ceph-mon                     ceph-osdomap-tool            ceph-syn                     
+ceph-clsinfo                 ceph-dencoder                ceph-kvstore-tool            ceph-monstore-tool           ceph-post-file               ceph-volume                  
+ceph-conf                    ceph-diff-sorted             ceph-mds                     ceph-objectstore-tool        ceph-rbdnamer                ceph-volume-systemd          
+[ceph: root@serverc /]# ceph-
+ceph-authtool                ceph-crash                   ceph-erasure-code-tool       ceph-mgr                     ceph-osd                     ceph-run                     
+ceph-bluestore-tool          ceph-create-keys             ceph-immutable-object-cache  ceph-mon                     ceph-osdomap-tool            ceph-syn                     
+ceph-clsinfo                 ceph-dencoder                ceph-kvstore-tool            ceph-monstore-tool           ceph-post-file               ceph-volume                  
+ceph-conf                    ceph-diff-sorted             ceph-mds                     ceph-objectstore-tool        ceph-rbdnamer                ceph-volume-systemd          
+[ceph: root@serverc /]# ceph-osd
+ceph-osd           ceph-osdomap-tool  
+[ceph: root@serverc /]# ceph-osd
+ceph-osd           ceph-osdomap-tool  
+[ceph: root@serverc /]# ceph-osd --help 
+usage: ceph-osd -i <ID> [flags]
+  --osd-data PATH data directory
+  --osd-journal PATH
+                    journal file or block device
+  --mkfs            create a [new] data directory
+  --mkkey           generate a new secret key. This is normally used in combination with --mkfs
+  --monmap          specify the path to the monitor map. This is normally used in combination with --mkfs
+  --osd-uuid        specify the OSD's fsid. This is normally used in combination with --mkfs
+  --keyring         specify a path to the osd keyring. This is normally used in combination with --mkfs
+  --convert-filestore
+                    run any pending upgrade operations
+  --flush-journal   flush all data out of journal
+  --osdspec-affinity
+                    set affinity to an osdspec
+  --dump-journal    dump all data of journal
+  --mkjournal       initialize a new journal
+  --check-wants-journal
+                    check whether a journal is desired
+  --check-allows-journal
+                    check whether a journal is allowed
+  --check-needs-journal
+                    check whether a journal is required
+  --debug_osd <N>   set debug level (e.g. 10)
+  --get-device-fsid PATH
+                    get OSD fsid for the given block device
+
+  --conf/-c FILE    read configuration from the given configuration file
+  --id/-i ID        set ID portion of my name
+  --name/-n TYPE.ID set name
+  --cluster NAME    set cluster name (default: ceph)
+  --setuser USER    set uid to user or uid (and gid to user's gid)
+  --setgroup GROUP  set gid to group or gid
+  --version         show version and quit
+
+  -d                run in foreground, log to stderr
+  -f                run in foreground, log to usual location
+
+  --debug_ms N      set message debug level (e.g. 1)
+[ceph: root@serverc /]# ceph osd tree   
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.03918  root default                               
+-3         0.03918      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph orch osd rm 2
+Scheduled OSD(s) for removal
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            Reduced data availability: 1 pg inactive
+            Degraded data redundancy: 1 pg undersized
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 15m)
+    mgr: serverc.lab.example.com.krjufq(active, since 22m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 3 osds: 3 up (since 4s), 3 in (since 7m)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   15 MiB used, 30 GiB / 30 GiB avail
+    pgs:     100.000% pgs not active
+             1 undersized+peered
+ 
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# ceph orch osd rm status 
+No OSD remove/replace operations reported
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# ceph orch osd rm 2
+Unable to find OSDs: ['2']
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.02939  root default                               
+-3         0.02939      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# ceph status
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_WARN
+            Reduced data availability: 1 pg inactive
+            Degraded data redundancy: 1 pg undersized
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 16m)
+    mgr: serverc.lab.example.com.krjufq(active, since 23m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 3 osds: 3 up (since 75s), 3 in (since 8m)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   16 MiB used, 30 GiB / 30 GiB avail
+    pgs:     100.000% pgs not active
+             1 undersized+peered
+ 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdb
+Created osd(s) 2 on host 'serverd.lab.example.com'
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdc
+Created osd(s) 4 on host 'serverd.lab.example.com'
+[ceph: root@serverc /]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdd
+Created osd(s) 5 on host 'serverd.lab.example.com'
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.05878  root default                               
+-3         0.02939      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+-5         0.02939      host serverd                           
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 4    hdd  0.00980          osd.4         up   1.00000  1.00000
+ 5    hdd  0.00980          osd.5         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph orch device ls     
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph status 
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 20m)
+    mgr: serverc.lab.example.com.krjufq(active, since 27m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 6 osds: 6 up (since 36s), 6 in (since 47s); 1 remapped pgs
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   33 MiB used, 60 GiB / 60 GiB avail
+    pgs:     1 active+clean+remapped
+ 
+[ceph: root@serverc /]# ceph orch daemon add osd servere.lab.example.com:/dev/vdb
+Created osd(s) 6 on host 'servere.lab.example.com'
+[ceph: root@serverc /]# ceph orch daemon add osd servere.lab.example.com:/dev/vdc
+Created osd(s) 7 on host 'servere.lab.example.com'
+[ceph: root@serverc /]# ceph orch daemon add osd servere.lab.example.com:/dev/vdd
+Created osd(s) 8 on host 'servere.lab.example.com'
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.08817  root default                               
+-3         0.02939      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+-5         0.02939      host serverd                           
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 4    hdd  0.00980          osd.4         up   1.00000  1.00000
+ 5    hdd  0.00980          osd.5         up   1.00000  1.00000
+-7         0.02939      host servere                           
+ 6    hdd  0.00980          osd.6         up   1.00000  1.00000
+ 7    hdd  0.00980          osd.7         up   1.00000  1.00000
+ 8    hdd  0.00980          osd.8         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph status 
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 22m)
+    mgr: serverc.lab.example.com.krjufq(active, since 28m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 9 osds: 9 up (since 7s), 9 in (since 19s)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   54 MiB used, 90 GiB / 90 GiB avail
+    pgs:     1 active+clean
+ 
+[ceph: root@serverc /]# ceph osd df 
+ID  CLASS  WEIGHT   REWEIGHT  SIZE    RAW USE  DATA     OMAP  META     AVAIL   %USE  VAR   PGS  STATUS
+ 0    hdd  0.00980   1.00000  10 GiB  6.1 MiB  576 KiB   0 B  5.6 MiB  10 GiB  0.06  1.03    0      up
+ 1    hdd  0.00980   1.00000  10 GiB  6.1 MiB  576 KiB   0 B  5.6 MiB  10 GiB  0.06  1.03    0      up
+ 3    hdd  0.00980   1.00000  10 GiB  6.1 MiB  576 KiB   0 B  5.5 MiB  10 GiB  0.06  1.02    1      up
+ 2    hdd  0.00980   1.00000  10 GiB  6.0 MiB  576 KiB   0 B  5.4 MiB  10 GiB  0.06  1.01    1      up
+ 4    hdd  0.00980   1.00000  10 GiB  5.9 MiB  576 KiB   0 B  5.4 MiB  10 GiB  0.06  1.00    0      up
+ 5    hdd  0.00980   1.00000  10 GiB  5.9 MiB  576 KiB   0 B  5.3 MiB  10 GiB  0.06  0.99    0      up
+ 6    hdd  0.00980   1.00000  10 GiB  5.9 MiB  576 KiB   0 B  5.3 MiB  10 GiB  0.06  0.99    0      up
+ 7    hdd  0.00980   1.00000  10 GiB  5.8 MiB  572 KiB   0 B  5.2 MiB  10 GiB  0.06  0.98    1      up
+ 8    hdd  0.00980   1.00000  10 GiB  5.8 MiB  576 KiB   0 B  5.2 MiB  10 GiB  0.06  0.97    0      up
+                       TOTAL  90 GiB   54 MiB  5.1 MiB   0 B   48 MiB  90 GiB  0.06                   
+MIN/MAX VAR: 0.97/1.03  STDDEV: 0.00
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    Yes        
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    Yes        
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    Yes        
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    No         
+[ceph: root@serverc /]# cat /tmp/mgr.yaml 
+service_type: mgr
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com 
+    - servere.lab.example.com
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# cp /tmp/mgr.yaml /tmp/rgw.yaml
+[ceph: root@serverc /]# vim /tmp/rgw.yaml
+bash: vim: command not found
+[ceph: root@serverc /]# vi /tmp/rgw.yaml
+[ceph: root@serverc /]# ceph orch apply -i /tmp/rgw.yaml
+Error EINVAL: Cannot add Service: id required
+[ceph: root@serverc /]# vi /tmp/rgw.yaml 
+[ceph: root@serverc /]# cat /tmp/rgw.yaml
+service_type: rgw
+service_id: realm.zone
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch apply -i /tmp/rgw.yaml
+Scheduled rgw.realm.zone update...
+[ceph: root@serverc /]# ceph status 
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 24m)
+    mgr: serverc.lab.example.com.krjufq(active, since 31m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 9 osds: 9 up (since 2m), 9 in (since 2m)
+ 
+  data:
+    pools:   2 pools, 33 pgs
+    objects: 0 objects, 0 B
+    usage:   54 MiB used, 90 GiB / 90 GiB avail
+    pgs:     39.394% pgs unknown
+             36.364% pgs not active
+             13 unknown
+             12 creating+peering
+             8  active+clean
+ 
+[ceph: root@serverc /]# ceph config dump 
+WHO                                       MASK  LEVEL     OPTION                                 VALUE                                                                                                             RO
+global                                          basic     container_image                        registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff  * 
+  mon                                           advanced  auth_allow_insecure_global_id_reclaim  false                                                                                                               
+  mon                                           advanced  public_network                         172.25.250.0/24                                                                                                   * 
+  mgr                                           advanced  mgr/cephadm/container_init             True                                                                                                              * 
+  mgr                                           advanced  mgr/cephadm/migration_current          2                                                                                                                 * 
+  mgr                                           advanced  mgr/cephadm/registry_password          redhat                                                                                                            * 
+  mgr                                           advanced  mgr/cephadm/registry_url               registry.redhat.io                                                                                                * 
+  mgr                                           advanced  mgr/cephadm/registry_username          registry                                                                                                          * 
+  mgr                                           advanced  mgr/dashboard/ALERTMANAGER_API_HOST    http://172.25.250.12:9093                                                                                         * 
+  mgr                                           advanced  mgr/dashboard/GRAFANA_API_SSL_VERIFY   false                                                                                                             * 
+  mgr                                           advanced  mgr/dashboard/GRAFANA_API_URL          https://172.25.250.12:3000                                                                                        * 
+  mgr                                           advanced  mgr/dashboard/PROMETHEUS_API_HOST      http://172.25.250.12:9095                                                                                         * 
+  mgr                                           advanced  mgr/dashboard/ssl_server_port          8443                                                                                                              * 
+  mgr                                           advanced  mgr/orchestrator/orchestrator          cephadm                                                                                                             
+    client.rgw.realm.zone.serverc.wkmjfo        basic     rgw_frontends                          beast port=80                                                                                                     * 
+    client.rgw.realm.zone.serverd.afifms        basic     rgw_frontends                          beast port=80                                                                                                     * 
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.08817  root default                               
+-3         0.02939      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+-5         0.02939      host serverd                           
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 4    hdd  0.00980          osd.4         up   1.00000  1.00000
+ 5    hdd  0.00980          osd.5         up   1.00000  1.00000
+-7         0.02939      host servere                           
+ 6    hdd  0.00980          osd.6         up   1.00000  1.00000
+ 7    hdd  0.00980          osd.7         up   1.00000  1.00000
+ 8    hdd  0.00980          osd.8         up   1.00000  1.00000
+[ceph: root@serverc /]# history 
+    1  ceph status 
+    2  ceph orch host label add serverd.lab.example.com 
+    3  ceph orch host label add serverc.lab.example.com _admin
+    4  ceph orch host 
+    5  ceph orch host add serverd.lab.example.com 
+    6  ceph cephadm get-pub-key > ~/ceph-pub
+    7  ssh-copy-id -f -i ~/ceph-pub root@serverd.lab.example.com 
+    8  ssh-copy-id -f -i ~/ceph.pub root@serverd.lab.example.com 
+    9  ceph cephadm get-pub-key > ~/ceph.pub
+   10  ssh-copy-id -f -i ~/ceph.pub root@serverd.lab.example.com 
+   11  ceph cephadm get-ssh-config > ssh_config
+   12  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   13  chmod 0600 ~/cephadm_private_key
+   14  ssh -F ssh_config -i ~/cephadm_private_key root@serverd.lab.example.com
+   15  ceph orch host add serverd.lab.example.com
+   16  ssh-copy-id -f -i ~/ceph.pub root@servere.lab.example.com 
+   17  ssh -F ssh_config -i ~/cephadm_private_key root@servere.lab.example.com
+   18  ceph orch host add servere.lab.example.com
+   19  ceph orch host ls
+   20  ceph status
+   21  ceph orch --help
+   22  ceph orch host ls
+   23  ceph orch host label add serverd.lab.example.com serverd.lab.example.com 
+   24  ceph orch host label add servere.lab.example.com servere.lab.example.com 
+   25  ceph orch host ls
+   26  ceph status
+   27  vim /tmp/mgr.yaml
+   28  vi /tmp/mgr.yaml
+   29  cat /tmp/mgr.yaml
+   30  ceph orch apply -i /tmp/mgr.yaml
+   31  ceph status
+   32  ceph orch device ls 
+   33  ceph orch daemon add osd serverc.lab.example.com:/dev/vdb
+   34  ceph status
+   35  ceph orch daemon add osd serverc.lab.example.com:/dev/vdc
+   36  ceph status
+   37  ceph orch daemon add osd serverc.lab.example.com:/dev/vde
+   38  ceph status
+   39  ceph orch daemon add osd serverc.lab.example.com:/dev/vdd
+   40  ceph status
+   41  ceph orch daemon --help 
+   42  ceph orch daemon rm osd serverc.lab.example.com:/dev/vde
+   43  ceph orch daemon ls 
+   44  ceph orch --help 
+   45  ceph orch ls
+   46  ceph orch osd rm serverc.lab.example.com 
+   47  ceph orch osd rm serverc.lab.example.com:/dev/vde
+   48  ceph status
+   49  ceph orch status 
+   50  ceph orch status --detail 
+   51  ceph config dump 
+   52  ceph osd tree
+   53  ceph-osd --help 
+   54  ceph osd tree
+   55  ceph orch osd rm 2
+   56  ceph status
+   57  ceph orch device ls 
+   58  ceph orch device ls 
+   59  ceph orch osd rm status 
+   60  ceph orch device ls 
+   61  ceph orch osd rm 2
+   62  ceph osd tree
+   63  ceph orch device ls 
+   64  ceph status
+   65  ceph orch daemon add osd serverd.lab.example.com:/dev/vdb
+   66  ceph orch device ls 
+   67  ceph orch daemon add osd serverd.lab.example.com:/dev/vdc
+   68  ceph orch daemon add osd serverd.lab.example.com:/dev/vdd
+   69  ceph osd tree
+   70  ceph orch device ls     
+   71  ceph status
+   72  ceph orch daemon add osd servere.lab.example.com:/dev/vdb
+   73  ceph orch daemon add osd servere.lab.example.com:/dev/vdc
+   74  ceph orch daemon add osd servere.lab.example.com:/dev/vdd
+   75  ceph osd tree
+   76  ceph status 
+   77  ceph osd df 
+   78  ceph orch device ls 
+   79  cat /tmp/mgr.yaml 
+   80  cp /tmp/mgr.yaml /tmp/rgw.yaml
+   81  vim /tmp/rgw.yaml
+   82  vi /tmp/rgw.yaml
+   83  ceph orch apply -i /tmp/rgw.yaml
+   84  vi /tmp/rgw.yaml 
+   85  cat /tmp/rgw.yaml
+   86  ceph orch apply -i /tmp/rgw.yaml
+   87  ceph status 
+   88  ceph config dump 
+   89  ceph osd tree
+   90  history 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch host ls
+HOST                     ADDR           LABELS                   STATUS  
+serverc.lab.example.com  172.25.250.12  _admin                           
+serverd.lab.example.com  172.25.250.13  serverd.lab.example.com          
+servere.lab.example.com  172.25.250.14  servere.lab.example.com          
+[ceph: root@serverc /]# ceph orch osd ls
+no valid command found; 3 closest matches:
+orch osd rm <svc_id>... [--replace] [--force]
+orch osd rm stop <svc_id>...
+orch osd rm status [--format {plain|json|json-pretty|yaml}]
+Error EINVAL: invalid command
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch daemon         
+no valid command found; 9 closest matches:
+orch daemon add osd [<svc_arg>]
+orch daemon add [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|mds|rgw|nfs|iscsi|cephadm-exporter] [<placement>]
+orch daemon add mds <fs_name> [<placement>]
+orch daemon add rgw <svc_id> [<port:int>] [--ssl] [<placement>]
+orch daemon add nfs <svc_id> <pool> [<namespace>] [<placement>]
+orch daemon add iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>]
+orch daemon start|stop|restart|reconfig <name>
+orch daemon redeploy <name> [<image>]
+orch daemon rm <names>... [--force]
+Error EINVAL: invalid command
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vde 
+Created no osd(s) on host serverc.lab.example.com; already created?
+[ceph: root@serverc /]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdf 
+Created osd(s) 9 on host 'serverc.lab.example.com'
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph osd tree
+ID  CLASS  WEIGHT   TYPE NAME         STATUS  REWEIGHT  PRI-AFF
+-1         0.09796  root default                               
+-3         0.03918      host serverc                           
+ 0    hdd  0.00980          osd.0         up   1.00000  1.00000
+ 1    hdd  0.00980          osd.1         up   1.00000  1.00000
+ 3    hdd  0.00980          osd.3         up   1.00000  1.00000
+ 9    hdd  0.00980          osd.9         up   1.00000  1.00000
+-5         0.02939      host serverd                           
+ 2    hdd  0.00980          osd.2         up   1.00000  1.00000
+ 4    hdd  0.00980          osd.4         up   1.00000  1.00000
+ 5    hdd  0.00980          osd.5         up   1.00000  1.00000
+-7         0.02939      host servere                           
+ 6    hdd  0.00980          osd.6         up   1.00000  1.00000
+ 7    hdd  0.00980          osd.7         up   1.00000  1.00000
+ 8    hdd  0.00980          osd.8         up   1.00000  1.00000
+[ceph: root@serverc /]# ceph orch daemon add osd serverd.lab.example.com:/dev/vde
+Created osd(s) 10 on host 'serverd.lab.example.com'
+[ceph: root@serverc /]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdf
+Created osd(s) 11 on host 'serverd.lab.example.com'
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph orch daemon add osd servere.lab.example.com:/dev/vde
+Created osd(s) 12 on host 'servere.lab.example.com'
+[ceph: root@serverc /]# ceph orch daemon add osd servere.lab.example.com:/dev/vdf
+Created osd(s) 13 on host 'servere.lab.example.com'
+[ceph: root@serverc /]# ceph orch device ls 
+Hostname                 Path      Type  Serial                Size   Health   Ident  Fault  Available  
+serverc.lab.example.com  /dev/vdb  hdd   e85a5b20-19fe-4066-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdc  hdd   2c58726d-b840-4a7f-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdd  hdd   624a9daa-b409-445e-9  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vde  hdd   21735600-ecb6-42b4-b  10.7G  Unknown  N/A    N/A    No         
+serverc.lab.example.com  /dev/vdf  hdd   854dcd2f-47d0-4e82-9  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdb  hdd   1b92f193-f172-4dff-8  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdc  hdd   317307b2-c8d1-4433-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdd  hdd   8b86a529-6365-4e72-9  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vde  hdd   f31dd2c8-b47e-4bfc-b  10.7G  Unknown  N/A    N/A    No         
+serverd.lab.example.com  /dev/vdf  hdd   66970cf1-a6b6-4ebd-a  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdb  hdd   06a73460-8b9b-490e-8  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdc  hdd   858725be-6dc6-455f-b  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdd  hdd   95e9e821-b8d0-47d6-b  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vde  hdd   c0a48218-1fd1-4045-b  10.7G  Unknown  N/A    N/A    No         
+servere.lab.example.com  /dev/vdf  hdd   ed8f1644-4965-467e-9  10.7G  Unknown  N/A    N/A    No         
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# 
+[ceph: root@serverc /]# ceph status 
+  cluster:
+    id:     e6f94a90-a73b-11ec-96ae-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 3 daemons, quorum serverc.lab.example.com,serverd,servere (age 35m)
+    mgr: serverc.lab.example.com.krjufq(active, since 41m), standbys: serverd.vxuxni, servere.fblmgw
+    osd: 14 osds: 14 up (since 12s), 14 in (since 24s)
+    rgw: 2 daemons active (2 hosts, 1 zones)
+ 
+  data:
+    pools:   5 pools, 105 pgs
+    objects: 221 objects, 4.9 KiB
+    usage:   200 MiB used, 140 GiB / 140 GiB avail
+    pgs:     105 active+clean
+ 
+  io:
+    recovery: 125 B/s, 6 objects/s
+ 
+[ceph: root@serverc /]# ceph osd df 
+ID  CLASS  WEIGHT   REWEIGHT  SIZE     RAW USE  DATA     OMAP  META     AVAIL    %USE  VAR   PGS  STATUS
+ 0    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.17  1.19   27      up
+ 1    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   15 MiB   10 GiB  0.17  1.21   27      up
+ 3    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.16  1.17   28      up
+ 9    hdd  0.00980   1.00000   10 GiB   11 MiB  2.6 MiB   0 B  8.2 MiB   10 GiB  0.11  0.76   23      up
+ 2    hdd  0.00980   1.00000   10 GiB   12 MiB  2.6 MiB   0 B  9.7 MiB   10 GiB  0.12  0.86   20      up
+ 4    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.17  1.20   27      up
+ 5    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.16  1.18   23      up
+10    hdd  0.00980   1.00000   10 GiB   11 MiB  2.6 MiB   0 B  7.9 MiB   10 GiB  0.10  0.74   16      up
+11    hdd  0.00980   1.00000   10 GiB   10 MiB  2.6 MiB   0 B  7.8 MiB   10 GiB  0.10  0.73   19      up
+ 6    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.16  1.17   19      up
+ 7    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.16  1.18   14      up
+ 8    hdd  0.00980   1.00000   10 GiB   17 MiB  2.6 MiB   0 B   14 MiB   10 GiB  0.16  1.16   18      up
+12    hdd  0.00980   1.00000   10 GiB   11 MiB  2.6 MiB   0 B    8 MiB   10 GiB  0.10  0.74   26      up
+13    hdd  0.00980   1.00000   10 GiB   10 MiB  2.6 MiB   0 B  7.6 MiB   10 GiB  0.10  0.72   28      up
+                       TOTAL  140 GiB  200 MiB   37 MiB   0 B  163 MiB  140 GiB  0.14                   
+MIN/MAX VAR: 0.72/1.21  STDDEV: 0.03
+[ceph: root@serverc /]# exit
+exit
+[root@serverc cephadm-ansible]# exit
+logout
+[admin@serverc ~]$ exit
+logout
+Connection to serverc closed.
+[student@workstation ~]$ 
+

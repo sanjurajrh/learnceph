@@ -1,0 +1,359 @@
+[student@workstation ~]$ lab finish deploy-review
+
+Finishing lab.
+
+ · Checking lab systems ................................................................................................................................................................................. SUCCESS
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ lab start deploy-review
+
+Starting lab.
+
+ · Destroy the existing cluster ......................................................................................................................................................................... SUCCESS
+ · Remove /var/log/ceph folder .......................................................................................................................................................................... SUCCESS
+ · Remove cluster folder ................................................................................................................................................................................ SUCCESS
+ · Stop ceph target ..................................................................................................................................................................................... SUCCESS
+ · Disable ceph target .................................................................................................................................................................................. SUCCESS
+ · Remove ceph target ................................................................................................................................................................................... SUCCESS
+ · Restart systemctl daemon ............................................................................................................................................................................. SUCCESS
+ · Kill all 'admin' processes ........................................................................................................................................................................... SUCCESS
+ · Ensure cephadm-ansible package is installed .......................................................................................................................................................... SUCCESS
+ · Create cephadm-ansible hosts file .................................................................................................................................................................... SUCCESS
+
+[student@workstation ~]$ ssh admin@serverc
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri Mar 18 11:08:23 2022 from 172.25.250.9
+[admin@serverc ~]$ sudo -i 
+[root@serverc ~]# yumlist cephadm-ansibkle 
+-bash: yumlist: command not found
+[root@serverc ~]# yum list cephadm-ansible 
+Last metadata expiration check: 13:17:35 ago on Fri 18 Mar 2022 10:29:56 AM EDT.
+Installed Packages
+cephadm-ansible.noarch                                                                 0.1-1.g5a4412f.el8cp                                                                  @rhceph-5-tools-for-rhel-8-x86_64-rpms
+[root@serverc ~]# rpm -ql cephadm-ansible
+/usr/share/cephadm-ansible
+/usr/share/cephadm-ansible/ansible.cfg
+/usr/share/cephadm-ansible/ceph-defaults
+/usr/share/cephadm-ansible/ceph-defaults/README.md
+/usr/share/cephadm-ansible/ceph-defaults/defaults
+/usr/share/cephadm-ansible/ceph-defaults/defaults/main.yml
+/usr/share/cephadm-ansible/ceph-defaults/meta
+/usr/share/cephadm-ansible/ceph-defaults/meta/main.yml
+/usr/share/cephadm-ansible/cephadm-preflight.yml
+/usr/share/cephadm-ansible/cephadm-purge-cluster.yml
+/usr/share/doc/cephadm-ansible
+/usr/share/doc/cephadm-ansible/README.md
+/usr/share/licenses/cephadm-ansible
+/usr/share/licenses/cephadm-ansible/LICENSE
+[root@serverc ~]# cd /usr/share/cephadm-ansible/
+[root@serverc cephadm-ansible]# ls
+ansible.cfg  cephadm-preflight.yml  cephadm-purge-cluster.yml  ceph-defaults  hosts
+[root@serverc cephadm-ansible]# cat /tmp/hosts 
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+[root@serverc cephadm-ansible]# vim /tmp/hosts
+[root@serverc cephadm-ansible]# cat /tmp/hosts
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# ansible-playbook -i /tmp/hosts cephadm-preflight.yml -e "ceph_origin="
+
+PLAY [all] ********************************************************************************************************************************************************************************************************
+
+TASK [Gathering Facts] ********************************************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:57 -0400 (0:00:00.031)       0:00:00.031 ********** 
+ok: [serverc.lab.example.com]
+ok: [serverd.lab.example.com]
+ok: [servere.lab.example.com]
+
+TASK [enable red hat storage tools repository] ********************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:01.547)       0:00:01.578 ********** 
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+
+TASK [configure red hat ceph community repository stable key] *****************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.069)       0:00:01.648 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph stable community repository] *********************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.064)       0:00:01.713 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph stable noarch community repository] **************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.061)       0:00:01.775 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [fetch ceph red hat development repository] ******************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.062)       0:00:01.837 ********** 
+skipping: [serverd.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure ceph red hat development repository] **************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.065)       0:00:01.903 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [remove ceph_stable repositories] ****************************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.063)       0:00:01.967 ********** 
+skipping: [serverc.lab.example.com] => (item=ceph_stable) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [servere.lab.example.com] => (item=ceph_stable) 
+skipping: [servere.lab.example.com] => (item=ceph_stable_noarch) 
+
+TASK [install epel-release] ***************************************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.078)       0:00:02.045 ********** 
+skipping: [serverd.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [install prerequisites packages] *****************************************************************************************************************************************************************************
+Friday 18 March 2022  23:48:59 -0400 (0:00:00.080)       0:00:02.126 ********** 
+ok: [serverc.lab.example.com]
+ok: [servere.lab.example.com]
+ok: [serverd.lab.example.com]
+
+TASK [ensure chronyd is running] **********************************************************************************************************************************************************************************
+Friday 18 March 2022  23:49:02 -0400 (0:00:02.697)       0:00:04.823 ********** 
+ok: [serverd.lab.example.com]
+ok: [servere.lab.example.com]
+ok: [serverc.lab.example.com]
+
+PLAY RECAP ********************************************************************************************************************************************************************************************************
+serverc.lab.example.com    : ok=3    changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverd.lab.example.com    : ok=3    changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+servere.lab.example.com    : ok=3    changed=0    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+
+Friday 18 March 2022  23:49:03 -0400 (0:00:00.637)       0:00:05.460 ********** 
+=============================================================================== 
+install prerequisites packages ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 2.70s
+Gathering Facts -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 1.55s
+ensure chronyd is running ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.64s
+install epel-release --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+remove ceph_stable repositories ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.08s
+enable red hat storage tools repository -------------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.07s
+fetch ceph red hat development repository ------------------------------------------------------------------------------------------------------------------------------------------------------------------ 0.07s
+configure red hat ceph community repository stable key ----------------------------------------------------------------------------------------------------------------------------------------------------- 0.06s
+configure ceph red hat development repository -------------------------------------------------------------------------------------------------------------------------------------------------------------- 0.06s
+configure red hat ceph stable noarch community repository -------------------------------------------------------------------------------------------------------------------------------------------------- 0.06s
+configure red hat ceph stable community repository --------------------------------------------------------------------------------------------------------------------------------------------------------- 0.06s
+[root@serverc cephadm-ansible]# ls /tmp/
+hosts  initial-cluster-config.yaml  rclocal.log  rht-bastion  systemd-private-e9e3c27661c64d4996a877864e6018ef-chronyd.service-AOtyUg
+[root@serverc cephadm-ansible]# cat /tmp/initial-cluster-config.yaml 
+---
+service_type: host
+addr: 172.25.250.12
+hostname: serverc.lab.example.com 
+---
+service_type: host
+addr: 172.25.250.13
+hostname: serverd.lab.example.com
+---
+service_type: host
+addr: 172.25.250.14
+hostname: servere.lab.example.com
+---
+service_type: mon
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com
+    - servere.lab.example.com
+---
+service_type: mgr
+placement:
+  hosts:
+    - serverc.lab.example.com
+    - serverd.lab.example.com
+    - servere.lab.example.com
+---
+service_type: osd
+service_id: default_drive_group
+placement:
+  host_pattern: 'server*'
+data_devices:
+  paths:
+    - /dev/vdb
+    - /dev/vdc
+    - /dev/vdd
+[root@serverc cephadm-ansible]# cephadm bootstrap --help
+usage: cephadm bootstrap [-h] [--config CONFIG] [--mon-id MON_ID]
+                         [--mon-addrv MON_ADDRV] [--mon-ip MON_IP]
+                         [--mgr-id MGR_ID] [--fsid FSID]
+                         [--output-dir OUTPUT_DIR]
+                         [--output-keyring OUTPUT_KEYRING]
+                         [--output-config OUTPUT_CONFIG]
+                         [--output-pub-ssh-key OUTPUT_PUB_SSH_KEY]
+                         [--skip-ssh]
+                         [--initial-dashboard-user INITIAL_DASHBOARD_USER]
+                         [--initial-dashboard-password INITIAL_DASHBOARD_PASSWORD]
+                         [--ssl-dashboard-port SSL_DASHBOARD_PORT]
+                         [--dashboard-key DASHBOARD_KEY]
+                         [--dashboard-crt DASHBOARD_CRT]
+                         [--ssh-config SSH_CONFIG]
+                         [--ssh-private-key SSH_PRIVATE_KEY]
+                         [--ssh-public-key SSH_PUBLIC_KEY]
+                         [--ssh-user SSH_USER] [--skip-mon-network]
+                         [--skip-dashboard] [--dashboard-password-noupdate]
+                         [--no-minimize-config] [--skip-ping-check]
+                         [--skip-pull] [--skip-firewalld] [--allow-overwrite]
+                         [--allow-fqdn-hostname] [--allow-mismatched-release]
+                         [--skip-prepare-host] [--orphan-initial-daemons]
+                         [--skip-monitoring-stack] [--apply-spec APPLY_SPEC]
+                         [--shared_ceph_folder CEPH_SOURCE_FOLDER]
+                         [--registry-url REGISTRY_URL]
+                         [--registry-username REGISTRY_USERNAME]
+                         [--registry-password REGISTRY_PASSWORD]
+                         [--registry-json REGISTRY_JSON] [--with-exporter]
+                         [--exporter-config EXPORTER_CONFIG]
+                         [--cluster-network CLUSTER_NETWORK]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --config CONFIG, -c CONFIG
+                        ceph conf file to incorporate
+  --mon-id MON_ID       mon id (default: local hostname)
+  --mon-addrv MON_ADDRV
+                        mon IPs (e.g.,
+                        [v2:localipaddr:3300,v1:localipaddr:6789])
+  --mon-ip MON_IP       mon IP
+  --mgr-id MGR_ID       mgr id (default: randomly generated)
+  --fsid FSID           cluster FSID
+  --output-dir OUTPUT_DIR
+                        directory to write config, keyring, and pub key files
+  --output-keyring OUTPUT_KEYRING
+                        location to write keyring file with new cluster admin
+                        and mon keys
+  --output-config OUTPUT_CONFIG
+                        location to write conf file to connect to new cluster
+  --output-pub-ssh-key OUTPUT_PUB_SSH_KEY
+                        location to write the cluster's public SSH key
+  --skip-ssh            skip setup of ssh key on local host
+  --initial-dashboard-user INITIAL_DASHBOARD_USER
+                        Initial user for the dashboard
+  --initial-dashboard-password INITIAL_DASHBOARD_PASSWORD
+                        Initial password for the initial dashboard user
+  --ssl-dashboard-port SSL_DASHBOARD_PORT
+                        Port number used to connect with dashboard using SSL
+  --dashboard-key DASHBOARD_KEY
+                        Dashboard key
+  --dashboard-crt DASHBOARD_CRT
+                        Dashboard certificate
+  --ssh-config SSH_CONFIG
+                        SSH config
+  --ssh-private-key SSH_PRIVATE_KEY
+                        SSH private key
+  --ssh-public-key SSH_PUBLIC_KEY
+                        SSH public key
+  --ssh-user SSH_USER   set user for SSHing to cluster hosts, passwordless
+                        sudo will be needed for non-root users
+  --skip-mon-network    set mon public_network based on bootstrap mon ip
+  --skip-dashboard      do not enable the Ceph Dashboard
+  --dashboard-password-noupdate
+                        stop forced dashboard password change
+  --no-minimize-config  do not assimilate and minimize the config file
+  --skip-ping-check     do not verify that mon IP is pingable
+  --skip-pull           do not pull the latest image before bootstrapping
+  --skip-firewalld      Do not configure firewalld
+  --allow-overwrite     allow overwrite of existing --output-*
+                        config/keyring/ssh files
+  --allow-fqdn-hostname
+                        allow hostname that is fully-qualified (contains ".")
+  --allow-mismatched-release
+                        allow bootstrap of ceph that doesn't match this
+                        version of cephadm
+  --skip-prepare-host   Do not prepare host
+  --orphan-initial-daemons
+                        Set mon and mgr service to `unmanaged`, Do not create
+                        the crash service
+  --skip-monitoring-stack
+                        Do not automatically provision monitoring stack
+                        (prometheus, grafana, alertmanager, node-exporter)
+  --apply-spec APPLY_SPEC
+                        Apply cluster spec after bootstrap (copy ssh key, add
+                        hosts and apply services)
+  --shared_ceph_folder CEPH_SOURCE_FOLDER
+                        Development mode. Several folders in containers are
+                        volumes mapped to different sub-folders in the ceph
+                        source folder
+  --registry-url REGISTRY_URL
+                        url for custom registry
+  --registry-username REGISTRY_USERNAME
+                        username for custom registry
+  --registry-password REGISTRY_PASSWORD
+                        password for custom registry
+  --registry-json REGISTRY_JSON
+                        json file with custom registry login info (URL,
+                        Username, Password)
+  --with-exporter       Automatically deploy cephadm metadata exporter to each
+                        node
+  --exporter-config EXPORTER_CONFIG
+                        Exporter configuration information in JSON format
+                        (providing: key, crt, token, port information)
+  --cluster-network CLUSTER_NETWORK
+                        subnet to use for cluster replication, recovery and
+                        heartbeats (in CIDR notation network/mask)
+[root@serverc cephadm-ansible]# cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --apply-spec /tmp/initial-cluster-config.yaml --registry-url registry.redhat.io --registry-username registry --registry-password redhat 
+ERROR: /etc/ceph/ceph.conf already exists; delete or pass --allow-overwrite to overwrite
+[root@serverc cephadm-ansible]# cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --apply-spec /tmp/initial-cluster-config.yaml --registry-url registry.redhat.io --registry-username registry --registry-password redhat --allow-overwrite
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman|docker (/bin/podman) is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: 0594a426-a738-11ec-860f-52540000fa0c
+Verifying IP 172.25.250.12 port 3300 ...
+Verifying IP 172.25.250.12 port 6789 ...
+Mon IP 172.25.250.12 is in CIDR network 172.25.250.0/24
+- internal network (--cluster-network) has not been provided, OSD replication will default to the public_network
+Logging into custom registry.
+Pulling container image registry.redhat.io/rhceph/rhceph-5-rhel8:latest...
+Ceph version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+Extracting ceph user uid/gid from container image...
+Creating initial keys...
+Creating initial monmap...
+Creating mon...
+firewalld ready
+Waiting for mon to start...
+Waiting for mon...
+mon is available
+Assimilating anything we can from ceph.conf...
+Generating new minimal ceph.conf...
+Restarting the monitor...
+Setting mon public_network to 172.25.250.0/24
+Wrote config to /etc/ceph/ceph.conf
+Wrote keyring to /etc/ceph/ceph.client.admin.keyring
+Creating mgr...
+Verifying port 9283 ...
+Cannot bind to IP 0.0.0.0 port 9283: [Errno 98] Address already in use
+ERROR: TCP Port(s) '9283' required for mgr already in use
+[root@serverc cephadm-ansible]# 
+

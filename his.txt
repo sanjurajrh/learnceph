@@ -18,3 +18,22 @@ aws --profile=ceph s3
 aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
 aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 mb s3://images
 
+
+
+[root@clienta ~]#  aws --profile=ceph --endpoint=http://serverc.lab.example.com:80/ s3 ls 
+2022-04-03 03:29:24 images
+[root@clienta ~]# ceph config set client.rgw rgw_dns_name images.serverc.example.com
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# aws --profile=ceph --endpoint=http://images.serverc.example.com:80/ s3 ls 
+
+Could not connect to the endpoint URL: "http://images.serverc.example.com:80/"
+[root@clienta ~]# vim /etc/hosts 
+[root@clienta ~]# aws --profile=ceph --endpoint=http://images.serverc.example.com:80/ s3 ls 
+2022-04-03 03:29:24 images
+[root@clienta ~]# grep images /etc/hosts 
+172.25.250.12	serverc.lab.example.com serverc images.serverc.example.com
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# 
+

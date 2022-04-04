@@ -1,0 +1,28 @@
+[root@serverc ~]# cat mds.yml 
+service_type: mds
+service_id: mds_ex260
+placement:
+  hosts: 
+   - serverc.lab.example.com
+[root@serverc ~]# cat rgw.yml 
+service_type: rgw
+service_id: rgw_ex260
+service_realm: rgw_ex260
+placement:
+  count: 2
+  hosts: 
+    - serverc.lab.example.com
+spec:
+  rgw_frontend_port: 80
+[root@serverc ~]# 
+
+
+
+radosgw-admin  quota set --quota-scope=user --uid=apiuser --max-objects=10
+radosgw-admin quota enable --quota-scope=user --uid=apiuser
+radosgw-admin  quota set --quota-scope=bucket --uid=apiuser --max-objects=20
+radosgw-admin quota enable --quota-scope=bucket --uid=apiuser
+radosgw-admin user info --uid=apiuser
+
+
+

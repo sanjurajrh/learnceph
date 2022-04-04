@@ -1,0 +1,20 @@
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+vim ./awscli-bundle/install 
+sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+aws --version 
+history 
+aws configure --profile=ceph 
+ls -al 
+ls -al .aws/
+cat .aws/config 
+cat .aws/credentials 
+aws --profile=ceph http://serverc:80 s3 ls 
+aws --profile=ceph http://serverc:80/ s3 ls 
+aws --profile=ceph http://serverc.lab.example.com:80/ s3 ls 
+aws --profile=ceph s3 ls 
+aws --profile=ceph s3 
+aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
+aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 mb s3://images
+

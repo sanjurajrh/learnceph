@@ -1,0 +1,163 @@
+    1  cephadm shell ceph -s
+    2  top
+    3  cephadm shell ceph -s
+    4  less /var/log/messages 
+    5  cephadm shell ceph -s
+    6  less /var/log/messages 
+    7  yum list cephadm-ansible 
+    8  cd /usr/share/cephadm-ansible/
+    9  ls
+   10  vim /tmp/myhosts
+   11  cat /tmp/myhosts
+   12  ansible-playbook  -i /tmp/myhosts cephadm-preflight.yml -e "ceph_origin="
+   13  cd
+   14  ls
+   15  cephadm bootstrap --help | head -n 30 
+   16  source /etc/bash_completion.d/ceph 
+   17  cephadm bootstrap --mon-ip 172.25.250.10 --initial-dashboard-password flectrag --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.redhat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+   18  cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password flectrag --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.redhat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+   19  ceph orch host ls 
+   20  ceph orch host 
+   21  ceph orch host add serverd.lab.example.com 172.25.250.13
+   22  ceph cephadm get-pub-key > ~/ceph.pub
+   23  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.13
+   24  ceph cephadm get-ssh-config > ssh_config
+   25  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   26  chmod 0600 ~/cephadm_private_key
+   27  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.13
+   28  ceph orch host add serverd.lab.example.com 172.25.250.13
+   29  ceph orch host add servere.lab.example.com 172.25.250.14
+   30  ceph cephadm get-pub-key > ~/ceph.pub
+   31  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.14
+   32  ceph cephadm get-ssh-config > ssh_config
+   33  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   34  chmod 0600 ~/cephadm_private_key
+   35  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.14
+   36  ceph orch host add servere.lab.example.com 172.25.250.14
+   37  ceph orch host ls
+   38  ceph orch host add clienta.lab.example.com 172.25.250.10
+   39  ceph cephadm get-pub-key > ~/ceph.pub
+   40  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.10
+   41  ceph cephadm get-ssh-config > ssh_config
+   42  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   43  chmod 0600 ~/cephadm_private_key
+   44  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.10
+   45  ceph orch host add clienta.lab.example.com 172.25.250.10
+   46  ceph orch host ls
+   47  ceph orch host 
+   48  ceph orch host label add clienta.lab.example.com _admin
+   49  ceph orch host label add serverc.lab.example.com _admin
+   50  ceph orch host ls 
+   51  scp /etc/ceph/ceph.conf root@clienta:/etc/ceph/
+   52  scp /etc/ceph/ceph.client.admin.keyring root@clienta:/etc/ceph/
+   53  ceph orch daemon 
+   54  ceph orch daemon add osd serverc.lab.example.com:/dev/vdb 
+   55  ceph orch daemon add osd serverc.lab.example.com:/dev/vdc
+   56  ceph orch daemon add osd serverc.lab.example.com:/dev/vdd
+   57  ceph orch daemon add osd serverd.lab.example.com:/dev/vdb 
+   58  ceph orch daemon add osd serverd.lab.example.com:/dev/vdc
+   59  ceph orch daemon add osd serverd.lab.example.com:/dev/vdd
+   60  ceph orch daemon add osd servere.lab.example.com:/dev/vdb 
+   61  ceph orch daemon add osd servere.lab.example.com:/dev/vdc
+   62  ceph orch daemon add osd servere.lab.example.com:/dev/vdd
+   63  ceph status 
+   64  ssh clienta 
+   65  ceph config get mon mon_allow_pool_delete 
+   66  ceph config set mon mon_allow_pool_delete true 
+   67  ceph config get mon mon_allow_pool_delete 
+   68  ceph dashboard --help | grep ssl 
+   69  ceph dashboard get-alertmanager-api-ssl-verify 
+   70  ceph dashboard get-grafana-api-ssl-verify 
+   71  ceph dashboard set-grafana-api-ssl-verify True
+   72  ceph dashboard get-grafana-api-ssl-verify 
+   73  ceph dashboard get-iscsi-api-ssl-verification 
+   74  ceph dashboard get-prometheus-api-ssl-verify 
+   75  ceph dashboard get-rgw-api-ssl-verify 
+   76  ceph osd erasure-code-profile ls 
+   77  ceph osd erasure-code-profile get default
+   78  ceph osd erasure-code-profile 
+   79  ceph osd erasure-code-profile set ex260profile k=2 m=3 crush-failure-domain=osd 
+   80  ceph osd erasure-code-profile ls
+   81  ceph osd erasure-code-profile get ex260profile 
+   82  ceph osd pool ls 
+   83  ceph osd pool 
+   84  ceph osd pool create 
+   85  ceph osd pool create ecpool 32 32 erasure ex260profile 
+   86  ceph osd pool ls detail | grep ecpool 
+   87  ceph osd pool application enable ecpool rgw 
+   88  ceph osd pool ls detail | grep ecpool 
+   89  ceph osd pool create ex260pool 32 32 replicated 
+   90  ceph osd pool ls detail 
+   91  ceph osd pool application enable ex260pool rbd 
+   92  ceph osd pool ls detail 
+   93  rbd create ex260pool/img260 --size=512M 
+   94  rbd ls ex260pool 
+   95  ssh clienta 
+   96  ceph auth get-or-create client.thomas mon 'allow r' osd 'allow rw pool=ecpool namespace=dev' | tee /etc/ceph/ceph.client.thomas.keyring 
+   97  cat /etc/ceph/ceph.client.thomas.keyring
+   98  rsync /etc/ceph/ceph.client.thomas.keyring root@clienta:/etc/ceph/
+   99  rbd ls ecpool --id=thomas 
+  100  rbd ls ecpool --id=thomas -N dev 
+  101  rados ls -p ecpool --id=thomas -N dev 
+  102  rbd ls ecpool 
+  103  man rbd 
+  104  rados ls -p ecpool --id=thomas --namespace dev 
+  105  rbd ls ecpool --namespace dev --id=thomasd
+  106  rbd ls ecpool --namespace dev --id=thomas
+  107  ssh clienta
+  108  ceph auth get-or-create client.rbd mon 'allow rwx' osd 'allow rwx pool=ex260pool' | tee /etc/ceph/ceph.client.rbd.keyring 
+  109  cat /etc/ceph/ceph.client.rbd.keyring
+  110  rsync -av /etc/ceph/ceph.client.rbd.keyring root@clienta:/etc/ceph/
+  111  ssh clienta
+  112  su - devops 
+  113  ssh clienta 
+  114  vim rgw.yml
+  115  cat rgw.yml
+  116  ceph orch ls --service-type rgw 
+  117  ceph orch apply -i rgw.yml 
+  118  ceph orch ls --service-type rgw 
+  119  ceph orch ls -daemon-type rgw 
+  120  ceph orch ls --daemon-type rgw 
+  121  ceph orch ps --daemon-type rgw 
+  122  netstat -tunlp | grep -E '80|81'
+  123  curl http://serverc.lab.example.com:80
+  124  curl http://serverc.lab.example.com:81
+  125  ceph config dump | grep ratio 
+  126  ceph osd dump | greo ratio 
+  127  ceph osd dump |grep ratio 
+  128  ceph osd set-full-ratio 0.92 
+  129  ceph osd set-nearfull-ratio 0.83 
+  130  ceph osd dump |grep ratio 
+  131  radosgw-admin user list 
+  132  radosgw-admin user create --uid=apiuser --display-name "S3 user" --access-key="123456" --secret="567890"
+  133  radosgw-admin user list
+  134  radosgw-admin subuser create --uid=apiuser --subuser=apiuser:swift --access=full --display-name="S3 user" --key-type swift 
+  135  radosgw-admin key create --subuser 'apiuser:swift' --key-type swift --secret=opswiftkey 
+  136  radosgw-admin user info --uid=apiuser 
+  137  ssh clienta 
+  138  radosgw-admin quota set --quota-scope=user --uid=apiuser --max-objects=120 
+  139  radosgw-admin quota enable --quota-scope=user --uid=apiuser 
+  140  radosgw-admin quota set --quota-scope=bucket --uid=apiuser --max-objects=100
+  141  radosgw-admin quota enable  --quota-scope=bucket --uid=apiuser
+  142  radosgw-admin user info --uid-apiuser 
+  143  radosgw-admin user info --uid=apiuser 
+  144  radosgw-admin period update --commit 
+  145  radosgw-admin user info --uid=apiuser 
+  146  vim mds.yml
+  147  ceph orch ls --service-type mds 
+  148  ceph orch apply -i mds.yml 
+  149  ceph orch ls --service-type mds 
+  150  ceph orch ps --daemon-type mds 
+  151  ceph orch ls --service-type mds 
+  152  ceph osd pool ls 
+  153  ceph osd pool create cephfs_metadatapool 
+  154  ceph osd pool create cephfs_datapool 
+  155  ceph fs new cephfs cephfs_datapool cephfs_metadatapool 
+  156  ceph osd pool ls 
+  157  ssh clienta 
+  158  ceph -s 
+  159  ceph health detail 
+  160  ceph -s 
+  161  history 
+  162  cat .bash_history 
+  163  history > history.txt 

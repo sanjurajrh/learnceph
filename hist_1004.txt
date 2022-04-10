@@ -1,0 +1,1979 @@
+[student@workstation ~]$ lab deploy-review start 
+Usage: lab [OPTIONS] COMMAND [ARGS]...
+Try 'lab --help' for help.
+
+Error: No such command 'deploy-review'.
+[student@workstation ~]$ lab start deploy-review
+
+Starting lab.
+
+ · Destroy the existing cluster ........................................................................................................ SUCCESS
+ · Remove /var/log/ceph folder ......................................................................................................... SUCCESS
+ · Remove cluster folder ............................................................................................................... SUCCESS
+ · Stop ceph target .................................................................................................................... SUCCESS
+ · Disable ceph target ................................................................................................................. SUCCESS
+ · Remove ceph target .................................................................................................................. SUCCESS
+ · Restart systemctl daemon ............................................................................................................ SUCCESS
+ · Kill all 'admin' processes .......................................................................................................... SUCCESS
+ · Ensure cephadm-ansible package is installed ......................................................................................... SUCCESS
+ · Create cephadm-ansible hosts file ................................................................................................... SUCCESS
+
+[student@workstation ~]$ ssh admin@serverc 
+Warning: Permanently added 'serverc,172.25.250.12' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+[admin@serverc ~]$ sudo -i 
+[root@serverc ~]# yum list cephadm-ansible 
+Last metadata expiration check: 0:00:58 ago on Sun 10 Apr 2022 09:50:12 AM EDT.
+Installed Packages
+cephadm-ansible.noarch                                 0.1-1.g5a4412f.el8cp                                 @rhceph-5-tools-for-rhel-8-x86_64-rpms
+[root@serverc ~]# cd /usr/share/cephadm-ansible/
+[root@serverc cephadm-ansible]# ls
+ansible.cfg  cephadm-preflight.yml  cephadm-purge-cluster.yml  ceph-defaults
+[root@serverc cephadm-ansible]# vim /tmp/myhosts
+[root@serverc cephadm-ansible]# cat /tmp/myhosts
+serverc.lab.example.com
+serverd.lab.example.com
+servere.lab.example.com
+clienta.lab.example.com
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# ansible-playbook  -i /tmp/myhosts cephadm-preflight.yml -e "ceph_origin="
+[WARNING]: log file at /root/ansible/ansible.log is not writeable and we cannot create it, aborting
+
+
+PLAY [all] ***************************************************************************************************************************************
+
+TASK [Gathering Facts] ***************************************************************************************************************************
+Sunday 10 April 2022  09:52:08 -0400 (0:00:00.019)       0:00:00.019 ********** 
+ok: [serverc.lab.example.com]
+ok: [clienta.lab.example.com]
+ok: [servere.lab.example.com]
+ok: [serverd.lab.example.com]
+
+TASK [enable red hat storage tools repository] ***************************************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:01.461)       0:00:01.480 ********** 
+skipping: [clienta.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+
+TASK [configure red hat ceph community repository stable key] ************************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:00.087)       0:00:01.567 ********** 
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [configure red hat ceph stable community repository] ****************************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:00.087)       0:00:01.655 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [configure red hat ceph stable noarch community repository] *********************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:00.092)       0:00:01.748 ********** 
+skipping: [servere.lab.example.com]
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [fetch ceph red hat development repository] *************************************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:00.092)       0:00:01.840 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [configure ceph red hat development repository] *********************************************************************************************
+Sunday 10 April 2022  09:52:09 -0400 (0:00:00.092)       0:00:01.933 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [remove ceph_stable repositories] ***********************************************************************************************************
+Sunday 10 April 2022  09:52:10 -0400 (0:00:00.092)       0:00:02.025 ********** 
+skipping: [servere.lab.example.com] => (item=ceph_stable) 
+skipping: [servere.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable) 
+skipping: [serverc.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable) 
+skipping: [serverd.lab.example.com] => (item=ceph_stable_noarch) 
+skipping: [clienta.lab.example.com] => (item=ceph_stable) 
+skipping: [clienta.lab.example.com] => (item=ceph_stable_noarch) 
+
+TASK [install epel-release] **********************************************************************************************************************
+Sunday 10 April 2022  09:52:10 -0400 (0:00:00.104)       0:00:02.130 ********** 
+skipping: [serverc.lab.example.com]
+skipping: [serverd.lab.example.com]
+skipping: [servere.lab.example.com]
+skipping: [clienta.lab.example.com]
+
+TASK [install prerequisites packages] ************************************************************************************************************
+Sunday 10 April 2022  09:52:10 -0400 (0:00:00.092)       0:00:02.223 ********** 
+changed: [serverc.lab.example.com]
+changed: [serverd.lab.example.com]
+changed: [clienta.lab.example.com]
+changed: [servere.lab.example.com]
+
+TASK [ensure chronyd is running] *****************************************************************************************************************
+Sunday 10 April 2022  09:52:21 -0400 (0:00:11.669)       0:00:13.892 ********** 
+ok: [servere.lab.example.com]
+ok: [clienta.lab.example.com]
+ok: [serverd.lab.example.com]
+ok: [serverc.lab.example.com]
+
+PLAY RECAP ***************************************************************************************************************************************
+clienta.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverc.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+serverd.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+servere.lab.example.com    : ok=3    changed=1    unreachable=0    failed=0    skipped=8    rescued=0    ignored=0   
+
+Sunday 10 April 2022  09:52:22 -0400 (0:00:00.650)       0:00:14.543 ********** 
+=============================================================================== 
+install prerequisites packages ----------------------------------------------------------------------------------------------------------- 11.67s
+Gathering Facts --------------------------------------------------------------------------------------------------------------------------- 1.46s
+ensure chronyd is running ----------------------------------------------------------------------------------------------------------------- 0.65s
+remove ceph_stable repositories ----------------------------------------------------------------------------------------------------------- 0.10s
+configure red hat ceph stable community repository ---------------------------------------------------------------------------------------- 0.09s
+install epel-release ---------------------------------------------------------------------------------------------------------------------- 0.09s
+configure ceph red hat development repository --------------------------------------------------------------------------------------------- 0.09s
+fetch ceph red hat development repository ------------------------------------------------------------------------------------------------- 0.09s
+configure red hat ceph stable noarch community repository --------------------------------------------------------------------------------- 0.09s
+configure red hat ceph community repository stable key ------------------------------------------------------------------------------------ 0.09s
+enable red hat storage tools repository --------------------------------------------------------------------------------------------------- 0.09s
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# 
+[root@serverc cephadm-ansible]# cd
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# cephadm bootstrap --help | head -n 25 
+[root@serverc ~]# cephadm bootstrap --help | head -n 25 
+usage: cephadm bootstrap [-h] [--config CONFIG] [--mon-id MON_ID]
+                         [--mon-addrv MON_ADDRV] [--mon-ip MON_IP]
+                         [--mgr-id MGR_ID] [--fsid FSID]
+                         [--output-dir OUTPUT_DIR]
+                         [--output-keyring OUTPUT_KEYRING]
+                         [--output-config OUTPUT_CONFIG]
+                         [--output-pub-ssh-key OUTPUT_PUB_SSH_KEY]
+                         [--skip-ssh]
+                         [--initial-dashboard-user INITIAL_DASHBOARD_USER]
+                         [--initial-dashboard-password INITIAL_DASHBOARD_PASSWORD]
+                         [--ssl-dashboard-port SSL_DASHBOARD_PORT]
+                         [--dashboard-key DASHBOARD_KEY]
+                         [--dashboard-crt DASHBOARD_CRT]
+                         [--ssh-config SSH_CONFIG]
+                         [--ssh-private-key SSH_PRIVATE_KEY]
+                         [--ssh-public-key SSH_PUBLIC_KEY]
+                         [--ssh-user SSH_USER] [--skip-mon-network]
+                         [--skip-dashboard] [--dashboard-password-noupdate]
+                         [--no-minimize-config] [--skip-ping-check]
+                         [--skip-pull] [--skip-firewalld] [--allow-overwrite]
+                         [--allow-fqdn-hostname] [--allow-mismatched-release]
+                         [--skip-prepare-host] [--orphan-initial-daemons]
+                         [--skip-monitoring-stack] [--apply-spec APPLY_SPEC]
+                         [--shared_ceph_folder CEPH_SOURCE_FOLDER]
+                         [--registry-url REGISTRY_URL]
+[root@serverc ~]# cephadm bootstrap --help | head -n 30
+
+
+
+
+
+
+
+
+
+
+
+
+[root@serverc ~]# cephadm bootstrap --help | head -n 30
+usage: cephadm bootstrap [-h] [--config CONFIG] [--mon-id MON_ID]
+                         [--mon-addrv MON_ADDRV] [--mon-ip MON_IP]
+                         [--mgr-id MGR_ID] [--fsid FSID]
+                         [--output-dir OUTPUT_DIR]
+                         [--output-keyring OUTPUT_KEYRING]
+                         [--output-config OUTPUT_CONFIG]
+                         [--output-pub-ssh-key OUTPUT_PUB_SSH_KEY]
+                         [--skip-ssh]
+                         [--initial-dashboard-user INITIAL_DASHBOARD_USER]
+                         [--initial-dashboard-password INITIAL_DASHBOARD_PASSWORD]
+                         [--ssl-dashboard-port SSL_DASHBOARD_PORT]
+                         [--dashboard-key DASHBOARD_KEY]
+                         [--dashboard-crt DASHBOARD_CRT]
+                         [--ssh-config SSH_CONFIG]
+                         [--ssh-private-key SSH_PRIVATE_KEY]
+                         [--ssh-public-key SSH_PUBLIC_KEY]
+                         [--ssh-user SSH_USER] [--skip-mon-network]
+                         [--skip-dashboard] [--dashboard-password-noupdate]
+                         [--no-minimize-config] [--skip-ping-check]
+                         [--skip-pull] [--skip-firewalld] [--allow-overwrite]
+                         [--allow-fqdn-hostname] [--allow-mismatched-release]
+                         [--skip-prepare-host] [--orphan-initial-daemons]
+                         [--skip-monitoring-stack] [--apply-spec APPLY_SPEC]
+                         [--shared_ceph_folder CEPH_SOURCE_FOLDER]
+                         [--registry-url REGISTRY_URL]
+                         [--registry-username REGISTRY_USERNAME]
+                         [--registry-password REGISTRY_PASSWORD]
+                         [--registry-json REGISTRY_JSON] [--with-exporter]
+                         [--exporter-config EXPORTER_CONFIG]
+                         [--cluster-network CLUSTER_NETWORK]
+[root@serverc ~]# cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.rehat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman|docker (/bin/podman) is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: aa9dc62e-b8d5-11ec-b2dd-52540000fa0c
+Verifying IP 172.25.250.12 port 3300 ...
+Verifying IP 172.25.250.12 port 6789 ...
+Mon IP 172.25.250.12 is in CIDR network 172.25.250.0/24
+Logging into custom registry.
+Non-zero exit code 125 from /bin/podman login -u registry -p redhat registry.rehat.io --authfile=/etc/ceph/podman-auth.json
+/bin/podman: stderr Error: error authenticating creds for "registry.rehat.io": error pinging docker registry registry.rehat.io: Get "https://registry.rehat.io/v2/": dial tcp: lookup registry.rehat.io on 172.25.250.254:53: no such host
+ERROR: Failed to login to custom registry @ registry.rehat.io as registry with given password
+[root@serverc ~]# cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.redhat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+[root@serverc ~]# cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.redhat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+Verifying podman|docker is present...
+Verifying lvm2 is present...
+Verifying time synchronization is in place...
+Unit chronyd.service is enabled and running
+Repeating the final host check...
+podman|docker (/bin/podman) is present
+systemctl is present
+lvcreate is present
+Unit chronyd.service is enabled and running
+Host looks OK
+Cluster fsid: b2f03c4e-b8d5-11ec-b7f6-52540000fa0c
+Verifying IP 172.25.250.12 port 3300 ...
+Verifying IP 172.25.250.12 port 6789 ...
+Mon IP 172.25.250.12 is in CIDR network 172.25.250.0/24
+Logging into custom registry.
+Pulling container image registry.redhat.io/rhceph/rhceph-5-rhel8:latest...
+Ceph version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+Extracting ceph user uid/gid from container image...
+Creating initial keys...
+Creating initial monmap...
+Creating mon...
+firewalld ready
+Waiting for mon to start...
+Waiting for mon...
+mon is available
+Assimilating anything we can from ceph.conf...
+Generating new minimal ceph.conf...
+Restarting the monitor...
+Setting mon public_network to 172.25.250.0/24
+Setting cluster_network to 172.25.250.0/24
+Wrote config to /etc/ceph/ceph.conf
+Wrote keyring to /etc/ceph/ceph.client.admin.keyring
+Creating mgr...
+Verifying port 9283 ...
+firewalld ready
+firewalld ready
+Waiting for mgr to start...
+Waiting for mgr...
+mgr not available, waiting (1/15)...
+mgr not available, waiting (2/15)...
+mgr is available
+Enabling cephadm module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 5...
+mgr epoch 5 is available
+Setting orchestrator backend to cephadm...
+Generating ssh key...
+Wrote public SSH key to /etc/ceph/ceph.pub
+Adding key to root@localhost authorized_keys...
+Adding host serverc.lab.example.com...
+Deploying mon service with default placement...
+Deploying mgr service with default placement...
+Deploying crash service with default placement...
+Enabling mgr prometheus module...
+Deploying prometheus service with default placement...
+Deploying grafana service with default placement...
+Deploying node-exporter service with default placement...
+Deploying alertmanager service with default placement...
+Enabling the dashboard module...
+Waiting for the mgr to restart...
+Waiting for mgr epoch 13...
+mgr epoch 13 is available
+Generating a dashboard self-signed certificate...
+Creating initial admin user...
+Fetching dashboard port number...
+firewalld ready
+Ceph Dashboard is now available at:
+
+	     URL: https://serverc.lab.example.com:8443/
+	    User: admin
+	Password: redhat
+
+You can access the Ceph CLI with:
+
+	sudo /sbin/cephadm shell --fsid b2f03c4e-b8d5-11ec-b7f6-52540000fa0c -c /etc/ceph/ceph.conf -k /etc/ceph/ceph.client.admin.keyring
+
+Please consider enabling telemetry to help improve Ceph:
+
+	ceph telemetry on
+
+For more information see:
+
+	https://docs.ceph.com/docs/pacific/mgr/telemetry/
+
+Bootstrap complete.
+[root@serverc ~]# source /etc/bash_completion.d/ceph 
+[root@serverc ~]# ls -l /etc/ceph/
+total 20
+-rw-------. 1 root root  63 Apr 10 09:54 ceph.client.admin.keyring
+-rw-r--r--. 1 root root 177 Apr 10 09:54 ceph.conf
+-rw-r--r--. 1 root root 595 Apr 10 09:54 ceph.pub
+-rw-------. 1 root root  82 Apr 10 09:55 podman-auth.json
+-rw-r--r--. 1 root root  92 Aug 18  2021 rbdmap
+[root@serverc ~]# ceph orch host ls 
+HOST                     ADDR           LABELS  STATUS  
+serverc.lab.example.com  172.25.250.12                  
+[root@serverc ~]# ceph orch host add 
+Invalid command: missing required parameter hostname(<string>)
+orch host add <hostname> [<addr>] [<labels>...] [--maintenance] :  Add a host
+Error EINVAL: invalid command
+[root@serverc ~]# ceph orch host add serverd.lab.example.com 172.25.250.13
+Error EINVAL: Failed to connect to serverd.lab.example.com (172.25.250.13).
+Please make sure that the host is reachable and accepts connections using the cephadm SSH key
+
+To add the cephadm SSH key to the host:
+> ceph cephadm get-pub-key > ~/ceph.pub
+> ssh-copy-id -f -i ~/ceph.pub root@172.25.250.13
+
+To check that the host is reachable:
+> ceph cephadm get-ssh-config > ssh_config
+> ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+> chmod 0600 ~/cephadm_private_key
+> ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.13
+[root@serverc ~]# ceph cephadm get-pub-key > ~/ceph.pub
+[root@serverc ~]# ssh-copy-id -f -i ~/ceph.pub root@172.25.250.13
+/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/ceph.pub"
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'root@172.25.250.13'"
+and check to make sure that only the key(s) you wanted were added.
+
+[root@serverc ~]# ceph cephadm get-ssh-config > ssh_config
+[root@serverc ~]# ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+[root@serverc ~]# chmod 0600 ~/cephadm_private_key
+[root@serverc ~]# ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.13
+Warning: Permanently added '172.25.250.13' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last failed login: Sun Apr 10 09:56:01 EDT 2022 from 172.25.250.12 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+[root@serverd ~]# exit
+logout
+Connection to 172.25.250.13 closed.
+[root@serverc ~]# ceph orch host add serverd.lab.example.com 172.25.250.13
+Added host 'serverd.lab.example.com' with addr '172.25.250.13'
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph orch host ls 
+HOST                     ADDR           LABELS  STATUS  
+serverc.lab.example.com  172.25.250.12                  
+serverd.lab.example.com  172.25.250.13                  
+[root@serverc ~]# ceph orch host add servere.lab.example.com 172.25.250.14
+Error EINVAL: Failed to connect to servere.lab.example.com (172.25.250.14).
+Please make sure that the host is reachable and accepts connections using the cephadm SSH key
+
+To add the cephadm SSH key to the host:
+> ceph cephadm get-pub-key > ~/ceph.pub
+> ssh-copy-id -f -i ~/ceph.pub root@172.25.250.14
+
+To check that the host is reachable:
+> ceph cephadm get-ssh-config > ssh_config
+> ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+> chmod 0600 ~/cephadm_private_key
+> ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.14
+[root@serverc ~]# ceph cephadm get-pub-key > ~/ceph.pub
+[root@serverc ~]# ssh-copy-id -f -i ~/ceph.pub root@172.25.250.14
+/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/ceph.pub"
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'root@172.25.250.14'"
+and check to make sure that only the key(s) you wanted were added.
+
+[root@serverc ~]# ceph cephadm get-ssh-config > ssh_config
+[root@serverc ~]# ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+[root@serverc ~]# chmod 0600 ~/cephadm_private_key
+[root@serverc ~]# ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.14
+Warning: Permanently added '172.25.250.14' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last failed login: Sun Apr 10 09:57:20 EDT 2022 from 172.25.250.12 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+[root@servere ~]# exit
+logout
+Connection to 172.25.250.14 closed.
+[root@serverc ~]# ceph orch host add servere.lab.example.com 172.25.250.14
+Added host 'servere.lab.example.com' with addr '172.25.250.14'
+[root@serverc ~]# ceph orch host ls 
+HOST                     ADDR           LABELS  STATUS  
+serverc.lab.example.com  172.25.250.12                  
+serverd.lab.example.com  172.25.250.13                  
+servere.lab.example.com  172.25.250.14                  
+[root@serverc ~]# ceph orch host add clienta.lab.example.com 172.25.250.10
+Error EINVAL: Failed to connect to clienta.lab.example.com (172.25.250.10).
+Please make sure that the host is reachable and accepts connections using the cephadm SSH key
+
+To add the cephadm SSH key to the host:
+> ceph cephadm get-pub-key > ~/ceph.pub
+> ssh-copy-id -f -i ~/ceph.pub root@172.25.250.10
+
+To check that the host is reachable:
+> ceph cephadm get-ssh-config > ssh_config
+> ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+> chmod 0600 ~/cephadm_private_key
+> ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.10
+[root@serverc ~]# ceph cephadm get-pub-key > ~/ceph.pub
+[root@serverc ~]# ssh-copy-id -f -i ~/ceph.pub root@172.25.250.10
+/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/root/ceph.pub"
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'root@172.25.250.10'"
+and check to make sure that only the key(s) you wanted were added.
+
+[root@serverc ~]# ceph cephadm get-ssh-config > ssh_config
+[root@serverc ~]# ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+[root@serverc ~]# chmod 0600 ~/cephadm_private_key
+[root@serverc ~]# ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.10
+Warning: Permanently added '172.25.250.10' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last failed login: Sun Apr 10 09:58:09 EDT 2022 from 172.25.250.12 on ssh:notty
+There were 2 failed login attempts since the last successful login.
+[root@clienta ~]# exit
+logout
+Connection to 172.25.250.10 closed.
+[root@serverc ~]# ceph orch host add clienta.lab.example.com 172.25.250.10
+Added host 'clienta.lab.example.com' with addr '172.25.250.10'
+[root@serverc ~]# ceph orch host ls 
+HOST                     ADDR           LABELS  STATUS  
+clienta.lab.example.com  172.25.250.10                  
+serverc.lab.example.com  172.25.250.12                  
+serverd.lab.example.com  172.25.250.13                  
+servere.lab.example.com  172.25.250.14                  
+[root@serverc ~]# ceph orch host 
+no valid command found; 9 closest matches:
+orch host add <hostname> [<addr>] [<labels>...] [--maintenance]
+orch host rm <hostname>
+orch host set-addr <hostname> <addr>
+orch host ls [--format {plain|json|json-pretty|yaml}]
+orch host label add <hostname> <label>
+orch host label rm <hostname> <label>
+orch host ok-to-stop <hostname>
+orch host maintenance enter <hostname> [--force]
+orch host maintenance exit <hostname>
+Error EINVAL: invalid command
+[root@serverc ~]# ceph orch host label add serverc.lab.example.com _admin 
+Added label _admin to host serverc.lab.example.com
+[root@serverc ~]# ceph orch host label add clienta.lab.example.com _admin 
+Added label _admin to host clienta.lab.example.com
+[root@serverc ~]# ceph orch host ls 
+HOST                     ADDR           LABELS  STATUS  
+clienta.lab.example.com  172.25.250.10  _admin          
+serverc.lab.example.com  172.25.250.12  _admin          
+serverd.lab.example.com  172.25.250.13                  
+servere.lab.example.com  172.25.250.14                  
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ssh clienta
+Warning: Permanently added 'clienta' (ECDSA) to the list of known hosts.
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 09:58:25 2022 from 172.25.250.12
+[root@clienta ~]# yum -y install ceph-common 
+Last metadata expiration check: 0:07:04 ago on Sun 10 Apr 2022 09:52:12 AM EDT.
+Package ceph-common-2:16.2.0-117.el8cp.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+[root@clienta ~]# ls -l /etc/ceph/
+total 8
+-rw-------. 1 root root 82 Apr 10 09:58 podman-auth.json
+-rw-r--r--. 1 root root 92 Aug 18  2021 rbdmap
+[root@clienta ~]# exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# rsync -av /etc/ceph/ceph.conf root@clienta:/etc/ceph/
+sending incremental file list
+ceph.conf
+
+sent 272 bytes  received 35 bytes  614.00 bytes/sec
+total size is 177  speedup is 0.58
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# rsync -av /etc/ceph/ceph.client.admin.keyring  root@clienta:/etc/ceph/
+sending incremental file list
+ceph.client.admin.keyring
+
+sent 174 bytes  received 35 bytes  139.33 bytes/sec
+total size is 63  speedup is 0.30
+[root@serverc ~]# ceph orch daemon 
+[root@serverc ~]# ceph orch daemon 
+no valid command found; 9 closest matches:
+orch daemon add osd [<svc_arg>]
+orch daemon add [mon|mgr|rbd-mirror|cephfs-mirror|crash|alertmanager|grafana|node-exporter|prometheus|mds|rgw|nfs|iscsi|cephadm-exporter] [<placement>]
+orch daemon add mds <fs_name> [<placement>]
+orch daemon add rgw <svc_id> [<port:int>] [--ssl] [<placement>]
+orch daemon add nfs <svc_id> <pool> [<namespace>] [<placement>]
+orch daemon add iscsi <pool> <api_user> <api_password> [<trusted_ip_list>] [<placement>]
+orch daemon start|stop|restart|reconfig <name>
+orch daemon redeploy <name> [<image>]
+orch daemon rm <names>... [--force]
+Error EINVAL: invalid command
+[root@serverc ~]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdb 
+Created osd(s) 0 on host 'serverc.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdc
+Created osd(s) 1 on host 'serverc.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd serverc.lab.example.com:/dev/vdd
+Created osd(s) 2 on host 'serverc.lab.example.com'
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdb 
+Created osd(s) 3 on host 'serverd.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdc
+Created osd(s) 4 on host 'serverd.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd serverd.lab.example.com:/dev/vdd
+Created osd(s) 5 on host 'serverd.lab.example.com'
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph orch daemon add osd servere.lab.example.com:/dev/vdb 
+Created osd(s) 6 on host 'servere.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd servere.lab.example.com:/dev/vdc
+Created osd(s) 7 on host 'servere.lab.example.com'
+[root@serverc ~]# ceph orch daemon add osd servere.lab.example.com:/dev/vdd
+Created osd(s) 8 on host 'servere.lab.example.com'
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph status 
+  cluster:
+    id:     b2f03c4e-b8d5-11ec-b7f6-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 4 daemons, quorum serverc.lab.example.com,serverd,servere,clienta (age 4m)
+    mgr: serverc.lab.example.com.jebphr(active, since 8m), standbys: serverd.yfiqdo
+    osd: 9 osds: 9 up (since 2s), 9 in (since 14s)
+ 
+  data:
+    pools:   1 pools, 1 pgs
+    objects: 0 objects, 0 B
+    usage:   46 MiB used, 80 GiB / 80 GiB avail
+    pgs:     1 active+clean
+ 
+[root@serverc ~]# ceph config get mon mon_allow_pool_delete 
+false
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph config set mon mon_allow_pool_delete true 
+[root@serverc ~]# ceph config dump | grep pool_delete
+  mon         advanced  mon_allow_pool_delete                  true                                                                                                                
+[root@serverc ~]# ceph dashboard --help | grep ssl 
+dashboard get-alertmanager-api-ssl-verify                                Get the ALERTMANAGER_API_SSL_VERIFY option value
+dashboard get-grafana-api-ssl-verify                                     Get the GRAFANA_API_SSL_VERIFY option value
+dashboard get-iscsi-api-ssl-verification                                 Get the ISCSI_API_SSL_VERIFICATION option value
+dashboard get-prometheus-api-ssl-verify                                  Get the PROMETHEUS_API_SSL_VERIFY option value
+dashboard get-rgw-api-ssl-verify                                         Get the RGW_API_SSL_VERIFY option value
+dashboard reset-alertmanager-api-ssl-verify                              Reset the ALERTMANAGER_API_SSL_VERIFY option to its default value
+dashboard reset-grafana-api-ssl-verify                                   Reset the GRAFANA_API_SSL_VERIFY option to its default value
+dashboard reset-iscsi-api-ssl-verification                               Reset the ISCSI_API_SSL_VERIFICATION option to its default value
+dashboard reset-prometheus-api-ssl-verify                                Reset the PROMETHEUS_API_SSL_VERIFY option to its default value
+dashboard reset-rgw-api-ssl-verify                                       Reset the RGW_API_SSL_VERIFY option to its default value
+dashboard set-alertmanager-api-ssl-verify <value>                        Set the ALERTMANAGER_API_SSL_VERIFY option value
+dashboard set-grafana-api-ssl-verify <value>                             Set the GRAFANA_API_SSL_VERIFY option value
+dashboard set-iscsi-api-ssl-verification <value>                         Set the ISCSI_API_SSL_VERIFICATION option value
+dashboard set-prometheus-api-ssl-verify <value>                          Set the PROMETHEUS_API_SSL_VERIFY option value
+dashboard set-rgw-api-ssl-verify <value>                                 Set the RGW_API_SSL_VERIFY option value
+[root@serverc ~]# for i in get-alertmanager-api-ssl-verify get-grafana-api-ssl-verify get-iscsi-api-ssl-verification get-prometheus-api-ssl-verify get-rgw-api-ssl-verify 
+> do 
+> ceph dashboard ${i} 
+> done
+True
+False
+True
+True
+True
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# for i in set-alertmanager-api-ssl-verify set-grafana-api-ssl-verify set-iscsi-api-ssl-verification set-prometheus-api-ssl-verify set-rgw-api-ssl-verify 
+> do 
+> ceph dashboard ${i} True
+> done
+Option ALERTMANAGER_API_SSL_VERIFY updated
+Option GRAFANA_API_SSL_VERIFY updated
+Option ISCSI_API_SSL_VERIFICATION updated
+Option PROMETHEUS_API_SSL_VERIFY updated
+Option RGW_API_SSL_VERIFY updated
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# for i in get-alertmanager-api-ssl-verify get-grafana-api-ssl-verify get-iscsi-api-ssl-verification get-prometheus-api-ssl-verify get-rgw-api-ssl-verify ; do  ceph dashboard ${i} ; done
+True
+True
+True
+True
+True
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd erasure-code-profile ls
+default
+[root@serverc ~]# ceph osd erasure-code-profile
+no valid command found; 4 closest matches:
+osd erasure-code-profile set <name> [<profile>...] [--force]
+osd erasure-code-profile get <name>
+osd erasure-code-profile rm <name>
+osd erasure-code-profile ls
+Error EINVAL: invalid command
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd erasure-code-profile set ex260-profile k=2 m=3 crush-failure-domain=osd 
+[root@serverc ~]# ceph osd erasure-code-profile ls
+default
+ex260-profile
+[root@serverc ~]# ceph osd erasure-code-profile get ex260-profile
+crush-device-class=
+crush-failure-domain=osd
+crush-root=default
+jerasure-per-chunk-alignment=false
+k=2
+m=3
+plugin=jerasure
+technique=reed_sol_van
+w=8
+[root@serverc ~]# ceph osd pool ls 
+device_health_metrics
+[root@serverc ~]# ceph osd pool create 
+Invalid command: missing required parameter pool(<poolname>)
+osd pool create <pool> [<pg_num:int>] [<pgp_num:int>] [replicated|erasure] [<erasure_code_profile>] [<rule>] [<expected_num_objects:int>] [<size:int>] [<pg_num_min:int>] [on|off|warn] [<target_size_bytes:int>] [<target_size_ratio:float>] :  create pool
+Error EINVAL: invalid command
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd pool create ecpool 32 32 erasure ex260-profile
+pool 'ecpool' created
+[root@serverc ~]# ceph osd pool ls detail | grep ecpool 
+pool 2 'ecpool' erasure profile ex260-profile size 5 min_size 3 crush_rule 1 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 57 flags hashpspool stripe_width 8192
+[root@serverc ~]# ceph osd pool application enable ecpool rgw 
+enabled application 'rgw' on pool 'ecpool'
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd pool create ex260pool 32 32 replicated
+pool 'ex260pool' created
+[root@serverc ~]# ceph osd pool ls detail | grep ex260pool 
+pool 3 'ex260pool' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 61 flags hashpspool stripe_width 0
+[root@serverc ~]# ceph osd pool application enable ex260pool rbd 
+enabled application 'rbd' on pool 'ex260pool'
+[root@serverc ~]# ceph osd pool ls detail | grep ex260pool 
+pool 3 'ex260pool' replicated size 3 min_size 2 crush_rule 0 object_hash rjenkins pg_num 32 pgp_num 32 autoscale_mode on last_change 62 flags hashpspool stripe_width 0 application rbd
+[root@serverc ~]# 
+[root@serverc ~]# # rbd create pool/img260 --size 1024
+[root@serverc ~]# 
+[root@serverc ~]# ceph auth get-or-create client.thomas mon 'allow r' osd 'allow rwx pool=ecpool namespace=dev' | tee /etc/ceph/ceph.client.thomas.keyring 
+[client.thomas]
+	key = AQA05VJiQ+5qARAAiLXxYkfBp0NiYXaQVKMP1g==
+[root@serverc ~]# cat /etc/ceph/ceph.client.thomas.keyring
+[client.thomas]
+	key = AQA05VJiQ+5qARAAiLXxYkfBp0NiYXaQVKMP1g==
+[root@serverc ~]# rsync -av /etc/ceph/ceph.client.thomas.keyring root@clienta:/etc/ceph/
+sending incremental file list
+ceph.client.thomas.keyring
+
+sent 175 bytes  received 35 bytes  420.00 bytes/sec
+total size is 64  speedup is 0.30
+[root@serverc ~]# ssh clienta 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:08:24 2022 from 172.25.250.9
+[root@clienta ~]# rados -p ecpool ls --id=thomas
+rados_nobjects_list_next2: Operation not permitted
+[root@clienta ~]# rados -p ecpool -N dev ls --id=thomas
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# exit
+logout
+Connection to clienta closed.
+[root@serverc ~]# ceph auth get-or-create client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rw' | tee /etc/ceph/ceph.client.rbd.keyring
+[client.rbd]
+	key = AQC25VJiruEGLRAAB0RlNm3c3igeNvVhmTSUaw==
+[root@serverc ~]# cat /etc/ceph/ceph.client.rbd.keyring
+[client.rbd]
+	key = AQC25VJiruEGLRAAB0RlNm3c3igeNvVhmTSUaw==
+[root@serverc ~]# rsync -av /etc/ceph/ceph.client.rbd.keyring root@clienta:/etc/ceph/
+sending incremental file list
+ceph.client.rbd.keyring
+
+sent 170 bytes  received 35 bytes  136.67 bytes/sec
+total size is 61  speedup is 0.30
+[root@serverc ~]# ssh clienta 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:10:21 2022 from 172.25.250.12
+[root@clienta ~]# rbd ls rbd --idrbd 
+rbd: unrecognised option '--idrbd'
+[root@clienta ~]# rbd ls rbd --id=rbd 
+rbd: error opening default pool 'rbd'
+Ensure that the default pool has been created or specify an alternate pool name.
+rbd: listing images failed: (2) No such file or directory
+[root@clienta ~]# rbd ls ex260pool --id=rbd 
+[root@clienta ~]# rbd create ex260pool/img260 --size 512M --id=rbd 
+2022-04-10T10:14:07.457-0400 7ff5ca7fc700 -1 librbd::image::GetMetadataRequest: 0x564ae2d7e470 handle_metadata_list: failed to retrieve image metadata: (1) Operation not permitted
+2022-04-10T10:14:07.457-0400 7ff5e27842c0 -1 librbd::PoolMetadata: list: failed listing metadata: (1) Operation not permitted
+2022-04-10T10:14:07.457-0400 7ff5e27842c0 -1 librbd::Config: apply_pool_overrides: failed to read pool config overrides: (1) Operation not permitted
+2022-04-10T10:14:09.440-0400 7ff5ca7fc700 -1 librbd::image::CreateRequest: 0x564ae2bd2c20 handle_add_image_to_directory: error adding image to directory: (1) Operation not permitted
+rbd: create error: (1) Operation not permitted
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# rbd create ex260pool/img260 --size 512M --id=rbd
+2022-04-10T10:14:31.256-0400 7f2161261700 -1 librbd::image::GetMetadataRequest: 0x56386b126450 handle_metadata_list: failed to retrieve image metadata: (1) Operation not permitted
+2022-04-10T10:14:31.256-0400 7f2174b1f2c0 -1 librbd::PoolMetadata: list: failed listing metadata: (1) Operation not permitted
+2022-04-10T10:14:31.256-0400 7f2174b1f2c0 -1 librbd::Config: apply_pool_overrides: failed to read pool config overrides: (1) Operation not permitted
+2022-04-10T10:14:31.257-0400 7f2161261700 -1 librbd::image::CreateRequest: 0x56386af7ac20 handle_add_image_to_directory: error adding image to directory: (1) Operation not permitted
+rbd: create error: (1) Operation not permitted
+[root@serverc ~]# rbd ls ex260pool 
+[root@serverc ~]# rbd ls ex260pool --id=rbd 
+[root@serverc ~]# rbd create ex260pool/img260 --size 512M --id=rbd
+2022-04-10T10:15:24.312-0400 7f35ba415700 -1 librbd::image::GetMetadataRequest: 0x55a95bc2b390 handle_metadata_list: failed to retrieve image metadata: (1) Operation not permitted
+2022-04-10T10:15:24.312-0400 7f35cdcd32c0 -1 librbd::PoolMetadata: list: failed listing metadata: (1) Operation not permitted
+2022-04-10T10:15:24.312-0400 7f35cdcd32c0 -1 librbd::Config: apply_pool_overrides: failed to read pool config overrides: (1) Operation not permitted
+2022-04-10T10:15:24.312-0400 7f35ba415700 -1 librbd::image::CreateRequest: 0x55a95ba81c20 handle_add_image_to_directory: error adding image to directory: (1) Operation not permitted
+rbd: create error: (1) Operation not permitted
+[root@serverc ~]# ceph auth get client.rbd 
+[client.rbd]
+	key = AQC25VJiruEGLRAAB0RlNm3c3igeNvVhmTSUaw==
+	caps mon = "allow *"
+	caps osd = "allow class-read object_prefix rbd_children, allow pool ex260pool rw"
+exported keyring for client.rbd
+[root@serverc ~]# ceph auth caps client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx' > /etc/ceph/ceph.client.rbd.keyring
+updated caps for client.rbd
+[root@serverc ~]# cat /etc/ceph/ceph.client.rbd.keyring
+[root@serverc ~]# ceph auth caps client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx'| tee /etc/ceph/ceph.client.rbd.keyring
+updated caps for client.rbd
+[root@serverc ~]# cat /etc/ceph/ceph.client.rbd.keyring
+[root@serverc ~]# ceph auth delete client.rbd 
+no valid command found; 10 closest matches:
+auth export [<entity>]
+auth get <entity>
+auth get-key <entity>
+auth print-key <entity>
+auth print_key <entity>
+auth ls
+auth import
+auth add <entity> [<caps>...]
+auth get-or-create-key <entity> [<caps>...]
+auth get-or-create <entity> [<caps>...]
+Error EINVAL: invalid command
+[root@serverc ~]# ceph auth del client.rbd 
+updated
+[root@serverc ~]# rm -f /etc/ceph/ceph.client.rbd.keyring 
+[root@serverc ~]# ceph auth get-or-create client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx'| tee /etc/ceph/ceph.client.rbd.keyring
+[client.rbd]
+	key = AQAJ51Ji8G5SBhAAeB3MesO3jHYITY1NFSBgYA==
+[root@serverc ~]# cat /etc/ceph/ceph.client.rbd.keyring
+[client.rbd]
+	key = AQAJ51Ji8G5SBhAAeB3MesO3jHYITY1NFSBgYA==
+[root@serverc ~]# 
+[root@serverc ~]# ssh clienta 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:12:23 2022 from 172.25.250.12
+[root@clienta ~]# rm -f /etc/ceph/ceph.client.rbd.keyring 
+[root@clienta ~]# exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# rsync -av /etc/ceph/ceph.client.rbd.keyring root@clienta:/etc/ceph/
+sending incremental file list
+ceph.client.rbd.keyring
+
+sent 169 bytes  received 35 bytes  408.00 bytes/sec
+total size is 61  speedup is 0.30
+[root@serverc ~]# rbd ls ex260pool --id=rbd 
+[root@serverc ~]# rbd create ex260pool/img260 --size 512M --id=rbd
+[root@serverc ~]# rbd ls ex260pool --id=rbd 
+img260
+[root@serverc ~]# ssh clienta 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:17:54 2022 from 172.25.250.12
+[root@clienta ~]# rbd ls ex260pool --id=rbd 
+img260
+[root@clienta ~]# mkdir /mnt/rbd .ssh/
+mkdir: cannot create directory ‘.ssh/’: File exists
+[root@clienta ~]# rbd map ex260pool/img260 
+/dev/rbd0
+[root@clienta ~]# mkfs.ext4 /dev/rbd0 
+mke2fs 1.45.6 (20-Mar-2020)
+Discarding device blocks: done                            
+Creating filesystem with 131072 4k blocks and 32768 inodes
+Filesystem UUID: 26accb2d-851d-4646-972e-9ef9fbde6a31
+Superblock backups stored on blocks: 
+	32768, 98304
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@clienta ~]# mount /dev/rbd0 /mnt/rbd/
+[root@clienta ~]# df -hT /mnt/rbd/
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/rbd0      ext4  488M  780K  452M   1% /mnt/rbd
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# dd if/dev/zero of=/mnt/rbd/file1 bs=1M count=10
+dd: unrecognized operand ‘if/dev/zero’
+Try 'dd --help' for more information.
+[root@clienta ~]# dd if=/dev/zero of=/mnt/rbd/file1 bs=1M count=10
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.014395 s, 728 MB/s
+[root@clienta ~]# du /mnt/rbd/
+16	/mnt/rbd/lost+found
+10260	/mnt/rbd/
+[root@clienta ~]# du -sh /mnt/rbd/
+11M	/mnt/rbd/
+[root@clienta ~]# ceph df 
+--- RAW STORAGE ---
+CLASS    SIZE   AVAIL    USED  RAW USED  %RAW USED
+hdd    90 GiB  90 GiB  77 MiB    77 MiB       0.08
+TOTAL  90 GiB  90 GiB  77 MiB    77 MiB       0.08
+ 
+--- POOLS ---
+POOL                   ID  PGS   STORED  OBJECTS    USED  %USED  MAX AVAIL
+device_health_metrics   1    1      0 B        0     0 B      0     28 GiB
+ecpool                  2   32      0 B        0     0 B      0     34 GiB
+ex260pool               3   32  9.0 MiB       11  27 MiB   0.03     28 GiB
+[root@clienta ~]# ceph df 
+--- RAW STORAGE ---
+CLASS    SIZE   AVAIL    USED  RAW USED  %RAW USED
+hdd    90 GiB  90 GiB  89 MiB    89 MiB       0.10
+TOTAL  90 GiB  90 GiB  89 MiB    89 MiB       0.10
+ 
+--- POOLS ---
+POOL                   ID  PGS  STORED  OBJECTS    USED  %USED  MAX AVAIL
+device_health_metrics   1    1     0 B        0     0 B      0     28 GiB
+ecpool                  2   32     0 B        0     0 B      0     34 GiB
+ex260pool               3   32  10 MiB       12  31 MiB   0.04     28 GiB
+[root@clienta ~]# umount /mnt/rbd
+[root@clienta ~]# cat  /etc/ceph/rbdmap 
+# RbdDevice		Parameters
+#poolname/imagename	id=client,keyring=/etc/ceph/ceph.client.keyring
+[root@clienta ~]# ls -l /etc/ceph/ceph.client.rbd.keyring 
+-rw-r--r--. 1 root root 61 Apr 10 10:17 /etc/ceph/ceph.client.rbd.keyring
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# vim /etc/ceph/rbdmap 
+[root@clienta ~]# cat /etc/ceph/rbdmap
+# RbdDevice		Parameters
+#poolname/imagename	id=client,keyring=/etc/ceph/ceph.client.keyring
+ex260pool/img260 	id=rbd,keyring=/etc/ceph/ceph.client.rbd.keyring
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# cat /etc/fstab 
+UUID=d47ead13-ec24-428e-9175-46aefa764b26	/	xfs	defaults	0	0
+UUID=7B77-95E7	/boot/efi	vfat	defaults,uid=0,gid=0,umask=077,shortname=winnt	0	2
+[root@clienta ~]# vim /etc/fstab 
+[root@clienta ~]# cat /etc/fstab
+UUID=d47ead13-ec24-428e-9175-46aefa764b26	/	xfs	defaults	0	0
+UUID=7B77-95E7	/boot/efi	vfat	defaults,uid=0,gid=0,umask=077,shortname=winnt	0	2
+/dev/rbd/ex260pool/img260 /mnt/rbd ext4 noauto 0 0 
+[root@clienta ~]# 
+[root@clienta ~]# rbd showmapped
+id  pool       namespace  image   snap  device   
+0   ex260pool             img260  -     /dev/rbd0
+[root@clienta ~]# rbd unmap ex260pool/img260 
+[root@clienta ~]# rbd showmapped
+[root@clienta ~]# systemctl enable rbdmap
+Created symlink /etc/systemd/system/multi-user.target.wants/rbdmap.service → /usr/lib/systemd/system/rbdmap.service.
+[root@clienta ~]# systemctl reboot 
+Connection to clienta closed by remote host.
+Connection to clienta closed.
+[root@serverc ~]# ssh clienta 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:19:24 2022 from 172.25.250.12
+[root@clienta ~]# df -h /mnt/rbd/
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/rbd0       488M   11M  442M   3% /mnt/rbd
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ls -lh /mnt/rbd/
+total 11M
+-rw-r--r--. 1 root root 10M Apr 10 10:20 file1
+drwx------. 2 root root 16K Apr 10 10:20 lost+found
+[root@clienta ~]# # rbd export mypool/myimage@snap /tmp/img
+[root@clienta ~]# exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# su - devops 
+Last login: Fri Oct  1 05:31:38 EDT 2021 from 10.30.0.167 on pts/0
+[devops@serverc ~]$ exit 
+logout
+[root@serverc ~]# ssh clienta -l devops 
+devops@clienta's password: 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Fri Oct  1 05:33:10 2021 from 10.30.0.167
+[devops@clienta ~]$ ls -lh 
+total 0
+[devops@clienta ~]$ rbd ls ex260pool --id=rbd 
+img260
+[devops@clienta ~]$ rbd export ex260pool/img260 /home/devops/rbd_export --id=rbd 
+Exporting image: 100% complete...done.
+[devops@clienta ~]$ ls -lh 
+total 20M
+-rw-r--r--. 1 devops devops 512M Apr 10 10:26 rbd_export
+[devops@clienta ~]$ wget http://workstation.lab.example.com/images/rbd_import.dat 
+--2022-04-10 10:28:21--  http://workstation.lab.example.com/images/rbd_import.dat
+Resolving workstation.lab.example.com (workstation.lab.example.com)... 172.25.250.9, 172.25.250.254
+Connecting to workstation.lab.example.com (workstation.lab.example.com)|172.25.250.9|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10485760 (10M)
+Saving to: ‘rbd_import.dat’
+
+rbd_import.dat                       100%[====================================================================>]  10.00M  --.-KB/s    in 0.02s   
+
+2022-04-10 10:28:21 (465 MB/s) - ‘rbd_import.dat’ saved [10485760/10485760]
+
+[devops@clienta ~]$ ls -lh 
+total 30M
+-rw-r--r--. 1 devops devops 512M Apr 10 10:26 rbd_export
+-rw-rw-r--. 1 devops devops  10M Apr 10 10:27 rbd_import.dat
+[devops@clienta ~]$ rbd import --image-format 2 /home/devops/rbd_import.dat ex260pool/rbd_import
+2022-04-10T10:29:00.613-0400 7f7be4b772c0 -1 auth: unable to find a keyring on /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,: (2) No such file or directory
+2022-04-10T10:29:00.613-0400 7f7be4b772c0 -1 AuthRegistry(0x55916d6b2d30) no keyring found at /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,, disabling cephx
+2022-04-10T10:29:00.614-0400 7f7be4b772c0 -1 auth: unable to find a keyring on /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,: (2) No such file or directory
+2022-04-10T10:29:00.614-0400 7f7be4b772c0 -1 AuthRegistry(0x7fffbb41a3a0) no keyring found at /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,, disabling cephx
+2022-04-10T10:29:00.615-0400 7f7bd32bd700 -1 monclient(hunting): handle_auth_bad_method server allowed_methods [2] but i only support [1]
+2022-04-10T10:29:00.615-0400 7f7be4b772c0 -1 monclient: authenticate NOTE: no keyring found; disabled cephx authentication
+rbd: couldn't connect to the cluster!
+[devops@clienta ~]$ rbd import --image-format 2 /home/devops/rbd_import.dat ex260pool/rbd_import --id=rbd 
+Importing image: 100% complete...done.
+[devops@clienta ~]$ rbd ls ex260pool --id=rbd 
+img260
+rbd_import
+[devops@clienta ~]$ rbd info ex260pool/rbd_import --id=rbd 
+rbd image 'rbd_import':
+	size 10 MiB in 3 objects
+	order 22 (4 MiB objects)
+	snapshot_count: 0
+	id: 5f75ee79e28a
+	block_name_prefix: rbd_data.5f75ee79e28a
+	format: 2
+	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+	op_features: 
+	flags: 
+	create_timestamp: Sun Apr 10 10:29:08 2022
+	access_timestamp: Sun Apr 10 10:29:08 2022
+	modify_timestamp: Sun Apr 10 10:29:08 2022
+[devops@clienta ~]$ # rbd snap create mypool/parent@snap
+[devops@clienta ~]$ rbd snap create ex260pool/img260 ex260pool/rbd-snap --id=rbd 
+rbd: too many arguments
+[devops@clienta ~]$ rbd snap create ex260pool/img260@rbd-snap --id=rbd 
+Creating snap: 100% complete...done.
+[devops@clienta ~]$ rbd snap list ex260pool/img260 --id=rbd 
+SNAPID  NAME      SIZE     PROTECTED  TIMESTAMP               
+     4  rbd-snap  512 MiB             Sun Apr 10 10:30:54 2022
+[devops@clienta ~]$ rbd snap protect ex260pool/img260@rbd-snap
+2022-04-10T10:31:25.248-0400 7f8dc8a272c0 -1 auth: unable to find a keyring on /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,: (2) No such file or directory
+2022-04-10T10:31:25.248-0400 7f8dc8a272c0 -1 AuthRegistry(0x55828ce2d900) no keyring found at /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,, disabling cephx
+2022-04-10T10:31:25.250-0400 7f8dc8a272c0 -1 auth: unable to find a keyring on /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,: (2) No such file or directory
+2022-04-10T10:31:25.250-0400 7f8dc8a272c0 -1 AuthRegistry(0x7ffd99462e00) no keyring found at /etc/ceph/ceph.client.admin.keyring,/etc/ceph/ceph.keyring,/etc/ceph/keyring,/etc/ceph/keyring.bin,, disabling cephx
+2022-04-10T10:31:25.251-0400 7f8db716d700 -1 monclient(hunting): handle_auth_bad_method server allowed_methods [2] but i only support [1]
+2022-04-10T10:31:25.251-0400 7f8dc8a272c0 -1 monclient: authenticate NOTE: no keyring found; disabled cephx authentication
+rbd: couldn't connect to the cluster!
+[devops@clienta ~]$ rbd snap protect ex260pool/img260@rbd-snap --id=rbd 
+[devops@clienta ~]$ # rbd clone mypool/parent@snap otherpool/child
+[devops@clienta ~]$ 
+[devops@clienta ~]$ 
+[devops@clienta ~]$ rbd clone ex260pool/img260@rbd-snap ex260pool/rbd-clone --id=rbd 
+[devops@clienta ~]$ rbd ls ex260pool --id=rbd
+img260
+rbd-clone
+rbd_import
+[devops@clienta ~]$ rbd info ex260pool/rbd-clone --id=rbd
+rbd image 'rbd-clone':
+	size 512 MiB in 128 objects
+	order 22 (4 MiB objects)
+	snapshot_count: 0
+	id: 3ad88c19e5f4
+	block_name_prefix: rbd_data.3ad88c19e5f4
+	format: 2
+	features: layering, exclusive-lock, object-map, fast-diff, deep-flatten
+	op_features: 
+	flags: 
+	create_timestamp: Sun Apr 10 10:32:07 2022
+	access_timestamp: Sun Apr 10 10:32:07 2022
+	modify_timestamp: Sun Apr 10 10:32:07 2022
+	parent: ex260pool/img260@rbd-snap
+	overlap: 512 MiB
+[devops@clienta ~]$ exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# ssh clienta
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:24:05 2022 from 172.25.250.9
+[root@clienta ~]# rbd showmapped
+id  pool       namespace  image   snap  device   
+0   ex260pool             img260  -     /dev/rbd0
+[root@clienta ~]# rbs ls ex260pool 
+-bash: rbs: command not found
+[root@clienta ~]# rbd ls ex260pool --id=rbd 
+img260
+rbd-clone
+rbd_import
+[root@clienta ~]# rbd map ex260pool/rbd-clone --id=rbd
+/dev/rbd1
+[root@clienta ~]# rbd showmapped
+id  pool       namespace  image      snap  device   
+0   ex260pool             img260     -     /dev/rbd0
+1   ex260pool             rbd-clone  -     /dev/rbd1
+[root@clienta ~]# mkdir /mnt/clone
+[root@clienta ~]# mount /dev/rbd1 /mnt/clone
+[root@clienta ~]# df -hT /mnt/clone
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/rbd1      ext4  488M   11M  442M   3% /mnt/clone
+[root@clienta ~]# du -sh /mnt/clone
+11M	/mnt/clone
+[root@clienta ~]# ls -lh /mnt/clone
+total 11M
+-rw-r--r--. 1 root root 10M Apr 10 10:20 file1
+drwx------. 2 root root 16K Apr 10 10:20 lost+found
+[root@clienta ~]# umount /mnt/clone 
+[root@clienta ~]# vim /etc/ceph/rbdmap 
+[root@clienta ~]# cat /etc/ceph/rbdmap
+# RbdDevice		Parameters
+#poolname/imagename	id=client,keyring=/etc/ceph/ceph.client.keyring
+ex260pool/img260 	id=rbd,keyring=/etc/ceph/ceph.client.rbd.keyring
+ex260pool/rbd-clone 	id=rbd,keyring=/etc/ceph/ceph.client.rbd.keyring
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# vim /etc/fstab 
+[root@clienta ~]# df -h 
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.8G     0  2.8G   0% /dev
+tmpfs           2.9G   84K  2.9G   1% /dev/shm
+tmpfs           2.9G   17M  2.8G   1% /run
+tmpfs           2.9G     0  2.9G   0% /sys/fs/cgroup
+/dev/vda3       9.9G  3.9G  6.1G  40% /
+/dev/vda2       100M  5.8M   95M   6% /boot/efi
+overlay         9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/55da865396ebcc011b8697064c29ae04ccf612f9ad9362413658b30eb6d9c363/merged
+overlay         9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/4c8c174dd84b1291a22120e858fb01ce1ef199476332f3bed1ba5d0e81e60a94/merged
+overlay         9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/873663bb4a3fe31d92ebd8a7c163a76c38906799263f299319fe9e6b929df950/merged
+/dev/rbd0       488M   11M  442M   3% /mnt/rbd
+tmpfs           576M     0  576M   0% /run/user/0
+[root@clienta ~]# umount /mnt/rbd
+[root@clienta ~]# rbd showmapped
+id  pool       namespace  image      snap  device   
+0   ex260pool             img260     -     /dev/rbd0
+1   ex260pool             rbd-clone  -     /dev/rbd1
+[root@clienta ~]# rbd unmap ex260pool/rbd-clone
+[root@clienta ~]# rbd unmap ex260pool/img260
+[root@clienta ~]# 
+[root@clienta ~]# rbd showmapped
+[root@clienta ~]# systemctl restart rbdmap 
+[root@clienta ~]# systemctl reboot 
+Connection to clienta closed by remote host.
+Connection to clienta closed.
+[root@serverc ~]# ssh clienta
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:32:38 2022 from 172.25.250.12
+[root@clienta ~]# df -hT 
+Filesystem     Type      Size  Used Avail Use% Mounted on
+devtmpfs       devtmpfs  2.8G     0  2.8G   0% /dev
+tmpfs          tmpfs     2.9G   84K  2.9G   1% /dev/shm
+tmpfs          tmpfs     2.9G   17M  2.8G   1% /run
+tmpfs          tmpfs     2.9G     0  2.9G   0% /sys/fs/cgroup
+/dev/vda3      xfs       9.9G  3.9G  6.1G  40% /
+/dev/vda2      vfat      100M  5.8M   95M   6% /boot/efi
+overlay        overlay   9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/92eb0ad96218ac531a3b160d06275be9a63e3db24640fba3671c764d3a8a1a75/merged
+overlay        overlay   9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/640906b5076af85fa3c764d20e37c84443fdbae75682acd2b0b0b5bb43b63f8e/merged
+overlay        overlay   9.9G  3.9G  6.1G  40% /var/lib/containers/storage/overlay/5b93b8badb634fb501cf14158401491201a6ec5254e8d1ed00fe02b4ddd83fe6/merged
+/dev/rbd0      ext4      488M   11M  442M   3% /mnt/rbd
+/dev/rbd1      ext4      488M   11M  442M   3% /mnt/clone
+tmpfs          tmpfs     576M     0  576M   0% /run/user/0
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# vim rgw.yaml
+[root@clienta ~]# ceph orch ls --service-type=rgw 
+No services reported
+[root@clienta ~]# ceph orch ps --daemon-type=rgw 
+No daemons reported
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ceph orch apply -i rgw.yaml 
+Scheduled rgw.rgw_ex260 update...
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ceph orch ls --service-type=rgw 
+NAME           RUNNING  REFRESHED  AGE  PLACEMENT                        
+rgw.rgw_ex260      0/2  -          4s   serverc.lab.example.com;count:2  
+[root@clienta ~]# ceph orch ps --daemon-type=rgw 
+NAME                          HOST                     STATUS    REFRESHED  AGE  PORTS  VERSION    IMAGE ID   
+rgw.rgw_ex260.serverc.qdpaoz  serverc.lab.example.com  starting  -          -    *:81   <unknown>  <unknown>  
+rgw.rgw_ex260.serverc.ruesch  serverc.lab.example.com  starting  -          -    *:80   <unknown>  <unknown>  
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ceph orch ps --daemon-type=rgw 
+NAME                          HOST                     STATUS        REFRESHED  AGE  PORTS  VERSION           IMAGE ID      CONTAINER ID  
+rgw.rgw_ex260.serverc.qdpaoz  serverc.lab.example.com  running (6s)  0s ago     5s   *:81   16.2.0-117.el8cp  2142b60d7974  e53c1d80b6e9  
+rgw.rgw_ex260.serverc.ruesch  serverc.lab.example.com  running (9s)  0s ago     9s   *:80   16.2.0-117.el8cp  2142b60d7974  88ca9a4e70f5  
+[root@clienta ~]# ceph orch ls --service-type=rgw 
+NAME           RUNNING  REFRESHED  AGE  PLACEMENT                        
+rgw.rgw_ex260      0/2  -          14s  serverc.lab.example.com;count:2  
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ceph orch ls --service-type=rgw 
+NAME           RUNNING  REFRESHED  AGE  PLACEMENT                        
+rgw.rgw_ex260      0/2  -          19s  serverc.lab.example.com;count:2  
+[root@clienta ~]# exit 
+logout
+Connection to clienta closed.
+[root@serverc ~]# netstat -tunlp | grep -E '80|81'
+tcp        0      0 0.0.0.0:6814            0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 0.0.0.0:6815            0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 172.25.250.12:6816      0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 172.25.250.12:6817      0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 0.0.0.0:6818            0.0.0.0:*               LISTEN      69870/ceph-osd      
+tcp        0      0 0.0.0.0:6819            0.0.0.0:*               LISTEN      69870/ceph-osd      
+tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      77128/radosgw       
+tcp        0      0 0.0.0.0:6800            0.0.0.0:*               LISTEN      39053/ceph-mgr      
+tcp        0      0 0.0.0.0:81              0.0.0.0:*               LISTEN      77627/radosgw       
+tcp        0      0 0.0.0.0:6801            0.0.0.0:*               LISTEN      39053/ceph-mgr      
+tcp        0      0 0.0.0.0:6802            0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 0.0.0.0:6803            0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 172.25.250.12:6804      0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 172.25.250.12:6805      0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 0.0.0.0:6806            0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 0.0.0.0:6807            0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 172.25.250.12:6808      0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 172.25.250.12:6809      0.0.0.0:*               LISTEN      62790/ceph-osd      
+tcp        0      0 0.0.0.0:6810            0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 0.0.0.0:6811            0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 172.25.250.12:6812      0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp        0      0 172.25.250.12:6813      0.0.0.0:*               LISTEN      66313/ceph-osd      
+tcp6       0      0 :::9095                 :::*                    LISTEN      59880/prometheus    
+tcp6       0      0 :::80                   :::*                    LISTEN      77128/radosgw       
+tcp6       0      0 :::81                   :::*                    LISTEN      77627/radosgw       
+[root@serverc ~]# curl http://serverc.lab.example.com:80
+<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID><DisplayName></DisplayName></Owner><Buckets></Buckets></ListAllMyBucketsResult>[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# curl http://serverc.lab.example.com:81
+<?xml version="1.0" encoding="UTF-8"?><ListAllMyBucketsResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/"><Owner><ID>anonymous</ID><DisplayName></DisplayName></Owner><Buckets></Buckets></ListAllMyBucketsResult>[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd dump | grep ratio 
+full_ratio 0.95
+backfillfull_ratio 0.9
+nearfull_ratio 0.85
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph osd s
+safe-to-destroy                setcrushmap                    set-nearfull-ratio             stop
+scrub                          set-full-ratio                 set-require-min-compat-client  
+set                            set-group                      stat                           
+set-backfillfull-ratio         setmaxosd                      status                         
+[root@serverc ~]# ceph osd s
+safe-to-destroy                setcrushmap                    set-nearfull-ratio             stop
+scrub                          set-full-ratio                 set-require-min-compat-client  
+set                            set-group                      stat                           
+set-backfillfull-ratio         setmaxosd                      status                         
+[root@serverc ~]# ceph osd set-full-ratio 0.92 
+osd set-full-ratio 0.92
+[root@serverc ~]# ceph osd set-nearfull-ratio 0.83
+osd set-nearfull-ratio 0.83
+[root@serverc ~]# ceph osd dump | grep ratio 
+full_ratio 0.92
+backfillfull_ratio 0.9
+nearfull_ratio 0.83
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# radosgw-admin user list 
+[]
+[root@serverc ~]# # radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+[root@serverc ~]# radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+{
+    "user_id": "apiuser",
+    "display_name": "S3 User",
+    "email": "",
+    "suspended": 0,
+    "max_buckets": 1000,
+    "subusers": [],
+    "keys": [
+        {
+            "user": "apiuser",
+            "access_key": "123456",
+            "secret_key": "567890"
+        }
+    ],
+    "swift_keys": [],
+    "caps": [],
+    "op_mask": "read, write, delete",
+    "default_placement": "",
+    "default_storage_class": "",
+    "placement_tags": [],
+    "bucket_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "user_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "temp_url_keys": [],
+    "type": "rgw",
+    "mfa_ids": []
+}
+
+[root@serverc ~]# radosgw-admin user list 
+[
+    "apiuser"
+]
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# radosgw-admin subuser create --uid=apiuser --display-name="S3 User" --subuser="apiuser:swift" --key-type=swift --access="full"
+{
+    "user_id": "apiuser",
+    "display_name": "S3 User",
+    "email": "",
+    "suspended": 0,
+    "max_buckets": 1000,
+    "subusers": [
+        {
+            "id": "apiuser:swift",
+            "permissions": "full-control"
+        }
+    ],
+    "keys": [
+        {
+            "user": "apiuser",
+            "access_key": "123456",
+            "secret_key": "567890"
+        }
+    ],
+    "swift_keys": [
+        {
+            "user": "apiuser:swift",
+            "secret_key": "nuvsU7T7jqcy8Ajz7jCTSUTPXDA1kns1gCfaXxv3"
+        }
+    ],
+    "caps": [],
+    "op_mask": "read, write, delete",
+    "default_placement": "",
+    "default_storage_class": "",
+    "placement_tags": [],
+    "bucket_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "user_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "temp_url_keys": [],
+    "type": "rgw",
+    "mfa_ids": []
+}
+
+[root@serverc ~]# radosgw-admin key create --subuser "apiuser:swift" --key-type swift --secret opswiftkey
+{
+    "user_id": "apiuser",
+    "display_name": "S3 User",
+    "email": "",
+    "suspended": 0,
+    "max_buckets": 1000,
+    "subusers": [
+        {
+            "id": "apiuser:swift",
+            "permissions": "full-control"
+        }
+    ],
+    "keys": [
+        {
+            "user": "apiuser",
+            "access_key": "123456",
+            "secret_key": "567890"
+        }
+    ],
+    "swift_keys": [
+        {
+            "user": "apiuser:swift",
+            "secret_key": "opswiftkey"
+        }
+    ],
+    "caps": [],
+    "op_mask": "read, write, delete",
+    "default_placement": "",
+    "default_storage_class": "",
+    "placement_tags": [],
+    "bucket_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "user_quota": {
+        "enabled": false,
+        "check_on_raw": false,
+        "max_size": -1,
+        "max_size_kb": 0,
+        "max_objects": -1
+    },
+    "temp_url_keys": [],
+    "type": "rgw",
+    "mfa_ids": []
+}
+
+[root@serverc ~]# history  10 
+  124  ceph osd set-full-ratio 0.92 
+  125  ceph osd set-nearfull-ratio 0.83
+  126  ceph osd dump | grep ratio 
+  127  radosgw-admin user list 
+  128  # radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+  129  radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+  130  radosgw-admin user list 
+  131  radosgw-admin subuser create --uid=apiuser --display-name="S3 User" --subuser="apiuser:swift" --key-type=swift --access="full"
+  132  radosgw-admin key create --subuser "apiuser:swift" --key-type swift --secret opswiftkey
+  133  history  10 
+[root@serverc ~]# ceph config get client.rgw 
+WHO     MASK  LEVEL     OPTION           VALUE                                                                                                             RO
+global        advanced  cluster_network  172.25.250.0/24                                                                                                   * 
+global        basic     container_image  registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff  * 
+[root@serverc ~]# ceph config set client.rgw rgw_dns_name images.serverc.lab.example.com 
+[root@serverc ~]# ceph config get client.rgw 
+WHO         MASK  LEVEL     OPTION           VALUE                                                                                                             RO
+global            advanced  cluster_network  172.25.250.0/24                                                                                                   * 
+global            basic     container_image  registry.redhat.io/rhceph/rhceph-5-rhel8@sha256:6306de945a6c940439ab584aba9b622f2aa6222947d3d4cde75a4b82649a47ff  * 
+client.rgw        advanced  rgw_dns_name     images.serverc.lab.example.com                                                                                    * 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# vim /etc/hosts 
+[root@serverc ~]# radosgw-admin quota set --quota-scope=user --uid=apiuser --max-objects=10 --max-size=50M 
+[root@serverc ~]# radosgw-admin quota enable --quota-scope=user --uid=apiuser
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# radosgw-admin quota set --quota-scope=bucket --uid=apiuser --max-objects=20 --max-size=70M
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# radosgw-admin quota enable --quota-scope=bucket --uid=apiuser
+[root@serverc ~]# vim mds.yaml
+[root@serverc ~]# ceph orch ls --service-type=mds
+No services reported
+[root@serverc ~]# ceph orch ps --daemon-type=mds
+No daemons reported
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph orch apply -i mds.yaml 
+Scheduled mds.mds_ex260 update...
+[root@serverc ~]# ceph orch ls --service-type=mds
+NAME           RUNNING  REFRESHED  AGE  PLACEMENT                
+mds.mds_ex260      0/1  -          3s   serverc.lab.example.com  
+[root@serverc ~]# ceph orch ps --daemon-type=mds
+NAME                          HOST                     STATUS        REFRESHED  AGE  PORTS  VERSION           IMAGE ID      CONTAINER ID  
+mds.mds_ex260.serverc.odmtnn  serverc.lab.example.com  running (4s)  0s ago     4s   -      16.2.0-117.el8cp  2142b60d7974  80b12d66ea39  
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# ceph status
+  cluster:
+    id:     b2f03c4e-b8d5-11ec-b7f6-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 4 daemons, quorum serverc.lab.example.com,serverd,servere,clienta (age 46m)
+    mgr: serverc.lab.example.com.jebphr(active, since 87m), standbys: serverd.yfiqdo
+    osd: 9 osds: 9 up (since 79m), 9 in (since 79m)
+    rgw: 2 daemons active (1 hosts, 1 zones)
+ 
+  data:
+    pools:   9 pools, 209 pgs
+    objects: 229 objects, 19 MiB
+    usage:   265 MiB used, 90 GiB / 90 GiB avail
+    pgs:     209 active+clean
+ 
+[root@serverc ~]# ceph status
+  cluster:
+    id:     b2f03c4e-b8d5-11ec-b7f6-52540000fa0c
+    health: HEALTH_OK
+ 
+  services:
+    mon: 4 daemons, quorum serverc.lab.example.com,serverd,servere,clienta (age 46m)
+    mgr: serverc.lab.example.com.jebphr(active, since 87m), standbys: serverd.yfiqdo
+    osd: 9 osds: 9 up (since 79m), 9 in (since 79m)
+    rgw: 2 daemons active (1 hosts, 1 zones)
+ 
+  data:
+    pools:   9 pools, 209 pgs
+    objects: 229 objects, 19 MiB
+    usage:   265 MiB used, 90 GiB / 90 GiB avail
+    pgs:     209 active+clean
+ 
+[root@serverc ~]# ceph orch ps --daemon-type=mds
+NAME                          HOST                     STATUS         REFRESHED  AGE  PORTS  VERSION           IMAGE ID      CONTAINER ID  
+mds.mds_ex260.serverc.odmtnn  serverc.lab.example.com  running (24s)  20s ago    23s  -      16.2.0-117.el8cp  2142b60d7974  80b12d66ea39  
+[root@serverc ~]# ceph osd pool create cephfs_data
+pool 'cephfs_data' created
+[root@serverc ~]# ceph osd pool create cephfs_metadata
+pool 'cephfs_metadata' created
+[root@serverc ~]# ceph fs new cephfs01 cephfs_metadata cephfs_data
+new fs with metadata pool 11 and data pool 10
+[root@serverc ~]# ceph fs status
+cephfs01 - 0 clients
+========
+RANK  STATE             MDS                ACTIVITY     DNS    INOS   DIRS   CAPS  
+ 0    active  mds_ex260.serverc.odmtnn  Reqs:    0 /s    10     13     12      0   
+      POOL         TYPE     USED  AVAIL  
+cephfs_metadata  metadata  96.0k  27.4G  
+  cephfs_data      data       0   27.4G  
+MDS version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+[root@serverc ~]# ceph fs ls
+name: cephfs01, metadata pool: cephfs_metadata, data pools: [cephfs_data ]
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# 
+[root@serverc ~]# history 
+    1  cephadm shell ceph -s
+    2  top
+    3  cephadm shell ceph -s
+    4  less /var/log/messages 
+    5  cephadm shell ceph -s
+    6  less /var/log/messages 
+    7  yum list cephadm-ansible 
+    8  cd /usr/share/cephadm-ansible/
+    9  ls
+   10  vim /tmp/myhosts
+   11  cat /tmp/myhosts
+   12  ansible-playbook  -i /tmp/myhosts cephadm-preflight.yml -e "ceph_origin="
+   13  cd
+   14  cephadm bootstrap --help | head -n 25 
+   15  cephadm bootstrap --help | head -n 30
+   16  cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.rehat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+   17  cephadm bootstrap --mon-ip 172.25.250.12 --initial-dashboard-password redhat --dashboard-password-noupdate --allow-fqdn-hostname --registry-url registry.redhat.io --registry-username registry --registry-password redhat --cluster-network 172.25.250.0/24 
+   18  source /etc/bash_completion.d/ceph 
+   19  ls -l /etc/ceph/
+   20  ceph orch host ls 
+   21  ceph orch host add 
+   22  ceph orch host add serverd.lab.example.com 172.25.250.13
+   23  ceph cephadm get-pub-key > ~/ceph.pub
+   24  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.13
+   25  ceph cephadm get-ssh-config > ssh_config
+   26  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   27  chmod 0600 ~/cephadm_private_key
+   28  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.13
+   29  ceph orch host add serverd.lab.example.com 172.25.250.13
+   30  ceph orch host ls 
+   31  ceph orch host add servere.lab.example.com 172.25.250.14
+   32  ceph cephadm get-pub-key > ~/ceph.pub
+   33  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.14
+   34  ceph cephadm get-ssh-config > ssh_config
+   35  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   36  chmod 0600 ~/cephadm_private_key
+   37  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.14
+   38  ceph orch host add servere.lab.example.com 172.25.250.14
+   39  ceph orch host ls 
+   40  ceph orch host add clienta.lab.example.com 172.25.250.10
+   41  ceph cephadm get-pub-key > ~/ceph.pub
+   42  ssh-copy-id -f -i ~/ceph.pub root@172.25.250.10
+   43  ceph cephadm get-ssh-config > ssh_config
+   44  ceph config-key get mgr/cephadm/ssh_identity_key > ~/cephadm_private_key
+   45  chmod 0600 ~/cephadm_private_key
+   46  ssh -F ssh_config -i ~/cephadm_private_key root@172.25.250.10
+   47  ceph orch host add clienta.lab.example.com 172.25.250.10
+   48  ceph orch host ls 
+   49  ceph orch host 
+   50  ceph orch host label add serverc.lab.example.com _admin 
+   51  ceph orch host label add clienta.lab.example.com _admin 
+   52  ceph orch host ls 
+   53  ssh clienta
+   54  rsync -av /etc/ceph/ceph.conf root@clienta:/etc/ceph/
+   55  rsync -av /etc/ceph/ceph.client.admin.keyring  root@clienta:/etc/ceph/
+   56  ceph orch daemon 
+   57  ceph orch daemon add osd serverc.lab.example.com:/dev/vdb 
+   58  ceph orch daemon add osd serverc.lab.example.com:/dev/vdc
+   59  ceph orch daemon add osd serverc.lab.example.com:/dev/vdd
+   60  ceph orch daemon add osd serverd.lab.example.com:/dev/vdb 
+   61  ceph orch daemon add osd serverd.lab.example.com:/dev/vdc
+   62  ceph orch daemon add osd serverd.lab.example.com:/dev/vdd
+   63  ceph orch daemon add osd servere.lab.example.com:/dev/vdb 
+   64  ceph orch daemon add osd servere.lab.example.com:/dev/vdc
+   65  ceph orch daemon add osd servere.lab.example.com:/dev/vdd
+   66  ceph status 
+   67  ceph config get mon mon_allow_pool_delete 
+   68  ceph config set mon mon_allow_pool_delete true 
+   69  ceph config dump | grep pool_delete
+   70  ceph dashboard --help | grep ssl 
+   71  for i in get-alertmanager-api-ssl-verify get-grafana-api-ssl-verify get-iscsi-api-ssl-verification get-prometheus-api-ssl-verify get-rgw-api-ssl-verify ; do  ceph dashboard ${i} ; done
+   72  for i in set-alertmanager-api-ssl-verify set-grafana-api-ssl-verify set-iscsi-api-ssl-verification set-prometheus-api-ssl-verify set-rgw-api-ssl-verify ; do  ceph dashboard ${i} True; done
+   73  for i in get-alertmanager-api-ssl-verify get-grafana-api-ssl-verify get-iscsi-api-ssl-verification get-prometheus-api-ssl-verify get-rgw-api-ssl-verify ; do  ceph dashboard ${i} ; done
+   74  ceph osd erasure-code-profile ls
+   75  ceph osd erasure-code-profile
+   76  ceph osd erasure-code-profile set ex260-profile k=2 m=3 crush-failure-domain=osd 
+   77  ceph osd erasure-code-profile ls
+   78  ceph osd erasure-code-profile get ex260-profile
+   79  ceph osd pool ls 
+   80  ceph osd pool create 
+   81  ceph osd pool create ecpool 32 32 erasure ex260-profile
+   82  ceph osd pool ls detail | grep ecpool 
+   83  ceph osd pool application enable ecpool rgw 
+   84  ceph osd pool create ex260pool 32 32 replicated
+   85  ceph osd pool ls detail | grep ex260pool 
+   86  ceph osd pool application enable ex260pool rbd 
+   87  ceph osd pool ls detail | grep ex260pool 
+   88  # rbd create pool/img260 --size 1024
+   89  ceph auth get-or-create client.thomas mon 'allow r' osd 'allow rwx pool=ecpool namespace=dev' | tee /etc/ceph/ceph.client.thomas.keyring 
+   90  cat /etc/ceph/ceph.client.thomas.keyring
+   91  rsync -av /etc/ceph/ceph.client.thomas.keyring root@clienta:/etc/ceph/
+   92  ssh clienta 
+   93  ceph auth get-or-create client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rw' | tee /etc/ceph/ceph.client.rbd.keyring
+   94  cat /etc/ceph/ceph.client.rbd.keyring
+   95  rsync -av /etc/ceph/ceph.client.rbd.keyring root@clienta:/etc/ceph/
+   96  ssh clienta 
+   97  rbd create ex260pool/img260 --size 512M --id=rbd
+   98  rbd ls ex260pool 
+   99  rbd ls ex260pool --id=rbd 
+  100  rbd create ex260pool/img260 --size 512M --id=rbd
+  101  ceph auth get client.rbd 
+  102  ceph auth caps client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx' > /etc/ceph/ceph.client.rbd.keyring
+  103  cat /etc/ceph/ceph.client.rbd.keyring
+  104  ceph auth caps client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx'| tee /etc/ceph/ceph.client.rbd.keyring
+  105  cat /etc/ceph/ceph.client.rbd.keyring
+  106  ceph auth delete client.rbd 
+  107  ceph auth del client.rbd 
+  108  rm -f /etc/ceph/ceph.client.rbd.keyring 
+  109  ceph auth get-or-create client.rbd mon 'allow *' osd 'allow class-read object_prefix rbd_children, allow pool ex260pool rwx'| tee /etc/ceph/ceph.client.rbd.keyring
+  110  cat /etc/ceph/ceph.client.rbd.keyring
+  111  ssh clienta 
+  112  rsync -av /etc/ceph/ceph.client.rbd.keyring root@clienta:/etc/ceph/
+  113  rbd ls ex260pool --id=rbd 
+  114  rbd create ex260pool/img260 --size 512M --id=rbd
+  115  rbd ls ex260pool --id=rbd 
+  116  ssh clienta 
+  117  su - devops 
+  118  ssh clienta -l devops 
+  119  ssh clienta
+  120  netstat -tunlp | grep -E '80|81'
+  121  curl http://serverc.lab.example.com:80
+  122  curl http://serverc.lab.example.com:81
+  123  ceph osd dump | grep ratio 
+  124  ceph osd set-full-ratio 0.92 
+  125  ceph osd set-nearfull-ratio 0.83
+  126  ceph osd dump | grep ratio 
+  127  radosgw-admin user list 
+  128  # radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+  129  radosgw-admin user create --uid=apiuser --display-name="S3 User" --access-key="123456" --secret="567890" --access="full"
+  130  radosgw-admin user list 
+  131  radosgw-admin subuser create --uid=apiuser --display-name="S3 User" --subuser="apiuser:swift" --key-type=swift --access="full"
+  132  radosgw-admin key create --subuser "apiuser:swift" --key-type swift --secret opswiftkey
+  133  history  10 
+  134  ceph config get client.rgw 
+  135  ceph config set client.rgw rgw_dns_name images.serverc.lab.example.com 
+  136  ceph config get client.rgw 
+  137  vim /etc/hosts 
+  138  radosgw-admin quota set --quota-scope=user --uid=apiuser --max-objects=10 --max-size=50M 
+  139  radosgw-admin quota enable --quota-scope=user --uid=apiuser
+  140  radosgw-admin quota set --quota-scope=bucket --uid=apiuser --max-objects=20 --max-size=70M
+  141  radosgw-admin quota enable --quota-scope=bucket --uid=apiuser
+  142  vim mds.yaml
+  143  ceph orch ls --service-type=mds
+  144  ceph orch ps --daemon-type=mds
+  145  ceph orch apply -i mds.yaml 
+  146  ceph orch ls --service-type=mds
+  147  ceph orch ps --daemon-type=mds
+  148  ceph status
+  149  ceph orch ps --daemon-type=mds
+  150  ceph osd pool create cephfs_data
+  151  ceph osd pool create cephfs_metadata
+  152  ceph fs new cephfs01 cephfs_metadata cephfs_data
+  153  ceph fs status
+  154  ceph fs ls
+  155  history 
+[root@serverc ~]# 
+
+
+[student@workstation ~]$ ssh clienta -l root 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 09:59:10 2022 from 172.25.250.12
+[root@clienta ~]# man rbd 
+[root@clienta ~]# man ceph-authtool
+[root@clienta ~]# man rbd 
+[root@clienta ~]# Connection to clienta closed by remote host.
+Connection to clienta closed.
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ssh clienta -l root 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:24:01 2022 from 172.25.250.12
+[root@clienta ~]# man rbd 
+[root@clienta ~]# vim ./awscli-bundle/install 
+[root@clienta ~]# sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+Running cmd: /bin/python3 virtualenv.py --no-download --python /bin/python3 /usr/local/aws
+Running cmd: /usr/local/aws/bin/pip install --no-binary :all: --no-cache-dir --no-index --find-links file://. setuptools_scm-3.3.3.tar.gz
+Running cmd: /usr/local/aws/bin/pip install --no-binary :all: --no-cache-dir --no-index --find-links file://. wheel-0.33.6.tar.gz
+Running cmd: /usr/local/aws/bin/pip install --no-binary :all: --no-build-isolation --no-cache-dir --no-index  --find-links file:///root/awscli-bundle/packages awscli-1.22.92.tar.gz
+You can now run: /usr/local/bin/aws --version
+
+Note: AWS CLI version 2, the latest major version of the AWS CLI, is now stable and recommended for general use. For more information, see the AWS CLI version 2 installation instructions at: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+[root@clienta ~]# aws --version 
+aws-cli/1.22.92 Python/3.6.8 Linux/4.18.0-305.el8.x86_64 botocore/1.24.37
+[root@clienta ~]# # aws configure  --profile=ceph 
+[root@clienta ~]# su - admin 
+[admin@clienta ~]$ aws configure --profile 
+Note: AWS CLI version 2, the latest major version of the AWS CLI, is now stable and recommended for general use. For more information, see the AWS CLI version 2 installation instructions at: https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
+
+usage: aws [options] <command> <subcommand> [<subcommand> ...] [parameters]
+To see help text, you can run:
+
+  aws help
+  aws <command> help
+  aws <command> <subcommand> help
+aws: error: argument --profile: expected one argument
+[admin@clienta ~]$ aws configure --profile=ceph 
+AWS Access Key ID [None]: 123456
+AWS Secret Access Key [None]: 67890
+Default region name [None]: 
+Default output format [None]: 
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80/ s3 ls 
+
+An error occurred (SignatureDoesNotMatch) when calling the ListBuckets operation: Unknown
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
+
+An error occurred (SignatureDoesNotMatch) when calling the ListBuckets operation: Unknown
+[admin@clienta ~]$ exit 
+logout
+[root@clienta ~]# aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls
+
+The config profile (ceph) could not be found
+[root@clienta ~]# aws configure --profile=ceph 
+AWS Access Key ID [None]: 123456
+AWS Secret Access Key [None]: 567890
+Default region name [None]: 
+Default output format [None]: 
+[root@clienta ~]# aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls
+[root@clienta ~]# su - admin 
+Last login: Sun Apr 10 11:13:52 EDT 2022 on pts/1
+[admin@clienta ~]$ vim .aws/c
+config       credentials  
+[admin@clienta ~]$ vim .aws/c
+config       credentials  
+[admin@clienta ~]$ vim .aws/credentials 
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 mb s3://bucketname 
+make_bucket: bucketname
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
+2022-04-10 11:16:15 bucketname
+[admin@clienta ~]$ 
+[admin@clienta ~]$ 
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 --acl=public-read-write s3 cp /etc/services s3://bucketname/imagename
+upload: ../../etc/services to s3://bucketname/imagename             
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls 
+2022-04-10 11:16:15 bucketname
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls bucketname
+2022-04-10 11:16:51     692252 imagename
+[admin@clienta ~]$ 
+[admin@clienta ~]$ 
+[admin@clienta ~]$ 
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://images.serverc.lab.example.com:80 s3 ls bucketname
+
+Could not connect to the endpoint URL: "http://images.serverc.lab.example.com:80/bucketname?list-type=2&prefix=&delimiter=%2F&encoding-type=url"
+[admin@clienta ~]$ exit
+logout
+[root@clienta ~]# vim /etc/hosts 
+[root@clienta ~]# su - admin 
+Last login: Sun Apr 10 11:15:45 EDT 2022 on pts/1
+[admin@clienta ~]$ aws --profile=ceph --endpoint=http://images.serverc.lab.example.com:80 s3 ls bucketname
+2022-04-10 11:16:51     692252 imagename
+[admin@clienta ~]$ 
+[admin@clienta ~]$ 
+[admin@clienta ~]$ exit 
+logout
+[root@clienta ~]# ceph fs ls 
+name: cephfs01, metadata pool: cephfs_metadata, data pools: [cephfs_data ]
+[root@clienta ~]# ceph fs status 
+cephfs01 - 0 clients
+========
+RANK  STATE             MDS                ACTIVITY     DNS    INOS   DIRS   CAPS  
+ 0    active  mds_ex260.serverc.odmtnn  Reqs:    0 /s    10     13     12      0   
+      POOL         TYPE     USED  AVAIL  
+cephfs_metadata  metadata  96.0k  27.4G  
+  cephfs_data      data       0   27.4G  
+MDS version: ceph version 16.2.0-117.el8cp (0e34bb74700060ebfaa22d99b7d2cdc037b28a57) pacific (stable)
+[root@clienta ~]# mkdir /mnt/cephfs 
+[root@clienta ~]# mount -t ceph serverc.lab.example.com:6789:/ /mnt/cephfs -o name=admin,fs=cephfs01
+[root@clienta ~]# df -h /mnt/cephfs/
+Filesystem            Size  Used Avail Use% Mounted on
+172.25.250.12:6789:/   28G     0   28G   0% /mnt/cephfs
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# df -hT /mnt/cephfs/
+Filesystem           Type  Size  Used Avail Use% Mounted on
+172.25.250.12:6789:/ ceph   28G     0   28G   0% /mnt/cephfs
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# umount /mnt/cephfs/
+[root@clienta ~]# cat /etc/ceph/ceph.client.admin.keyring 
+[client.admin]
+	key = AQCF4VJiLpkTAxAAcl2CNjnBrJwSRDSJ//1Edw==
+[root@clienta ~]# echo "AQCF4VJiLpkTAxAAcl2CNjnBrJwSRDSJ//1Edw==" > /etc/ceph/secret.key
+[root@clienta ~]# vim /etc/fstab 
+[root@clienta ~]# cat /etc/fstab
+UUID=d47ead13-ec24-428e-9175-46aefa764b26	/	xfs	defaults	0	0
+UUID=7B77-95E7	/boot/efi	vfat	defaults,uid=0,gid=0,umask=077,shortname=winnt	0	2
+/dev/rbd/ex260pool/img260 /mnt/rbd ext4 noauto 0 0 
+/dev/rbd/ex260pool/rbd-clone /mnt/clone ext4 noauto 0 0 
+172.25.250.12:6789:/ /mnt/cephfs ceph name=admin,secretfile=/etc/ceph/secret.key,_netdev,fs=cephfs01,noatime 0 0 
+[root@clienta ~]# 
+[root@clienta ~]# man 8  mount
+[root@clienta ~]# 
+[root@clienta ~]# vim /etc/fstab 
+[root@clienta ~]# mount -a 
+[root@clienta ~]# df -hT /mnt/cephfs/
+Filesystem           Type  Size  Used Avail Use% Mounted on
+172.25.250.12:6789:/ ceph   28G     0   28G   0% /mnt/cephfs
+[root@clienta ~]# umount /mnt/cephfs /mnt/rbd /mnt/clone 
+[root@clienta ~]# systemctl reboot 
+Connection to clienta closed by remote host.
+Connection to clienta closed.
+[student@workstation ~]$ ssh clienta -l root 
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Sun Apr 10 10:35:58 2022 from 172.25.250.9
+[root@clienta ~]# df -h 
+Filesystem            Size  Used Avail Use% Mounted on
+devtmpfs              2.8G     0  2.8G   0% /dev
+tmpfs                 2.9G   84K  2.9G   1% /dev/shm
+tmpfs                 2.9G   17M  2.8G   1% /run
+tmpfs                 2.9G     0  2.9G   0% /sys/fs/cgroup
+/dev/vda3             9.9G  4.1G  5.9G  41% /
+/dev/vda2             100M  5.8M   95M   6% /boot/efi
+tmpfs                 576M     0  576M   0% /run/user/0
+overlay               9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/d300175e745499c0a27240c2a9a3130cd1875da139be85411a2f3156eef1cad6/merged
+overlay               9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/27eb9566465e6eed4f61798a7252ee9134e18f33626ec458ce0df303874786fa/merged
+overlay               9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/cb4dc550adf0be0aa1d9ced514d7e04e66ed841adcd563910dce46a0d75b9d26/merged
+/dev/rbd0             488M   11M  442M   3% /mnt/rbd
+/dev/rbd1             488M   11M  442M   3% /mnt/clone
+172.25.250.12:6789:/   28G     0   28G   0% /mnt/cephfs
+[root@clienta ~]# df -hT 
+Filesystem           Type      Size  Used Avail Use% Mounted on
+devtmpfs             devtmpfs  2.8G     0  2.8G   0% /dev
+tmpfs                tmpfs     2.9G   84K  2.9G   1% /dev/shm
+tmpfs                tmpfs     2.9G   17M  2.8G   1% /run
+tmpfs                tmpfs     2.9G     0  2.9G   0% /sys/fs/cgroup
+/dev/vda3            xfs       9.9G  4.1G  5.9G  41% /
+/dev/vda2            vfat      100M  5.8M   95M   6% /boot/efi
+tmpfs                tmpfs     576M     0  576M   0% /run/user/0
+overlay              overlay   9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/d300175e745499c0a27240c2a9a3130cd1875da139be85411a2f3156eef1cad6/merged
+overlay              overlay   9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/27eb9566465e6eed4f61798a7252ee9134e18f33626ec458ce0df303874786fa/merged
+overlay              overlay   9.9G  4.1G  5.9G  41% /var/lib/containers/storage/overlay/cb4dc550adf0be0aa1d9ced514d7e04e66ed841adcd563910dce46a0d75b9d26/merged
+/dev/rbd0            ext4      488M   11M  442M   3% /mnt/rbd
+/dev/rbd1            ext4      488M   11M  442M   3% /mnt/clone
+172.25.250.12:6789:/ ceph       28G     0   28G   0% /mnt/cephfs
+[root@clienta ~]# ls -lh /mnt/rbd/
+total 11M
+-rw-r--r--. 1 root root 10M Apr 10 10:20 file1
+drwx------. 2 root root 16K Apr 10 10:20 lost+found
+[root@clienta ~]# ls -lh /mnt/clone/
+total 11M
+-rw-r--r--. 1 root root 10M Apr 10 10:20 file1
+drwx------. 2 root root 16K Apr 10 10:20 lost+found
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# ls -lh /mnt/cephfs/
+total 0
+[root@clienta ~]# 
+[root@clienta ~]# 
+[root@clienta ~]# history 
+    1  exit
+    2  yum -y install ceph-common 
+    3  ls -l /etc/ceph/
+    4  exit 
+    5  rados -p ecpool ls --id=thomas
+    6  rados -p ecpool -N dev ls --id=thomas
+    7  exit
+    8  rbd ls rbd --idrbd 
+    9  rbd ls rbd --id=rbd 
+   10  rbd ls ex260pool --id=rbd 
+   11  rbd create ex260pool/img260 --size 512M --id=rbd 
+   12  exit 
+   13  rm -f /etc/ceph/ceph.client.rbd.keyring 
+   14  exit 
+   15  rbd ls ex260pool --id=rbd 
+   16  mkdir /mnt/rbd .ssh/
+   17  rbd map ex260pool/img260 
+   18  mkfs.ext4 /dev/rbd0 
+   19  mount /dev/rbd0 /mnt/rbd/
+   20  df -hT /mnt/rbd/
+   21  dd if/dev/zero of=/mnt/rbd/file1 bs=1M count=10
+   22  dd if=/dev/zero of=/mnt/rbd/file1 bs=1M count=10
+   23  du /mnt/rbd/
+   24  du -sh /mnt/rbd/
+   25  ceph df 
+   26  umount /mnt/rbd
+   27  cat  /etc/ceph/rbdmap 
+   28  ls -l /etc/ceph/ceph.client.rbd.keyring 
+   29  vim /etc/ceph/rbdmap 
+   30  cat /etc/ceph/rbdmap
+   31  cat /etc/fstab 
+   32  vim /etc/fstab 
+   33  cat /etc/fstab
+   34  rbd showmapped
+   35  rbd unmap ex260pool/img260 
+   36  rbd showmapped
+   37  systemctl enable rbdmap
+   38  systemctl reboot 
+   39  man rbd 
+   40  man ceph-authtool
+   41  man rbd 
+   42  df -h /mnt/rbd/
+   43  ls -lh /mnt/rbd/
+   44  # rbd export mypool/myimage@snap /tmp/img
+   45  exit 
+   46  rbd showmapped
+   47  rbs ls ex260pool 
+   48  rbd ls ex260pool --id=rbd 
+   49  rbd map ex260pool/rbd-clone --id=rbd
+   50  rbd showmapped
+   51  mkdir /mnt/clone
+   52  mount /dev/rbd1 /mnt/clone
+   53  df -hT /mnt/clone
+   54  du -sh /mnt/clone
+   55  ls -lh /mnt/clone
+   56  umount /mnt/clone 
+   57  vim /etc/ceph/rbdmap 
+   58  cat /etc/ceph/rbdmap
+   59  vim /etc/fstab 
+   60  df -h 
+   61  umount /mnt/rbd
+   62  rbd showmapped
+   63  rbd unmap ex260pool/rbd-clone
+   64  rbd unmap ex260pool/img260
+   65  rbd showmapped
+   66  systemctl restart rbdmap 
+   67  systemctl reboot 
+   68  df -hT 
+   69  vim rgw.yaml
+   70  ceph orch ls --service-type=rgw 
+   71  ceph orch ps --daemon-type=rgw 
+   72  ceph orch apply -i rgw.yaml 
+   73  ceph orch ls --service-type=rgw 
+   74  ceph orch ps --daemon-type=rgw 
+   75  ceph orch ls --service-type=rgw 
+   76  exit 
+   77  curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+   78  unzip awscli-bundle.zip
+   79  vim ./awscli-bundle/install 
+   80  sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+   81  aws --version 
+   82  # aws configure  --profile=ceph 
+   83  su - admin 
+   84  aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls
+   85  aws configure --profile=ceph 
+   86  aws --profile=ceph --endpoint=http://serverc.lab.example.com:80 s3 ls
+   87  su - admin 
+   88  vim /etc/hosts 
+   89  su - admin 
+   90  ceph fs ls 
+   91  ceph fs status 
+   92  mkdir /mnt/cephfs 
+   93  mount -t ceph serverc.lab.example.com:6789:/ /mnt/cephfs -o name=admin,fs=cephfs01
+   94  df -h /mnt/cephfs/
+   95  df -hT /mnt/cephfs/
+   96  umount /mnt/cephfs/
+   97  cat /etc/ceph/ceph.client.admin.keyring 
+   98  echo "AQCF4VJiLpkTAxAAcl2CNjnBrJwSRDSJ//1Edw==" > /etc/ceph/secret.key
+   99  vim /etc/fstab 
+  100  cat /etc/fstab
+  101  man 8  mount
+  102  vim /etc/fstab 
+  103  mount -a 
+  104  df -hT /mnt/cephfs/
+  105  umount /mnt/cephfs /mnt/rbd /mnt/clone 
+  106  systemctl reboot 
+  107  df -h 
+  108  df -hT 
+  109  ls -lh /mnt/rbd/
+  110  ls -lh /mnt/clone/
+  111  ls -lh /mnt/cephfs/
+  112  history 
+[root@clienta ~]# 
+

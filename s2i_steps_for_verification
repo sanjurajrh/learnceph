@@ -1,0 +1,15 @@
+oc login -u vkndeo -p e5e8e891ea464403b15e https://api.ap46a.prod.ole.redhat.com:6443
+oc new-project vkndeo-project-s2i 
+TOKEN=$(oc whoami -t )
+oc get route -n openshift-image-registry 
+skopeo copy --dest-creds=vkndeo:${TOKEN} containers-storage:localhost/s2i-demo-httpd docker://default-route-openshift-image-registry.apps.ap46a.prod.ole.redhat.com/vkndeo-project-s2i/s2iimage
+oc get is 
+oc new-app --name welcome-s2i s2iimage~https://github.com/sanjurajrh/s2idemo
+oc  logs -f buildconfig/welcome-s2i
+oc get pods 
+oc get svc 
+oc get route 
+oc expose svc/welcome-s2i
+oc get route 
+firefox http://welcome-s2i-vkndeo-project-s2i.apps.ap46a.prod.ole.redhat.com  & 
+

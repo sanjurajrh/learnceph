@@ -1,0 +1,133 @@
+    1  helm 
+    2  which helm 
+    3  sudo rm -f /usr/bin/helm m
+    4  sudo rm -f /usr/bin/helm
+    5  helm
+    6  lab multicontainer-helm start 
+    7  helm
+    8  cd DO288/labs/multicontainer-helm/
+    9  helm create famouschart
+   10  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+   11  cd
+   12  helm version
+   13  s2i version
+   14  which s2i 
+   15  sudo rpm -qf /usr/local/bin/s2i
+   16  ls
+   17  s2i create -h 
+   18  s2i create s2i-demo-httpd s2i-demo-httpd
+   19  ls
+   20  tree s2i-demo-httpd/
+   21  cd s2i-demo-httpd/
+   22  mv Dockerfile Containerfile
+   23  vim Containerfile 
+   24  podman search ubi8 
+   25  vim Containerfile 
+   26  vim s2i/bin/assemble 
+   27  cat s2i/bin/assemble
+   28  vim s2i/bin/assemble
+   29  vim s2i/bin/run 
+   30  vim s2i/bin/usage 
+   31  ls s2i/bin/
+   32  vim s2i/bin/save-artifacts 
+   33  rm -f s2i/bin/save-artifacts
+   34  podman build -t s2i-demo-httpd . 
+   35  podman images 
+   36  vim Containerfile 
+   37  s2i build -h 
+   38  ls
+   39  mkdir ~/s2i-sample-app 
+   40  tree 
+   41  cat test/test-app/index.html 
+   42  s2i build test/test-app/ s2i-demo-httpd s2i-sample-app --as-dockerfile~/s2i-sample-app/Containerfile
+   43  s2i build test/test-app/ s2i-demo-httpd s2i-sample-app --as-dockerfile ~/s2i-sample-app/Containerfile
+   44  tree ~/s2i-sample-app/
+   45  cd ~/s2i-sample-app/
+   46  vim Containerfile 
+   47  podman build -t s2i-sample-app . 
+   48  podman images 
+   49  podman run --name test -u 1235 -p 8080:8080 -d s2i-sample-app
+   50  podman ps 
+   51  curl localhost:8080 
+   52  podman build --hep 
+   53  podman build --help
+   54  podman login quay.io
+   55  podman images 
+   56  skopeo copy containers-storage:localhost/s2i-demo-httpd docker:/quay.io/sanjuraj_rh/s2i-demo-httpd:v1.1 
+   57  skopeo copy containers-storage:localhost/s2i-demo-httpd docker://quay.io/sanjuraj_rh/s2i-demo-httpd:v1.1 
+   58  oc login -u vkndeo -p e5e8e891ea464403b15e https://api.ap46a.prod.ole.redhat.com:6443
+   59  oc new-project vkndeo-project-s2i 
+   60  oc import-image s2i-demo-httpd --from=quay.io/sanjuraj_rh/s2i-demo-httpd:v1.1 --confirm 
+   61  # skopeo copy containers-storage:localhost/s2i-demo-httpd docker://quay.io/sanjuraj_rh/s2i-demo-httpd:v1.1 
+   62  TOKEN=$(oc whoami -t )
+   63  oc get route -n openshift-image-registry 
+   64  skopeo copy --dest-creds=vkndeo:${TOKEN} containers-storage:localhost/s2i-demo-httpd docker://default-route-openshift-image-registry.apps.ap46a.prod.ole.redhat.com/vkndeo-project-s2i/s2iimage
+   65  oc get is 
+   66  oc delete is s2i-demo-httpd
+   67  oc new-app --name welcome-s2i s2iimage~https://github.com/sanjurajrh/s2idemo
+   68  oc  logs -f buildconfig/welcome-s2i
+   69  oc get pods 
+   70  oc get svc 
+   71  oc get route 
+   72  oc expose svc/welcome-s2i
+   73  oc get route 
+   74  firefox http://welcome-s2i-vkndeo-project-s2i.apps.ap46a.prod.ole.redhat.com  & 
+   75  history 
+   76  cat ~/s2i_steps_for_verification 
+   77  helm 
+   78  helm version
+   79  cd
+   80  helm version
+   81  helm list 
+   82  helm search hub wordpress
+   83  helm repo list 
+   84  helm repo add bitnami https://charts.bitnami.com/bitnami
+   85  helm repo list 
+   86  helm search repo wordpress
+   87  helm 
+   88  ls
+   89  helm repo list 
+   90  helm create mychart
+   91  ls 
+   92  tree mychart/
+   93  cd mychart/
+   94  vim Chart.yaml 
+   95  vim values.yaml
+   96  cd templates/
+   97  vim deployment.yaml 
+   98  vim ../values.yaml 
+   99  tail ../values.yaml
+  100  cd  ..
+  101  ls
+  102  oc new-project vkndeo-helm
+  103  helm install mychartapp . 
+  104  oc get deployment
+  105  oc get pods 
+  106  vim values.yaml 
+  107  podman pull quay.io/redhattraining/versioned-hello:v1.1 
+  108  oc logs mychartapp-5d8dc4469b-scrg2
+  109  podman  run -p 8180:8080 -d  quay.io/redhattraining/versioned-hello:v1.1
+  110  podman ps 
+  111  curl localhost:8180
+  112  vim values.yaml 
+  113  helm list 
+  114  helm upgrade mychartapp 
+  115  helm upgrade mychartapp .
+  116  oc get deployment
+  117  oc get pods 
+  118  oc get all
+  119  oc expose svc/mychartapp
+  120  oc get route 
+  121  curl mychartapp-vkndeo-helm.apps.ap46a.prod.ole.redhat.com
+  122  oc exec -it mychartapp-58445c8f58-dd7lg -- env 
+  123  tail values.yaml 
+  124  cat templates/deployment.yaml 
+  125  cat values.yaml 
+  126  ls templates/
+  127  cat templates/service.yaml 
+  128  grep -i service values.yaml -C3 
+  129  ls
+  130  ls charts/
+  131  history 
+  132* oc get history  
+  133  history > history_12.txt

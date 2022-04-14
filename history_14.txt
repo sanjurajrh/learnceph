@@ -1,0 +1,152 @@
+    1  exit
+    2  lab-configure 
+    3  git clone https://github.com/sanjurajrh/DO180-apps.git
+    4  git clone https://github.com/sanjurajrh/DO288-apps.git
+    5  cd DO180-apps/
+    6  git checkout -b exercise
+    7  echo "tst" > test.txt
+    8  git add test.txt
+    9  git commit -m "new file"
+   10  git push --set-upstream origin exercise 
+   11  git pull 
+   12  git branch 
+   13  git checkout -b ex1
+   14  echo "tst" > test.txt
+   15  git add test.txt
+   16  git commit -m "new file"
+   17  git push --set-upstream origin ex1
+   18  cd
+   19  ls 
+   20  cat /usr/local/etc/ocp4.config 
+   21  lab external-registry start 
+   22  cat /run/user/1000/containers/auth.json
+   23  podman login quay.io
+   24  id
+   25  podman login quay.io
+   26  cat /run/user/1000/containers/auth.json
+   27  podman logout quay.io
+   28  cat /run/user/1000/containers/auth.json
+   29  echo $XDG_RUNTIME
+   30  skopeo copy -h 
+   31  echo $XDG_RUNTIME_DIR
+   32  oc whoami  
+   33  oc get projects
+   34  oc project vkndeo-project1-oci
+   35  oc get secrets 
+   36  oc describe sa default 
+   37  oc new-app --name==ubisleepapp --docker-image=quay.io/sanjuraj_rh/ubi-sleep:1.0
+   38  oc get route -n openshift-image-registry 
+   39  oc get route/default-route -n openshift-image-registry -o yaml 
+   40  # defaultRoute: true 
+   41  oc get all -n openshift-image-registry 
+   42  oc get config -n openshift-image-registry
+   43  oc get is
+   44  oc get istag
+   45  lab multicontainer-helm start 
+   46  help m 
+   47  helm
+   48  curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 
+   49  chmod 700 get_helm.sh
+   50  ./get_helm.sh 
+   51  helm3
+   52  helm
+   53  helm version 
+   54  history 
+   55  $(date +%Y-%m-%d)
+   56  date +%Y-%m-%d
+   57  DATE=$(date +%Y-%m-%d)
+   58  echo $DATE
+   59  cat ~/s2i_steps_for_verification 
+   60  exit 
+   61  history 
+   62  oc login -u vkndeo -p e5e8e891ea464403b15e https://api.ap46a.prod.ole.redhat.com:6443
+   63  oc new-project vkndeo-rs
+   64  oc delete project vkndeo-rs
+   65  ls
+   66  lab trigger-builds start 
+   67  cd /home/student/DO288/labs/trigger-builds/
+   68  ls
+   69  cp php-73-ubi8-newer.tar.gz /home/student/
+   70  cp php-73-ubi8-original.tar.gz /home/student/
+   71  cat oc-new-app.sh 
+   72  cat push-newer.sh 
+   73  cat push-original.sh 
+   74  cd
+   75  ls DO288-apps/trigger-builds/
+   76  cat DO288-apps/trigger-builds/index.php 
+   77  ls
+   78  vim pod.yaml 
+   79  vim pod.yaml
+   80  oc login -u vkndeo -p e5e8e891ea464403b15e https://api.ap46a.prod.ole.redhat.com:6443
+   81  oc new-project vkndeo-test1
+   82  kubectl create -f pod.yaml
+   83  oc get pods 
+   84  kubectl delete -f pods
+   85  kubectl delete -f pod.yaml 
+   86  oc get pods 
+   87  vim pod.yaml 
+   88  kubectl create -f pod.yaml
+   89  oc get pods 
+   90  oc get pods -w
+   91  oc get pods 
+   92  oc delete -f pod.yaml 
+   93  oc projects
+   94  oc get all
+   95  oc whoami 
+   96  kubectl create deployment livenessprobe --image=quay.io/sanjuraj_rh/busybox --dry-run=client -o yaml > livenessprobe.yaml
+   97  vim livenessprobe.yaml 
+   98  oc projects
+   99  oc get all
+  100  oc create -f livenessprobe.yaml 
+  101  oc get pods 
+  102  watch -d oc get pods 
+  103  oc describe deployment
+  104  oc get events 
+  105  oc edit deployment
+  106  oc get route -n openshift-console
+  107  firefox console-openshift-console.apps.ap46a.prod.ole.redhat.com & 
+  108  # oc login -u vkndeo -p e5e8e891ea464403b15e https://api.ap46a.prod.ole.redhat.com:6443
+  109  sudo yum -y install gnome-tweaks 
+  110  gnome-tweaks
+  111  oc set probe -h 
+  112  oc get all
+  113  oc get dc 
+  114  oc set deployment-hook -h 
+  115  oc edit deployment 
+  116  oc describe deployment | grep -i trigger
+  117  oc describe deployment
+  118  oc set image -h 
+  119  oc rollout -h 
+  120  oc edit deployment
+  121  oc set resources -h 
+  122  oc get limitranges 
+  123  oc describe limitranges
+  124  oc get all
+  125  oc get replicaset.apps/livenessprobe-59c968f658 -o yaml 
+  126  oc exlain replicaset
+  127  oc explain replicaset
+  128  oc explain replicaset.spec
+  129  oc explain replicaset.spec.selector
+  130  oc explain replicationcontroller.spec.selector
+  131  oc create service -h 
+  132  oc create service externalname -h 
+  133  o get svc 
+  134  oc get svc 
+  135  oc get projects 
+  136  oc project vkndeo-project-s2i
+  137  oc get svc  
+  138  oc create service externalname -h 
+  139  # dbhost=$(echo mysql.ocp-${RHT_OCP4_WILDCARD_DOMAIN#"apps."}) 
+  140  oc projects
+  141  oc project vkndeo-external-service
+  142  dbhost=$(echo mysql.ocp-${RHT_OCP4_WILDCARD_DOMAIN#"apps."}) 
+  143  echo ${dbhost}
+  144  source /usr/local/etc/ocp4.config 
+  145  dbhost=$(echo mysql.ocp-${RHT_OCP4_WILDCARD_DOMAIN#"apps."}) 
+  146  echo ${dbhost}
+  147  echo ${RHT_OCP4_WILDCARD_DOMAIN}
+  148  ls 
+  149  oc get pods 
+  150  exit 
+  151  history 
+  152  history  > history_14.txt

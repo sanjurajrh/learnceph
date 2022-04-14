@@ -1,0 +1,2605 @@
+[student@workstation ~]$ oc whoami 
+kube:admin
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -A | grep master01
+openshift-etcd                                     etcd-master01                                                     3/3     Running            0          274d
+openshift-etcd                                     revision-pruner-3-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-6-master01                                              0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-7-master01                                              0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-8-master01                                              0/1     Completed          0          4d18h
+openshift-kube-apiserver                           kube-apiserver-master01                                           5/5     Running            0          4d18h
+openshift-kube-apiserver                           revision-pruner-5-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-7-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-8-master01                                        0/1     Completed          0          4d18h
+openshift-kube-controller-manager                  installer-6-master01                                              0/1     Completed          0          274d
+openshift-kube-controller-manager                  installer-7-master01                                              0/1     Completed          0          274d
+openshift-kube-controller-manager                  kube-controller-manager-master01                                  4/4     Running            0          274d
+openshift-kube-controller-manager                  revision-pruner-5-master01                                        0/1     Completed          0          274d
+openshift-kube-controller-manager                  revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-controller-manager                  revision-pruner-7-master01                                        0/1     Completed          0          274d
+openshift-kube-scheduler                           installer-8-master01                                              0/1     Completed          0          274d
+openshift-kube-scheduler                           openshift-kube-scheduler-master01                                 3/3     Running            0          274d
+openshift-kube-scheduler                           revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-scheduler                           revision-pruner-8-master01                                        0/1     Completed          0          274d
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get nodes 
+NAME       STATUS   ROLES           AGE    VERSION
+master01   Ready    master,worker   274d   v1.19.0+b00ba52
+master02   Ready    master,worker   274d   v1.19.0+b00ba52
+master03   Ready    master,worker   274d   v1.19.0+b00ba52
+[student@workstation ~]$ oc get pods -A | grep master01
+openshift-etcd                                     etcd-master01                                                     3/3     Running            0          274d
+openshift-etcd                                     revision-pruner-3-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-6-master01                                              0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-7-master01                                              0/1     Completed          0          274d
+openshift-kube-apiserver                           installer-8-master01                                              0/1     Completed          0          4d18h
+openshift-kube-apiserver                           kube-apiserver-master01                                           5/5     Running            0          4d18h
+openshift-kube-apiserver                           revision-pruner-5-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-7-master01                                        0/1     Completed          0          274d
+openshift-kube-apiserver                           revision-pruner-8-master01                                        0/1     Completed          0          4d18h
+openshift-kube-controller-manager                  installer-6-master01                                              0/1     Completed          0          274d
+openshift-kube-controller-manager                  installer-7-master01                                              0/1     Completed          0          274d
+openshift-kube-controller-manager                  kube-controller-manager-master01                                  4/4     Running            0          274d
+openshift-kube-controller-manager                  revision-pruner-5-master01                                        0/1     Completed          0          274d
+openshift-kube-controller-manager                  revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-controller-manager                  revision-pruner-7-master01                                        0/1     Completed          0          274d
+openshift-kube-scheduler                           installer-8-master01                                              0/1     Completed          0          274d
+openshift-kube-scheduler                           openshift-kube-scheduler-master01                                 3/3     Running            0          274d
+openshift-kube-scheduler                           revision-pruner-6-master01                                        0/1     Completed          0          274d
+openshift-kube-scheduler                           revision-pruner-8-master01                                        0/1     Completed          0          274d
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -A | grep etcd-master01
+openshift-etcd                                     etcd-master01                                                     3/3     Running            0          274d
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ssh lab@utility
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Wed Apr 13 22:39:49 2022 from 172.25.250.9
+[lab@utility ~]$ ls -a .ssh/
+.  ..  authorized_keys  known_hosts  lab_rsa
+[lab@utility ~]$ exit 
+logout
+Connection to utility closed.
+[student@workstation ~]$ kubectl run mystaticpod --image=quay.io/redhattraining/hello-world-nginx:v1.0 --dry-run=client -o yaml > mystaticpod.yaml 
+[student@workstation ~]$ vim mystaticpod.yaml
+[student@workstation ~]$ cat mystaticpod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: mystaticpod
+  name: mystaticpod
+spec:
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx:v1.0
+    name: mystaticpod
+[student@workstation ~]$ ssh lab@utility
+Activate the web console with: systemctl enable --now cockpit.socket
+
+This system is not registered to Red Hat Insights. See https://cloud.redhat.com/
+To register this system, run: insights-client --register
+
+Last login: Thu Apr 14 03:37:25 2022 from 172.25.250.9
+[lab@utility ~]$ ssh -i .ssh/lab_rsa core@master01.ocp4.example.com 
+Red Hat Enterprise Linux CoreOS 46.82.202106181041-0
+  Part of OpenShift 4.6, RHCOS is a Kubernetes native operating system
+  managed by the Machine Config Operator (`clusteroperator/machine-config`).
+
+WARNING: Direct SSH access to machines is not recommended; instead,
+make configuration changes via `machineconfig` objects:
+  https://docs.openshift.com/container-platform/4.6/architecture/architecture-rhcos.html
+
+---
+Last login: Thu Apr 14 02:40:04 2022 from 192.168.50.254
+[core@master01 ~]$ sudo -i 
+[root@master01 ~]# systemctl status kubelet
+Warning: The unit file, source configuration file or drop-ins of kubelet.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+● kubelet.service - Kubernetes Kubelet
+   Loaded: loaded (/etc/systemd/system/kubelet.service; enabled; vendor preset: enabled)
+  Drop-In: /etc/systemd/system/kubelet.service.d
+           └─10-mco-default-env.conf, 20-nodenet.conf
+   Active: active (running) since Thu 2022-04-14 02:22:17 UTC; 5h 18min ago
+  Process: 1963 ExecStartPre=/bin/rm -f /var/lib/kubelet/cpu_manager_state (code=exited, status=0/SUCCESS)
+  Process: 1961 ExecStartPre=/bin/mkdir --parents /etc/kubernetes/manifests (code=exited, status=0/SUCCESS)
+ Main PID: 1965 (kubelet)
+    Tasks: 27 (limit: 102075)
+   Memory: 460.9M
+      CPU: 58min 57.654s
+   CGroup: /system.slice/kubelet.service
+           └─1965 kubelet --config=/etc/kubernetes/kubelet.conf --bootstrap-kubeconfig=/etc/kubernetes/kubeconfig --kubeconfig=/var/lib/kubelet/k>
+
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.301368    1965 secret.go:207] Received secret openshift-apiserver-operator/openshift-api>
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.333828    1965 prober.go:126] Readiness probe for "apiserver-648cb74f5-5bmsm_openshift-a>
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.438112    1965 prober.go:126] Readiness probe for "prometheus-k8s-1_openshift-monitoring>
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.586340    1965 prober.go:126] Readiness probe for "kube-controller-manager-master01_open>
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.694332    1965 prober.go:126] Readiness probe for "openshift-config-operator-585c7fcffc->
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.694592    1965 prober.go:126] Readiness probe for "catalog-operator-68545cd776-4w7nq_ope>
+Apr 14 07:40:47 master01 hyperkube[1965]: I0414 07:40:47.748018    1965 prober.go:126] Liveness probe for "openshift-config-operator-585c7fcffc-m>
+Apr 14 07:40:48 master01 hyperkube[1965]: I0414 07:40:48.436838    1965 httplog.go:94] "HTTP" verb="GET" URI="/metrics/probes" latency="774.476µs>
+Apr 14 07:40:48 master01 hyperkube[1965]: I0414 07:40:48.460584    1965 prober.go:126] Liveness probe for "openshift-kube-scheduler-master01_open>
+Apr 14 07:40:48 master01 hyperkube[1965]: I0414 07:40:48.527998    1965 prober.go:126] Liveness probe for "dns-default-ptfpt_openshift-dns(ebc79d>
+[root@master01 ~]# vim /etc/kubernetes/kubelet.conf 
+-bash: vim: command not found
+[root@master01 ~]# vi /etc/kubernetes/kubelet.conf
+[root@master01 ~]# ls -l /etc/kubernetes/manifests/
+total 44
+-rw-r--r--. 1 root root 15993 Jul 13  2021 etcd-pod.yaml
+-rw-r--r--. 1 root root  6949 Apr  9 12:45 kube-apiserver-pod.yaml
+-rw-r--r--. 1 root root  5950 Jul 13  2021 kube-controller-manager-pod.yaml
+-rw-r--r--. 1 root root  4547 Jul 13  2021 kube-scheduler-pod.yaml
+-rw-r--r--. 1 root root   697 Jul 13  2021 recycler-pod.yaml
+[root@master01 ~]# vi /etc/kubernetes/manifests/static.yaml
+[root@master01 ~]# exit 
+logout
+[core@master01 ~]$ exit 
+logout
+Connection to master01.ocp4.example.com closed.
+[lab@utility ~]$ logout
+Connection to utility closed.
+[student@workstation ~]$ 
+
+
+[student@workstation ~]$ oc whoami 
+kube:admin
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get all
+NAME                                READY   STATUS             RESTARTS   AGE
+pod/mysql-56-rhel7-fc4db575-s2mpd   0/1     CrashLoopBackOff   66         3d2h
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/mysql-56-rhel7   ClusterIP   172.30.65.158   <none>        3306/TCP   3d3h
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mysql-56-rhel7   0/1     1            0           3d3h
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/mysql-56-rhel7-56df99675c   0         0         0       3d2h
+replicaset.apps/mysql-56-rhel7-64dbdf5b8    0         0         0       3d3h
+replicaset.apps/mysql-56-rhel7-69c5b8d8fb   0         0         0       3d2h
+replicaset.apps/mysql-56-rhel7-c6c74d5dd    0         0         0       3d2h
+replicaset.apps/mysql-56-rhel7-f65d89f65    0         0         0       3d3h
+replicaset.apps/mysql-56-rhel7-fc4db575     1         1         0       3d2h
+
+NAME                                            IMAGE REPOSITORY                                                           TAGS     UPDATED
+imagestream.image.openshift.io/mysql-56-rhel7   image-registry.openshift-image-registry.svc:5000/project1/mysql-56-rhel7   latest   3 days ago
+[student@workstation ~]$ oc projects
+You have access to the following projects and can switch between them with ' project <projectname>':
+
+    default
+    kube-node-lease
+    kube-public
+    kube-system
+    myproject
+    nfs-client-provisioner - NFS Provisioner
+    openshift
+    openshift-apiserver
+    openshift-apiserver-operator
+    openshift-authentication
+    openshift-authentication-operator
+    openshift-cloud-credential-operator
+    openshift-cluster-csi-drivers
+    openshift-cluster-machine-approver
+    openshift-cluster-node-tuning-operator
+    openshift-cluster-samples-operator
+    openshift-cluster-storage-operator
+    openshift-cluster-version
+    openshift-config
+    openshift-config-managed
+    openshift-config-operator
+    openshift-console
+    openshift-console-operator
+    openshift-controller-manager
+    openshift-controller-manager-operator
+    openshift-dns
+    openshift-dns-operator
+    openshift-etcd
+    openshift-etcd-operator
+    openshift-image-registry
+    openshift-infra
+    openshift-ingress
+    openshift-ingress-operator
+    openshift-insights
+    openshift-kni-infra
+    openshift-kube-apiserver
+    openshift-kube-apiserver-operator
+    openshift-kube-controller-manager
+    openshift-kube-controller-manager-operator
+    openshift-kube-scheduler
+    openshift-kube-scheduler-operator
+    openshift-kube-storage-version-migrator
+    openshift-kube-storage-version-migrator-operator
+    openshift-machine-api
+    openshift-machine-config-operator
+    openshift-marketplace
+    openshift-monitoring
+    openshift-multus
+    openshift-network-operator
+    openshift-node
+    openshift-oauth-apiserver
+    openshift-openstack-infra
+    openshift-operator-lifecycle-manager
+    openshift-operators
+    openshift-ovirt-infra
+    openshift-pipelines
+    openshift-sdn
+    openshift-service-ca
+    openshift-service-ca-operator
+    openshift-user-workload-monitoring
+    openshift-vsphere-infra
+  * project1
+
+Using project "project1" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get pods -n default 
+No resources found in default namespace.
+[student@workstation ~]$ oc get pods -n default 
+NAME                   READY   STATUS    RESTARTS   AGE
+mystaticpod-master01   1/1     Running   0          6s
+[student@workstation ~]$ oc get pods -n default -o wide 
+NAME                   READY   STATUS    RESTARTS   AGE   IP          NODE       NOMINATED NODE   READINESS GATES
+mystaticpod-master01   1/1     Running   0          29s   10.8.0.50   master01   <none>           <none>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ ls
+abc.txt  Documents  git-clone.yaml  Music             Pictures  tekton-tutorial  venv
+Desktop  Downloads  kaniko.yaml     mystaticpod.yaml  Public    Templates        Videos
+[student@workstation ~]$ cp mystaticpod.yaml init.yaml
+[student@workstation ~]$ vim init.yaml
+[student@workstation ~]$ oc get pods 
+NAME                            READY   STATUS             RESTARTS   AGE
+mysql-56-rhel7-fc4db575-s2mpd   0/1     CrashLoopBackOff   68         3d2h
+[student@workstation ~]$ #oc create -f init.yaml 
+[student@workstation ~]$ cat init.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: myinitpod
+  name: myinitpod
+spec:
+  initContainers:
+  - name: myinit-container 
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'sleep 30']
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx:v1.0
+    name: mycontainer
+[student@workstation ~]$ oc create -f init.yaml 
+pod/myinitpod created
+[student@workstation ~]$ oc get pods -w
+NAME                            READY   STATUS             RESTARTS   AGE
+myinitpod                       0/1     Init:0/1           0          3s
+mysql-56-rhel7-fc4db575-s2mpd   0/1     CrashLoopBackOff   68         3d2h
+
+
+myinitpod                       0/1     Init:0/1           0          10s
+myinitpod                       0/1     Init:0/1           0          11s
+
+
+myinitpod                       0/1     PodInitializing    0          41s
+myinitpod                       1/1     Running            0          54s
+^C[student@workstation ~]$ oc get pods 
+NAME                            READY   STATUS             RESTARTS   AGE
+myinitpod                       1/1     Running            0          68s
+mysql-56-rhel7-fc4db575-s2mpd   0/1     CrashLoopBackOff   68         3d2h
+[student@workstation ~]$ oc describe pod/myinitpod
+Name:         myinitpod
+Namespace:    project1
+Priority:     0
+Node:         master02/192.168.50.11
+Start Time:   Thu, 14 Apr 2022 03:51:25 -0400
+Labels:       run=myinitpod
+Annotations:  k8s.v1.cni.cncf.io/network-status:
+                [{
+                    "name": "",
+                    "interface": "eth0",
+                    "ips": [
+                        "10.9.0.129"
+                    ],
+                    "default": true,
+                    "dns": {}
+                }]
+              k8s.v1.cni.cncf.io/networks-status:
+                [{
+                    "name": "",
+                    "interface": "eth0",
+                    "ips": [
+                        "10.9.0.129"
+                    ],
+                    "default": true,
+                    "dns": {}
+                }]
+              openshift.io/scc: anyuid
+Status:       Running
+IP:           10.9.0.129
+IPs:
+  IP:  10.9.0.129
+Init Containers:
+  myinit-container:
+    Container ID:  cri-o://86a4dc6eb48a196845a25230012de7149dfc98afa8a03f58babd1e814de9cae8
+    Image:         quay.io/sanjuraj_rh/busybox
+    Image ID:      quay.io/sanjuraj_rh/busybox@sha256:3f80cf73279997182dc7822cc8d9c76b77353d1a5fc8afddcc54461f4690f718
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/sh
+      -c
+      sleep 30
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Thu, 14 Apr 2022 03:51:36 -0400
+      Finished:     Thu, 14 Apr 2022 03:52:06 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-fd89x (ro)
+Containers:
+  mycontainer:
+    Container ID:   cri-o://82b5383c95c8c8185c06ee0c53d26b25cf606107e1e146d5d1a629af096ffc1f
+    Image:          quay.io/redhattraining/hello-world-nginx:v1.0
+    Image ID:       quay.io/redhattraining/hello-world-nginx@sha256:941928d702a2f08c986017b1eed3417d83952f05de55d657787512e82714dd89
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Thu, 14 Apr 2022 03:52:19 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-fd89x (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-fd89x:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-fd89x
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason          Age   From               Message
+  ----    ------          ----  ----               -------
+  Normal  Scheduled       77s   default-scheduler  Successfully assigned project1/myinitpod to master02
+  Normal  AddedInterface  75s   multus             Add eth0 [10.9.0.129/23]
+  Normal  Pulling         75s   kubelet            Pulling image "quay.io/sanjuraj_rh/busybox"
+  Normal  Pulled          66s   kubelet            Successfully pulled image "quay.io/sanjuraj_rh/busybox" in 8.370060249s
+  Normal  Created         66s   kubelet            Created container myinit-container
+  Normal  Started         66s   kubelet            Started container myinit-container
+  Normal  Pulling         36s   kubelet            Pulling image "quay.io/redhattraining/hello-world-nginx:v1.0"
+  Normal  Pulled          23s   kubelet            Successfully pulled image "quay.io/redhattraining/hello-world-nginx:v1.0" in 12.378604565s
+  Normal  Created         23s   kubelet            Created container mycontainer
+  Normal  Started         23s   kubelet            Started container mycontainer
+[student@workstation ~]$ oc delete -f init.yaml 
+pod "myinitpod" deleted
+[student@workstation ~]$ oc get all
+[student@workstation ~]$ oc get all
+NAME                                READY   STATUS             RESTARTS   AGE
+pod/mysql-56-rhel7-fc4db575-s2mpd   0/1     CrashLoopBackOff   69         3d2h
+
+NAME                     TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
+service/mysql-56-rhel7   ClusterIP   172.30.65.158   <none>        3306/TCP   3d3h
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mysql-56-rhel7   0/1     1            0           3d3h
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/mysql-56-rhel7-56df99675c   0         0         0       3d3h
+replicaset.apps/mysql-56-rhel7-64dbdf5b8    0         0         0       3d3h
+replicaset.apps/mysql-56-rhel7-69c5b8d8fb   0         0         0       3d2h
+replicaset.apps/mysql-56-rhel7-c6c74d5dd    0         0         0       3d2h
+replicaset.apps/mysql-56-rhel7-f65d89f65    0         0         0       3d3h
+replicaset.apps/mysql-56-rhel7-fc4db575     1         1         0       3d2h
+
+NAME                                            IMAGE REPOSITORY                                                           TAGS     UPDATED
+imagestream.image.openshift.io/mysql-56-rhel7   image-registry.openshift-image-registry.svc:5000/project1/mysql-56-rhel7   latest   3 days ago
+[student@workstation ~]$ oc delete all --all 
+pod "mysql-56-rhel7-fc4db575-s2mpd" deleted
+service "mysql-56-rhel7" deleted
+deployment.apps "mysql-56-rhel7" deleted
+imagestream.image.openshift.io "mysql-56-rhel7" deleted
+[student@workstation ~]$ 
+
+
+[student@workstation ~]$ oc get all
+NAME                                READY   STATUS        RESTARTS   AGE
+pod/mysql-56-rhel7-fc4db575-x5kjm   0/1     Terminating   0          12s
+[student@workstation ~]$ oc get all
+No resources found in project1 namespace.
+[student@workstation ~]$ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ vim init.yaml 
+[student@workstation ~]$ cat init.yaml 
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: myinitpod
+  name: myinitpod
+spec:
+  initContainers:
+  - name: myinit-container 
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'sleep 30']
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx:v1.0
+    name: mycontainer
+[student@workstation ~]$ vim init.yaml 
+[student@workstation ~]$ cat init.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: myinitpod
+  name: myinitpod
+spec:
+  initContainers:
+  - name: myinit-container 
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'sleep 30']
+  - name: myinit-container1
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'slieeep 30']
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx:v1.0
+    name: mycontainer
+[student@workstation ~]$ oc create -f init.yaml 
+pod/myinitpod created
+[student@workstation ~]$ oc get pod -w
+NAME        READY   STATUS     RESTARTS   AGE
+myinitpod   0/1     Init:0/2   0          4s
+myinitpod   0/1     Init:0/2   0          6s
+myinitpod   0/1     Init:1/2   0          37s
+myinitpod   0/1     Init:Error   0          40s
+myinitpod   0/1     Init:Error   1          43s
+myinitpod   0/1     Init:CrashLoopBackOff   1          57s
+myinitpod   0/1     Init:Error              2          60s
+myinitpod   0/1     Init:CrashLoopBackOff   2          73s
+myinitpod   0/1     Init:Error              3          90s
+myinitpod   0/1     Init:CrashLoopBackOff   3          103s
+myinitpod   0/1     Init:Error              4          2m23s
+^C[student@workstation ~]$ oc get pods 
+NAME        READY   STATUS                  RESTARTS   AGE
+myinitpod   0/1     Init:CrashLoopBackOff   4          2m59s
+[student@workstation ~]$ oc delete -f init.yaml 
+pod "myinitpod" deleted
+[student@workstation ~]$ vim init.yaml 
+[student@workstation ~]$ cat init.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: myinitpod
+  name: myinitpod
+spec:
+  initContainers:
+  - name: myinit-container 
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'sleep 30']
+  - name: myinit-container1
+    image: quay.io/sanjuraj_rh/busybox
+    command: ['/bin/sh', '-c', 'sleep 30']
+  containers:
+  - image: quay.io/redhattraining/hello-world-nginx:v1.0
+    name: mycontainer
+[student@workstation ~]$ oc create -f init.yaml 
+pod/myinitpod created
+[student@workstation ~]$ oc get pods -w
+NAME        READY   STATUS     RESTARTS   AGE
+myinitpod   0/1     Init:0/2   0          6s
+myinitpod   0/1     Init:1/2   0          34s
+myinitpod   0/1     Init:1/2   0          37s
+myinitpod   0/1     PodInitializing   0          67s
+myinitpod   1/1     Running           0          68s
+^C[student@workstation ~]$ oc whoamo --show-console 
+Error: unknown command "whoamo" for "oc"
+
+Did you mean this?
+	whoami
+
+Run 'oc --help' for usage.
+[student@workstation ~]$ oc whoami --show-console 
+https://console-openshift-console.apps.ocp4.example.com
+[student@workstation ~]$ # oc login -u kubeadmin -p waoWn-5S9VM-6cSsy-kMAyk 
+[student@workstation ~]$ oc new-project kube-sso 
+Error from server (Forbidden): project.project.openshift.io "kube-sso" is forbidden: cannot request a project starting with "kube-"
+[student@workstation ~]$ oc new-project project1-sso 
+Now using project "project1-sso" on server "https://api.ocp4.example.com:6443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app rails-postgresql-example
+
+to build a new example application in Ruby. Or use kubectl to deploy a simple Kubernetes application:
+
+    kubectl create deployment hello-node --image=k8s.gcr.io/serve_hostname
+
+[student@workstation ~]$ oc get all
+[student@workstation ~]$ oc get all
+NAME                                  READY   STATUS    RESTARTS   AGE
+pod/rhsso-operator-85bfc75c9d-cbb74   1/1     Running   0          60s
+
+NAME                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)             AGE
+service/rhsso-operator-metrics   ClusterIP   172.30.153.219   <none>        8383/TCP,8686/TCP   2s
+
+NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/rhsso-operator   1/1     1            1           60s
+
+NAME                                        DESIRED   CURRENT   READY   AGE
+replicaset.apps/rhsso-operator-85bfc75c9d   1         1         1       60s
+[student@workstation ~]$ oc get crd | grep -i key
+keycloakbackups.keycloak.org                                2022-04-14T08:14:50Z
+keycloakclients.keycloak.org                                2022-04-14T08:14:50Z
+keycloakrealms.keycloak.org                                 2022-04-14T08:14:50Z
+keycloaks.keycloak.org                                      2022-04-14T08:14:50Z
+keycloakusers.keycloak.org                                  2022-04-14T08:14:50Z
+[student@workstation ~]$ date
+Thu Apr 14 04:16:39 EDT 2022
+[student@workstation ~]$ oc get packagemanifests.packages.operators.coreos.com | grep rhsso-operator
+rhsso-operator                                       Red Hat Operators     274d
+[student@workstation ~]$ oc describe packagemanifests.packages.operators.coreos.com rhsso-operator
+Name:         rhsso-operator
+Namespace:    project1-sso
+Labels:       catalog=redhat-operators
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/arch.ppc64le=supported
+              operatorframework.io/arch.s390x=supported
+              operatorframework.io/os.linux=supported
+              provider=Red Hat
+              provider-url=
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2021-07-13T12:16:39Z
+  Self Link:           /apis/packages.operators.coreos.com/v1/namespaces/project1-sso/packagemanifests/rhsso-operator
+Spec:
+Status:
+  Catalog Source:               redhat-operators
+  Catalog Source Display Name:  Red Hat Operators
+  Catalog Source Namespace:     openshift-marketplace
+  Catalog Source Publisher:     Red Hat
+  Channels:
+    Current CSV:  rhsso-operator.7.4.9
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "keycloak.org/v1alpha1",
+    "kind": "Keycloak",
+    "metadata": {
+      "name": "example-keycloak",
+      "labels": {
+        "app": "sso"
+      }
+    },
+    "spec": {
+      "instances": 1,
+      "externalAccess": {
+        "enabled": true
+      }
+    }
+  },
+  {
+    "apiVersion": "keycloak.org/v1alpha1",
+    "kind": "KeycloakRealm",
+    "metadata": {
+      "name": "example-keycloakrealm"
+    },
+    "spec": {
+      "realm": {
+        "id": "basic",
+        "realm": "basic",
+        "enabled": true,
+        "displayName": "Basic Realm"
+      },
+      "instanceSelector": {
+        "matchLabels": {
+          "app": "sso"
+        }
+      }
+    }
+  },
+  {
+    "apiVersion": "keycloak.org/v1alpha1",
+    "kind": "KeycloakBackup",
+    "metadata": {
+      "name": "example-keycloakbackup"
+    },
+    "spec": {
+    }
+  },
+  {
+    "apiVersion": "keycloak.org/v1alpha1",
+    "kind": "KeycloakClient",
+    "metadata": {
+      "name": "client-secret",
+      "labels": {
+        "app": "sso"
+      }
+    },
+    "spec": {
+      "realmSelector": {
+        "matchLabels": {
+          "app": "sso"
+        }
+      },
+      "client": {
+        "clientId": "client-secret",
+        "secret": "client-secret",
+        "clientAuthenticatorType": "client-secret"
+      }
+    }
+  },
+  {
+    "apiVersion": "keycloak.org/v1alpha1",
+    "kind": "KeycloakUser",
+    "metadata": {
+      "name": "example-realm-user",
+      "labels": {
+        "app": "sso"
+      }
+    },
+    "spec": {
+      "user": {
+        "username": "realm_user",
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "user@example.com",
+        "enabled": true,
+        "emailVerified": false
+      },
+      "realmSelector": {
+        "matchLabels": {
+          "app": "sso"
+        }
+      }
+    }
+  }
+]
+        Capabilities:     Full Lifecycle
+        Categories:       Security
+        Certified:        False
+        Container Image:  registry.redhat.io/rh-sso-7-tech-preview/sso74-rhel8-operator:7.4
+        Created At:       2020-05-04 00:00:00
+        Description:      An Operator for installing and managing Red Hat Single Sign-On
+        Repository:       https://github.com/keycloak/keycloak-operator
+        Support:          Red Hat
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   Represents a Red Hat Single Sign-On Instance
+          Display Name:  Keycloak
+          Kind:          Keycloak
+          Name:          keycloaks.keycloak.org
+          Version:       v1alpha1
+          Description:   Represents a Red Hat Single Sign-On Realm
+          Display Name:  KeycloakRealm
+          Kind:          KeycloakRealm
+          Name:          keycloakrealms.keycloak.org
+          Version:       v1alpha1
+          Description:   Represents a Red Hat Single Sign-On Backup
+          Display Name:  KeycloakBackup
+          Kind:          KeycloakBackup
+          Name:          keycloakbackups.keycloak.org
+          Version:       v1alpha1
+          Description:   Represents a Red Hat Single Sign-On Client
+          Display Name:  KeycloakClient
+          Kind:          KeycloakClient
+          Name:          keycloakclients.keycloak.org
+          Version:       v1alpha1
+          Description:   Represents a Red Hat Single Sign-On User
+          Display Name:  KeycloakUser
+          Kind:          KeycloakUser
+          Name:          keycloakusers.keycloak.org
+          Version:       v1alpha1
+      Description:       A Kubernetes Operator based on the Operator SDK for installing and managing Red Hat Single Sign-On.
+
+Red Hat Single Sign-On lets you add authentication to applications and secure services with minimum fuss. No need to deal with storing users or authenticating users. It's all available out of the box.
+
+The operator can deploy and manage Keycloak instances on Kubernetes and OpenShift.
+The following features are supported:
+
+* Install Keycloak to a namespace
+* Import Keycloak Realms
+* Import Keycloak Clients
+* Import Keycloak Users
+* Create scheduled backups of the database
+
+      Display Name:  Red Hat Single Sign-On Operator
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  false
+        Type:       AllNamespaces
+      Keywords:
+        Keycloak
+        Identity
+        Access
+      Links:
+        Name:  Documentation
+        URL:   https://access.redhat.com/products/red-hat-single-sign-on
+        Name:  Keycloak
+        URL:   https://www.keycloak.org/
+      Maintainers:
+        Email:   customerservice@redhat.com
+        Name:    Red Hat Customer Service
+      Maturity:  alpha
+      Provider:
+        Name:  Red Hat
+      Related Images:
+        registry.redhat.io/rh-sso-7-tech-preview/sso74-rhel8-operator:7.4
+        registry.redhat.io/rh-sso-7-tech-preview/sso74-init-container-rhel8:7.4
+        registry.redhat.io/rhel8/postgresql-10:1
+      Version:      7.4.9
+    Name:           alpha
+  Default Channel:  alpha
+  Package Name:     rhsso-operator
+  Provider:
+    Name:  Red Hat
+Events:    <none>
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ # Install any operator from CLI 
+[student@workstation ~]$ # Create a Namespace 
+[student@workstation ~]$ # Create a OperatorGroup 
+[student@workstation ~]$ # Create a Subscription 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get packagemanifests.packages.operators.coreos.com | grep -i meter
+\metering-ocp                                         Red Hat Operators     274d
+application-services-metering-operator               Community Operators   274d
+[student@workstation ~]$ oc describe packagemanifests.packages.operators.coreos.com metering-ocp
+Name:         metering-ocp
+Namespace:    project1-sso
+Labels:       catalog=redhat-operators
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/os.linux=supported
+              provider=Red Hat
+              provider-url=
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2021-07-13T12:16:39Z
+  Self Link:           /apis/packages.operators.coreos.com/v1/namespaces/project1-sso/packagemanifests/metering-ocp
+Spec:
+Status:
+  Catalog Source:               redhat-operators
+  Catalog Source Display Name:  Red Hat Operators
+  Catalog Source Namespace:     openshift-marketplace
+  Catalog Source Publisher:     Red Hat
+  Channels:
+    Current CSV:  metering-operator.4.6.0-202203011845
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "MeteringConfig",
+    "metadata": {
+      "name": "operator-metering"
+    },
+    "spec": {
+      "storage": {
+        "hive": {
+          "s3": {
+            "bucket": "bucketname/path/",
+            "createBucket": true,
+            "region": "us-west-1",
+            "secretName": "my-aws-secret"
+          },
+          "type": "s3"
+        },
+        "type": "hive"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "Report",
+    "metadata": {
+      "name": "unready-deployment-replicas-hourly"
+    },
+    "spec": {
+      "query": "unready-deployment-replicas",
+      "schedule": {
+        "period": "hourly"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportQuery",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "period_start",
+          "type": "timestamp"
+        },
+        {
+          "name": "period_end",
+          "type": "timestamp"
+        },
+        {
+          "name": "namespace",
+          "type": "varchar"
+        },
+        {
+          "name": "deployment",
+          "type": "varchar"
+        },
+        {
+          "name": "total_replica_unready_seconds",
+          "type": "double"
+        },
+        {
+          "name": "avg_replica_unready_seconds",
+          "type": "double"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "ReportingStart",
+          "type": "time"
+        },
+        {
+          "name": "ReportingEnd",
+          "type": "time"
+        },
+        {
+          "default": "unready-deployment-replicas",
+          "name": "UnreadyDeploymentReplicasDataSourceName",
+          "type": "ReportDataSource"
+        }
+      ],
+      "query": "SELECT\n    timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}' AS period_start,\n    timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}' AS period_end,\n    labels['namespace'] AS namespace,\n    labels['deployment'] AS deployment,\n    sum(amount * \"timeprecision\") AS total_replica_unready_seconds,\n    avg(amount * \"timeprecision\") AS avg_replica_unready_seconds\nFROM {| dataSourceTableName .Report.Inputs.UnreadyDeploymentReplicasDataSourceName |}\nWHERE \"timestamp\" >= timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}'\nAND \"timestamp\" < timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}'\nGROUP BY labels['namespace'], labels['deployment']\nORDER BY total_replica_unready_seconds DESC, avg_replica_unready_seconds DESC, namespace ASC, deployment ASC\n"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportDataSource",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "prometheusMetricsImporter": {
+        "query": "sum(kube_deployment_status_replicas_unavailable) by (namespace, deployment)\n"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "StorageLocation",
+    "metadata": {
+      "name": "s3-storage-example"
+    },
+    "spec": {
+      "hive": {
+        "databaseName": "metering-s3",
+        "location": "s3a://bucketName/pathInBucket",
+        "unmanagedDatabase": true
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "PrestoTable",
+    "metadata": {
+      "name": "example-baremetal-cost"
+    },
+    "spec": {
+      "catalog": "hive",
+      "columns": [
+        {
+          "name": "cost_per_gigabyte_hour",
+          "type": "double"
+        },
+        {
+          "name": "cost_per_cpu_hour",
+          "type": "double"
+        },
+        {
+          "name": "currency",
+          "type": "varchar"
+        }
+      ],
+      "createTableAs": true,
+      "query": "SELECT * FROM (\n  VALUES (10.00, 50.00, 'USD')\n) AS t (cost_per_gigabyte_hour, cost_per_cpu_hour, currency)\n",
+      "schema": "default",
+      "tableName": "example_baremetal_cost"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "HiveTable",
+    "metadata": {
+      "name": "apache-log",
+      "annotations": {
+        "reference": "based on the RegEx example from https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-RowFormats&SerDe"
+      }
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "host",
+          "type": "string"
+        },
+        {
+          "name": "identity",
+          "type": "string"
+        },
+        {
+          "name": "user",
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "type": "string"
+        },
+        {
+          "name": "request",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "string"
+        },
+        {
+          "name": "referer",
+          "type": "string"
+        },
+        {
+          "name": "agent",
+          "type": "string"
+        }
+      ],
+      "databaseName": "default",
+      "external": true,
+      "fileFormat": "TEXTFILE",
+      "location": "s3a://my-bucket/apache_logs",
+      "rowFormat": "SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'\nWITH SERDEPROPERTIES (\n  \"input.regex\" = \"([^ ]*) ([^ ]*) ([^ ]*) (-|\\\\[[^\\\\]]*\\\\]) ([^ \\\"]*|\\\"[^\\\"]*\\\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \\\"]*|\\\"[^\\\"]*\\\") ([^ \\\"]*|\\\"[^\\\"]*\\\"))?\"\n)\n",
+      "tableName": "apache_log"
+    }
+  }
+]
+        Capabilities:                              Seamless Upgrades
+        Categories:                                OpenShift Optional, Monitoring
+        Certified:                                 false
+        Container Image:                           registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        Created At:                                2019-01-01T11:59:59Z
+        Description:                               Chargeback and reporting tool to provide accountability for how resources are used across a cluster
+        olm.skipRange:                             >=4.3.0 <4.6.0-202203011845
+        operatorframework.io/cluster-monitoring:   true
+        operatorframework.io/suggested-namespace:  openshift-metering
+        operators.openshift.io/capability:         ["fips", "cluster-proxy"]
+        Repository:                                https://github.com/kube-reporting/metering-operator
+        Support:                                   Red Hat, Inc.
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   An instance of Metering with high-level configuration
+          Display Name:  Metering Configuration
+          Kind:          MeteringConfig
+          Name:          meteringconfigs.metering.openshift.io
+          Version:       v1
+          Description:   A scheduled or on-off Metering Report summarizes data based on the query specified.
+          Display Name:  Metering Report
+          Kind:          Report
+          Name:          reports.metering.openshift.io
+          Version:       v1
+          Description:   A SQL query used by Metering to generate reports.
+          Display Name:  Metering Report Query
+          Kind:          ReportQuery
+          Name:          reportqueries.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Presto. Used by ReportQueries to determine what tables exist, and by the HTTP API to determine how to query a table.
+          Display Name:  Metering Data Source
+          Kind:          ReportDataSource
+          Name:          reportdatasources.metering.openshift.io
+          Version:       v1
+          Description:   Represents a configurable storage location for Metering to store metering and report data.
+          Display Name:  Metering Storage Location
+          Kind:          StorageLocation
+          Name:          storagelocations.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource describing a source of data for usage by Report Queries.
+          Display Name:  Metering Presto Table
+          Kind:          PrestoTable
+          Name:          prestotables.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Hive.
+          Display Name:  Metering Hive Table
+          Kind:          HiveTable
+          Name:          hivetables.metering.openshift.io
+          Version:       v1
+      Description:       The Metering Operator is a generic reporting tool to provide accountability for how resources are used across a cluster cherry-picking and storing information from different sources. Cluster admins can schedule reports based on historical usage data by Pod, Namespace, and Cluster for storage. The Metering Operator is a part of the [Kubernetes Reporting organization](https://github.com/kube-reporting).
+
+Read the user guide for more details on [running and viewing your first report](https://docs.openshift.com/container-platform/4.6/metering/metering-using-metering.html).
+
+### Core capabilities
+
+* **Long term storage** - Break down the reserved and utlized resources requested by applications and store the information as long as needed.
+
+* **Pod, Namespace & Cluster Reports** - Built in reports exist to break down CPU and RAM in any way you desire.
+
+* **Scheduled Reports** - Schedule reports to run on a standard interval, eg. daily or monthly. Use these reports, for instance, as the basis for chargeback and showback.
+
+* **Post-Processing** - Reports are generated in either CSV, JSON, or tabular formatting and stored in persistent storage for further post-processing. Use this to send reminder emails, integrate into your ERP system, or graph on a dashboard.
+
+* **Roll-up reports** - Reports can be used as a source for other reports, allowing for more complex queries that span longer periods than those supported by the data source.
+
+* **HTTP API** - Reports can be queried from an in-cluster HTTP API in addition to reading from persistent storage.
+
+* **Integration with AWS EC2 billing** - Connect metering to AWS to calculate the EC2 costs of your resources.
+
+### Before you start
+
+Metering runs a big data stack to crunch your data and requires at least 4GB of RAM and 4 CPU cores.
+At least one Node should have 2GB of RAM and 2 CPU cores.
+Memory and CPU consumption may often be lower, but will spike when running reports, or collecting data for larger clusters.
+
+Metering requires configuring storage, please review the [configuring persistent storage documentation](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html) before proceeding.
+
+### Common Configurations
+
+* **Store data in object storage or in a PersistentVolume** - Store your report output [in an object storage bucket or in a PersistentVolume](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html).
+
+* **Configure AWS Billing Data Source** - Assign Pod $$ costs on using your [AWS billing reports stored in S3](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-aws-billing-correlation.html).
+
+* **Use Reports** - Customize what how you process data. [Specify what you want to report on, set the schedule, and reporting time period](https://docs.openshift.com/container-platform/4.6/metering/reports/metering-about-reports.html#metering-reports_metering-about-reports).
+
+      Display Name:  Metering
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  false
+        Type:       AllNamespaces
+      Keywords:
+        metering metrics reporting prometheus chargeback
+      Links:
+        Name:  Documentation
+        URL:   https://docs.openshift.com/container-platform/4.6/metering/metering-about-metering.html
+      Maintainers:
+        Email:           sd-operator-metering@redhat.com
+        Name:            Red Hat
+      Maturity:          stable
+      Min Kube Version:  1.18.3
+      Provider:
+        Name:  Red Hat
+      Related Images:
+        registry.redhat.io/openshift4/ose-metering-presto@sha256:6e3d9382da0f521181c27c7b1806e5638620f426f1f460bb9e8157f18f9dd570
+        registry.redhat.io/openshift4/ose-metering-reporting-operator@sha256:ca5652994e24efe43a695d1b1d01b2c8d0db26f2c0ac7496683efea9615691a3
+        registry.redhat.io/openshift4/ose-oauth-proxy@sha256:0347409b0f4387f93b96b7cc6e72709bb5a7db049a791007c6d520f84c6ae4df
+        registry.redhat.io/openshift4/ose-ghostunnel@sha256:6cb9f3d49718c129d75d88babdd62768df135ca2398b393c2bb32db0d158aba0
+        registry.redhat.io/openshift4/ose-metering-hadoop@sha256:8eb55a8e393f928518f12719e6cfa06e5119b78aeea958bed26e8cabdf47fa05
+        registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        registry.redhat.io/openshift4/ose-metering-hive@sha256:d251b519b6b8356159cccf0bac1e38e311608c1cdc9089fa99bbe2d880250065
+      Version:    4.6.0-202203011845
+    Name:         4.6
+    Current CSV:  metering-operator.4.6.0-202203011845
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "MeteringConfig",
+    "metadata": {
+      "name": "operator-metering"
+    },
+    "spec": {
+      "storage": {
+        "hive": {
+          "s3": {
+            "bucket": "bucketname/path/",
+            "createBucket": true,
+            "region": "us-west-1",
+            "secretName": "my-aws-secret"
+          },
+          "type": "s3"
+        },
+        "type": "hive"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "Report",
+    "metadata": {
+      "name": "unready-deployment-replicas-hourly"
+    },
+    "spec": {
+      "query": "unready-deployment-replicas",
+      "schedule": {
+        "period": "hourly"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportQuery",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "period_start",
+          "type": "timestamp"
+        },
+        {
+          "name": "period_end",
+          "type": "timestamp"
+        },
+        {
+          "name": "namespace",
+          "type": "varchar"
+        },
+        {
+          "name": "deployment",
+          "type": "varchar"
+        },
+        {
+          "name": "total_replica_unready_seconds",
+          "type": "double"
+        },
+        {
+          "name": "avg_replica_unready_seconds",
+          "type": "double"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "ReportingStart",
+          "type": "time"
+        },
+        {
+          "name": "ReportingEnd",
+          "type": "time"
+        },
+        {
+          "default": "unready-deployment-replicas",
+          "name": "UnreadyDeploymentReplicasDataSourceName",
+          "type": "ReportDataSource"
+        }
+      ],
+      "query": "SELECT\n    timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}' AS period_start,\n    timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}' AS period_end,\n    labels['namespace'] AS namespace,\n    labels['deployment'] AS deployment,\n    sum(amount * \"timeprecision\") AS total_replica_unready_seconds,\n    avg(amount * \"timeprecision\") AS avg_replica_unready_seconds\nFROM {| dataSourceTableName .Report.Inputs.UnreadyDeploymentReplicasDataSourceName |}\nWHERE \"timestamp\" >= timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}'\nAND \"timestamp\" < timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}'\nGROUP BY labels['namespace'], labels['deployment']\nORDER BY total_replica_unready_seconds DESC, avg_replica_unready_seconds DESC, namespace ASC, deployment ASC\n"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportDataSource",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "prometheusMetricsImporter": {
+        "query": "sum(kube_deployment_status_replicas_unavailable) by (namespace, deployment)\n"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "StorageLocation",
+    "metadata": {
+      "name": "s3-storage-example"
+    },
+    "spec": {
+      "hive": {
+        "databaseName": "metering-s3",
+        "location": "s3a://bucketName/pathInBucket",
+        "unmanagedDatabase": true
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "PrestoTable",
+    "metadata": {
+      "name": "example-baremetal-cost"
+    },
+    "spec": {
+      "catalog": "hive",
+      "columns": [
+        {
+          "name": "cost_per_gigabyte_hour",
+          "type": "double"
+        },
+        {
+          "name": "cost_per_cpu_hour",
+          "type": "double"
+        },
+        {
+          "name": "currency",
+          "type": "varchar"
+        }
+      ],
+      "createTableAs": true,
+      "query": "SELECT * FROM (\n  VALUES (10.00, 50.00, 'USD')\n) AS t (cost_per_gigabyte_hour, cost_per_cpu_hour, currency)\n",
+      "schema": "default",
+      "tableName": "example_baremetal_cost"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "HiveTable",
+    "metadata": {
+      "name": "apache-log",
+      "annotations": {
+        "reference": "based on the RegEx example from https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-RowFormats&SerDe"
+      }
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "host",
+          "type": "string"
+        },
+        {
+          "name": "identity",
+          "type": "string"
+        },
+        {
+          "name": "user",
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "type": "string"
+        },
+        {
+          "name": "request",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "string"
+        },
+        {
+          "name": "referer",
+          "type": "string"
+        },
+        {
+          "name": "agent",
+          "type": "string"
+        }
+      ],
+      "databaseName": "default",
+      "external": true,
+      "fileFormat": "TEXTFILE",
+      "location": "s3a://my-bucket/apache_logs",
+      "rowFormat": "SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'\nWITH SERDEPROPERTIES (\n  \"input.regex\" = \"([^ ]*) ([^ ]*) ([^ ]*) (-|\\\\[[^\\\\]]*\\\\]) ([^ \\\"]*|\\\"[^\\\"]*\\\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \\\"]*|\\\"[^\\\"]*\\\") ([^ \\\"]*|\\\"[^\\\"]*\\\"))?\"\n)\n",
+      "tableName": "apache_log"
+    }
+  }
+]
+        Capabilities:                              Seamless Upgrades
+        Categories:                                OpenShift Optional, Monitoring
+        Certified:                                 false
+        Container Image:                           registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        Created At:                                2019-01-01T11:59:59Z
+        Description:                               Chargeback and reporting tool to provide accountability for how resources are used across a cluster
+        olm.skipRange:                             >=4.3.0 <4.6.0-202203011845
+        operatorframework.io/cluster-monitoring:   true
+        operatorframework.io/suggested-namespace:  openshift-metering
+        operators.openshift.io/capability:         ["fips", "cluster-proxy"]
+        Repository:                                https://github.com/kube-reporting/metering-operator
+        Support:                                   Red Hat, Inc.
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   An instance of Metering with high-level configuration
+          Display Name:  Metering Configuration
+          Kind:          MeteringConfig
+          Name:          meteringconfigs.metering.openshift.io
+          Version:       v1
+          Description:   A scheduled or on-off Metering Report summarizes data based on the query specified.
+          Display Name:  Metering Report
+          Kind:          Report
+          Name:          reports.metering.openshift.io
+          Version:       v1
+          Description:   A SQL query used by Metering to generate reports.
+          Display Name:  Metering Report Query
+          Kind:          ReportQuery
+          Name:          reportqueries.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Presto. Used by ReportQueries to determine what tables exist, and by the HTTP API to determine how to query a table.
+          Display Name:  Metering Data Source
+          Kind:          ReportDataSource
+          Name:          reportdatasources.metering.openshift.io
+          Version:       v1
+          Description:   Represents a configurable storage location for Metering to store metering and report data.
+          Display Name:  Metering Storage Location
+          Kind:          StorageLocation
+          Name:          storagelocations.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource describing a source of data for usage by Report Queries.
+          Display Name:  Metering Presto Table
+          Kind:          PrestoTable
+          Name:          prestotables.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Hive.
+          Display Name:  Metering Hive Table
+          Kind:          HiveTable
+          Name:          hivetables.metering.openshift.io
+          Version:       v1
+      Description:       The Metering Operator is a generic reporting tool to provide accountability for how resources are used across a cluster cherry-picking and storing information from different sources. Cluster admins can schedule reports based on historical usage data by Pod, Namespace, and Cluster for storage. The Metering Operator is a part of the [Kubernetes Reporting organization](https://github.com/kube-reporting).
+
+Read the user guide for more details on [running and viewing your first report](https://docs.openshift.com/container-platform/4.6/metering/metering-using-metering.html).
+
+### Core capabilities
+
+* **Long term storage** - Break down the reserved and utlized resources requested by applications and store the information as long as needed.
+
+* **Pod, Namespace & Cluster Reports** - Built in reports exist to break down CPU and RAM in any way you desire.
+
+* **Scheduled Reports** - Schedule reports to run on a standard interval, eg. daily or monthly. Use these reports, for instance, as the basis for chargeback and showback.
+
+* **Post-Processing** - Reports are generated in either CSV, JSON, or tabular formatting and stored in persistent storage for further post-processing. Use this to send reminder emails, integrate into your ERP system, or graph on a dashboard.
+
+* **Roll-up reports** - Reports can be used as a source for other reports, allowing for more complex queries that span longer periods than those supported by the data source.
+
+* **HTTP API** - Reports can be queried from an in-cluster HTTP API in addition to reading from persistent storage.
+
+* **Integration with AWS EC2 billing** - Connect metering to AWS to calculate the EC2 costs of your resources.
+
+### Before you start
+
+Metering runs a big data stack to crunch your data and requires at least 4GB of RAM and 4 CPU cores.
+At least one Node should have 2GB of RAM and 2 CPU cores.
+Memory and CPU consumption may often be lower, but will spike when running reports, or collecting data for larger clusters.
+
+Metering requires configuring storage, please review the [configuring persistent storage documentation](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html) before proceeding.
+
+### Common Configurations
+
+* **Store data in object storage or in a PersistentVolume** - Store your report output [in an object storage bucket or in a PersistentVolume](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html).
+
+* **Configure AWS Billing Data Source** - Assign Pod $$ costs on using your [AWS billing reports stored in S3](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-aws-billing-correlation.html).
+
+* **Use Reports** - Customize what how you process data. [Specify what you want to report on, set the schedule, and reporting time period](https://docs.openshift.com/container-platform/4.6/metering/reports/metering-about-reports.html#metering-reports_metering-about-reports).
+
+      Display Name:  Metering
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  false
+        Type:       AllNamespaces
+      Keywords:
+        metering metrics reporting prometheus chargeback
+      Links:
+        Name:  Documentation
+        URL:   https://docs.openshift.com/container-platform/4.6/metering/metering-about-metering.html
+      Maintainers:
+        Email:           sd-operator-metering@redhat.com
+        Name:            Red Hat
+      Maturity:          stable
+      Min Kube Version:  1.18.3
+      Provider:
+        Name:  Red Hat
+      Related Images:
+        registry.redhat.io/openshift4/ose-metering-presto@sha256:6e3d9382da0f521181c27c7b1806e5638620f426f1f460bb9e8157f18f9dd570
+        registry.redhat.io/openshift4/ose-metering-reporting-operator@sha256:ca5652994e24efe43a695d1b1d01b2c8d0db26f2c0ac7496683efea9615691a3
+        registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        registry.redhat.io/openshift4/ose-oauth-proxy@sha256:0347409b0f4387f93b96b7cc6e72709bb5a7db049a791007c6d520f84c6ae4df
+        registry.redhat.io/openshift4/ose-ghostunnel@sha256:6cb9f3d49718c129d75d88babdd62768df135ca2398b393c2bb32db0d158aba0
+        registry.redhat.io/openshift4/ose-metering-hadoop@sha256:8eb55a8e393f928518f12719e6cfa06e5119b78aeea958bed26e8cabdf47fa05
+        registry.redhat.io/openshift4/ose-metering-hive@sha256:d251b519b6b8356159cccf0bac1e38e311608c1cdc9089fa99bbe2d880250065
+      Version:      4.6.0-202203011845
+    Name:           stable
+  Default Channel:  4.6
+  Package Name:     metering-ocp
+  Provider:
+    Name:  Red Hat
+Events:    <none>
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get MeteringConfig 
+error: the server doesn't have a resource type "MeteringConfig"
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc get cm
+NAME                     DATA   AGE
+keycloak-operator-lock   0      8m14s
+[student@workstation ~]$ oc get route 
+No resources found in project1-sso namespace.
+[student@workstation ~]$ oc get ns 
+NAME                                               STATUS   AGE
+default                                            Active   274d
+kube-node-lease                                    Active   274d
+kube-public                                        Active   274d
+kube-system                                        Active   274d
+myproject                                          Active   4d17h
+nfs-client-provisioner                             Active   274d
+openshift                                          Active   274d
+openshift-apiserver                                Active   274d
+openshift-apiserver-operator                       Active   274d
+openshift-authentication                           Active   274d
+openshift-authentication-operator                  Active   274d
+openshift-cloud-credential-operator                Active   274d
+openshift-cluster-csi-drivers                      Active   274d
+openshift-cluster-machine-approver                 Active   274d
+openshift-cluster-node-tuning-operator             Active   274d
+openshift-cluster-samples-operator                 Active   274d
+openshift-cluster-storage-operator                 Active   274d
+openshift-cluster-version                          Active   274d
+openshift-config                                   Active   274d
+openshift-config-managed                           Active   274d
+openshift-config-operator                          Active   274d
+openshift-console                                  Active   274d
+openshift-console-operator                         Active   274d
+openshift-controller-manager                       Active   274d
+openshift-controller-manager-operator              Active   274d
+openshift-dns                                      Active   274d
+openshift-dns-operator                             Active   274d
+openshift-etcd                                     Active   274d
+openshift-etcd-operator                            Active   274d
+openshift-image-registry                           Active   274d
+openshift-infra                                    Active   274d
+openshift-ingress                                  Active   274d
+openshift-ingress-operator                         Active   274d
+openshift-insights                                 Active   274d
+openshift-kni-infra                                Active   274d
+openshift-kube-apiserver                           Active   274d
+openshift-kube-apiserver-operator                  Active   274d
+openshift-kube-controller-manager                  Active   274d
+openshift-kube-controller-manager-operator         Active   274d
+openshift-kube-scheduler                           Active   274d
+openshift-kube-scheduler-operator                  Active   274d
+openshift-kube-storage-version-migrator            Active   274d
+openshift-kube-storage-version-migrator-operator   Active   274d
+openshift-machine-api                              Active   274d
+openshift-machine-config-operator                  Active   274d
+openshift-marketplace                              Active   274d
+openshift-monitoring                               Active   274d
+openshift-multus                                   Active   274d
+openshift-network-operator                         Active   274d
+openshift-node                                     Active   274d
+openshift-oauth-apiserver                          Active   274d
+openshift-openstack-infra                          Active   274d
+openshift-operator-lifecycle-manager               Active   274d
+openshift-operators                                Active   274d
+openshift-ovirt-infra                              Active   274d
+openshift-pipelines                                Active   4d17h
+openshift-sdn                                      Active   274d
+openshift-service-ca                               Active   274d
+openshift-service-ca-operator                      Active   274d
+openshift-user-workload-monitoring                 Active   274d
+openshift-vsphere-infra                            Active   274d
+project1                                           Active   3d3h
+project1-sso                                       Active   10m
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc create namespace openshift-metering 
+namespace/openshift-metering created
+[student@workstation ~]$ oc get ns | grep openshift-metering
+openshift-metering                                 Active   8s
+[student@workstation ~]$ oc project openshift-metering
+Now using project "openshift-metering" on server "https://api.ocp4.example.com:6443".
+[student@workstation ~]$ oc get all
+No resources found in openshift-metering namespace.
+[student@workstation ~]$ oc explain OperatorGroup
+KIND:     OperatorGroup
+VERSION:  operators.coreos.com/v1
+
+DESCRIPTION:
+     OperatorGroup is the unit of multitenancy for OLM managed operators. It
+     constrains the installation of operators in its namespace to a specified
+     set of target namespaces.
+
+FIELDS:
+   apiVersion	<string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind	<string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata	<Object> -required-
+     Standard object's metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec	<Object>
+     OperatorGroupSpec is the spec for an OperatorGroup resource.
+
+   status	<Object>
+     OperatorGroupStatus is the status for an OperatorGroupResource.
+
+[student@workstation ~]$ vim myoperatorgroup.yaml
+[student@workstation ~]$ oc explain OperatorGroup.spec
+KIND:     OperatorGroup
+VERSION:  operators.coreos.com/v1
+
+RESOURCE: spec <Object>
+
+DESCRIPTION:
+     OperatorGroupSpec is the spec for an OperatorGroup resource.
+
+FIELDS:
+   selector	<Object>
+     Selector selects the OperatorGroup's target namespaces.
+
+   serviceAccountName	<string>
+     ServiceAccountName is the admin specified service account which will be
+     used to deploy operator(s) in this operator group.
+
+   staticProvidedAPIs	<boolean>
+     Static tells OLM not to update the OperatorGroup's providedAPIs annotation
+
+   targetNamespaces	<[]string>
+     TargetNamespaces is an explicit set of namespaces to target. If it is set,
+     Selector is ignored.
+
+[student@workstation ~]$ 
+[student@workstation ~]$ vim myoperatorgroup.yaml
+[student@workstation ~]$ # oc create -f myoperatorgroup.yaml 
+[student@workstation ~]$ cat myoperatorgroup.yaml 
+kind: OperatorGroup
+apiVersion: operators.coreos.com/v1
+metadata:
+  name: openshift-metering
+  namespace: openshift-metering 
+spec:
+  targetNamespaces:
+    - openshift-metering
+[student@workstation ~]$ oc apply -f myoperatorgroup.yaml
+operatorgroup.operators.coreos.com/openshift-metering created
+[student@workstation ~]$ oc explain Subscription 
+KIND:     Subscription
+VERSION:  operators.coreos.com/v1alpha1
+
+DESCRIPTION:
+     Subscription keeps operators up to date by tracking changes to Catalogs.
+
+FIELDS:
+   apiVersion	<string>
+     APIVersion defines the versioned schema of this representation of an
+     object. Servers should convert recognized schemas to the latest internal
+     value, and may reject unrecognized values. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+
+   kind	<string>
+     Kind is a string value representing the REST resource this object
+     represents. Servers may infer this from the endpoint the client submits
+     requests to. Cannot be updated. In CamelCase. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+
+   metadata	<Object> -required-
+     Standard object's metadata. More info:
+     https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+
+   spec	<Object> -required-
+     SubscriptionSpec defines an Application that can be installed
+
+   status	<Object>
+
+[student@workstation ~]$ oc get sub 
+No resources found in openshift-metering namespace.
+[student@workstation ~]$ vim mysubscription.yaml
+[student@workstation ~]$ vim mysubscription.yaml
+[student@workstation ~]$ cat mysubscription.yaml
+kind: Subscription
+apiVersion: operators.coreos.com/v1alpha1
+metadata:
+  name: sub-openshift-metering
+  namespace: openshift-metering
+spec:
+  
+[student@workstation ~]$ oc explain Subscription.spec
+KIND:     Subscription
+VERSION:  operators.coreos.com/v1alpha1
+
+RESOURCE: spec <Object>
+
+DESCRIPTION:
+     SubscriptionSpec defines an Application that can be installed
+
+FIELDS:
+   channel	<string>
+
+   config	<Object>
+     SubscriptionConfig contains configuration specified for a subscription.
+
+   installPlanApproval	<string>
+     Approval is the user approval policy for an InstallPlan. It must be one of
+     "Automatic" or "Manual".
+
+   name	<string> -required-
+
+   source	<string> -required-
+
+   sourceNamespace	<string> -required-
+
+   startingCSV	<string>
+
+[student@workstation ~]$ vim mysubscription.yaml
+[student@workstation ~]$ cat mysubscription.yaml
+kind: Subscription
+apiVersion: operators.coreos.com/v1alpha1
+metadata:
+  name: sub-openshift-metering
+  namespace: openshift-metering
+spec:
+  name:
+  source:
+  sourceNamespace:
+  channel:
+
+[student@workstation ~]$ oc describe packagemanifests.packages.operators.coreos.com metering-ocp | head -n 15 
+Name:         metering-ocp
+Namespace:    openshift-metering
+Labels:       catalog=redhat-operators
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/os.linux=supported
+              provider=Red Hat
+              provider-url=
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2021-07-13T12:16:39Z
+  Self Link:           /apis/packages.operators.coreos.com/v1/namespaces/openshift-metering/packagemanifests/metering-ocp
+Spec:
+[student@workstation ~]$ oc describe packagemanifests.packages.operators.coreos.com metering-ocp 
+Name:         metering-ocp
+Namespace:    openshift-metering
+Labels:       catalog=redhat-operators
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/os.linux=supported
+              provider=Red Hat
+              provider-url=
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2021-07-13T12:16:39Z
+  Self Link:           /apis/packages.operators.coreos.com/v1/namespaces/openshift-metering/packagemanifests/metering-ocp
+Spec:
+Status:
+  Catalog Source:               redhat-operators
+  Catalog Source Display Name:  Red Hat Operators
+  Catalog Source Namespace:     openshift-marketplace
+  Catalog Source Publisher:     Red Hat
+  Channels:
+    Current CSV:  metering-operator.4.6.0-202203011845
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "MeteringConfig",
+    "metadata": {
+      "name": "operator-metering"
+    },
+    "spec": {
+      "storage": {
+        "hive": {
+          "s3": {
+            "bucket": "bucketname/path/",
+            "createBucket": true,
+            "region": "us-west-1",
+            "secretName": "my-aws-secret"
+          },
+          "type": "s3"
+        },
+        "type": "hive"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "Report",
+    "metadata": {
+      "name": "unready-deployment-replicas-hourly"
+    },
+    "spec": {
+      "query": "unready-deployment-replicas",
+      "schedule": {
+        "period": "hourly"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportQuery",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "period_start",
+          "type": "timestamp"
+        },
+        {
+          "name": "period_end",
+          "type": "timestamp"
+        },
+        {
+          "name": "namespace",
+          "type": "varchar"
+        },
+        {
+          "name": "deployment",
+          "type": "varchar"
+        },
+        {
+          "name": "total_replica_unready_seconds",
+          "type": "double"
+        },
+        {
+          "name": "avg_replica_unready_seconds",
+          "type": "double"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "ReportingStart",
+          "type": "time"
+        },
+        {
+          "name": "ReportingEnd",
+          "type": "time"
+        },
+        {
+          "default": "unready-deployment-replicas",
+          "name": "UnreadyDeploymentReplicasDataSourceName",
+          "type": "ReportDataSource"
+        }
+      ],
+      "query": "SELECT\n    timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}' AS period_start,\n    timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}' AS period_end,\n    labels['namespace'] AS namespace,\n    labels['deployment'] AS deployment,\n    sum(amount * \"timeprecision\") AS total_replica_unready_seconds,\n    avg(amount * \"timeprecision\") AS avg_replica_unready_seconds\nFROM {| dataSourceTableName .Report.Inputs.UnreadyDeploymentReplicasDataSourceName |}\nWHERE \"timestamp\" >= timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}'\nAND \"timestamp\" < timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}'\nGROUP BY labels['namespace'], labels['deployment']\nORDER BY total_replica_unready_seconds DESC, avg_replica_unready_seconds DESC, namespace ASC, deployment ASC\n"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportDataSource",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "prometheusMetricsImporter": {
+        "query": "sum(kube_deployment_status_replicas_unavailable) by (namespace, deployment)\n"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "StorageLocation",
+    "metadata": {
+      "name": "s3-storage-example"
+    },
+    "spec": {
+      "hive": {
+        "databaseName": "metering-s3",
+        "location": "s3a://bucketName/pathInBucket",
+        "unmanagedDatabase": true
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "PrestoTable",
+    "metadata": {
+      "name": "example-baremetal-cost"
+    },
+    "spec": {
+      "catalog": "hive",
+      "columns": [
+        {
+          "name": "cost_per_gigabyte_hour",
+          "type": "double"
+        },
+        {
+          "name": "cost_per_cpu_hour",
+          "type": "double"
+        },
+        {
+          "name": "currency",
+          "type": "varchar"
+        }
+      ],
+      "createTableAs": true,
+      "query": "SELECT * FROM (\n  VALUES (10.00, 50.00, 'USD')\n) AS t (cost_per_gigabyte_hour, cost_per_cpu_hour, currency)\n",
+      "schema": "default",
+      "tableName": "example_baremetal_cost"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "HiveTable",
+    "metadata": {
+      "name": "apache-log",
+      "annotations": {
+        "reference": "based on the RegEx example from https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-RowFormats&SerDe"
+      }
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "host",
+          "type": "string"
+        },
+        {
+          "name": "identity",
+          "type": "string"
+        },
+        {
+          "name": "user",
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "type": "string"
+        },
+        {
+          "name": "request",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "string"
+        },
+        {
+          "name": "referer",
+          "type": "string"
+        },
+        {
+          "name": "agent",
+          "type": "string"
+        }
+      ],
+      "databaseName": "default",
+      "external": true,
+      "fileFormat": "TEXTFILE",
+      "location": "s3a://my-bucket/apache_logs",
+      "rowFormat": "SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'\nWITH SERDEPROPERTIES (\n  \"input.regex\" = \"([^ ]*) ([^ ]*) ([^ ]*) (-|\\\\[[^\\\\]]*\\\\]) ([^ \\\"]*|\\\"[^\\\"]*\\\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \\\"]*|\\\"[^\\\"]*\\\") ([^ \\\"]*|\\\"[^\\\"]*\\\"))?\"\n)\n",
+      "tableName": "apache_log"
+    }
+  }
+]
+        Capabilities:                              Seamless Upgrades
+        Categories:                                OpenShift Optional, Monitoring
+        Certified:                                 false
+        Container Image:                           registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        Created At:                                2019-01-01T11:59:59Z
+        Description:                               Chargeback and reporting tool to provide accountability for how resources are used across a cluster
+        olm.skipRange:                             >=4.3.0 <4.6.0-202203011845
+        operatorframework.io/cluster-monitoring:   true
+        operatorframework.io/suggested-namespace:  openshift-metering
+        operators.openshift.io/capability:         ["fips", "cluster-proxy"]
+        Repository:                                https://github.com/kube-reporting/metering-operator
+        Support:                                   Red Hat, Inc.
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   An instance of Metering with high-level configuration
+          Display Name:  Metering Configuration
+          Kind:          MeteringConfig
+          Name:          meteringconfigs.metering.openshift.io
+          Version:       v1
+          Description:   A scheduled or on-off Metering Report summarizes data based on the query specified.
+          Display Name:  Metering Report
+          Kind:          Report
+          Name:          reports.metering.openshift.io
+          Version:       v1
+          Description:   A SQL query used by Metering to generate reports.
+          Display Name:  Metering Report Query
+          Kind:          ReportQuery
+          Name:          reportqueries.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Presto. Used by ReportQueries to determine what tables exist, and by the HTTP API to determine how to query a table.
+          Display Name:  Metering Data Source
+          Kind:          ReportDataSource
+          Name:          reportdatasources.metering.openshift.io
+          Version:       v1
+          Description:   Represents a configurable storage location for Metering to store metering and report data.
+          Display Name:  Metering Storage Location
+          Kind:          StorageLocation
+          Name:          storagelocations.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource describing a source of data for usage by Report Queries.
+          Display Name:  Metering Presto Table
+          Kind:          PrestoTable
+          Name:          prestotables.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Hive.
+          Display Name:  Metering Hive Table
+          Kind:          HiveTable
+          Name:          hivetables.metering.openshift.io
+          Version:       v1
+      Description:       The Metering Operator is a generic reporting tool to provide accountability for how resources are used across a cluster cherry-picking and storing information from different sources. Cluster admins can schedule reports based on historical usage data by Pod, Namespace, and Cluster for storage. The Metering Operator is a part of the [Kubernetes Reporting organization](https://github.com/kube-reporting).
+
+Read the user guide for more details on [running and viewing your first report](https://docs.openshift.com/container-platform/4.6/metering/metering-using-metering.html).
+
+### Core capabilities
+
+* **Long term storage** - Break down the reserved and utlized resources requested by applications and store the information as long as needed.
+
+* **Pod, Namespace & Cluster Reports** - Built in reports exist to break down CPU and RAM in any way you desire.
+
+* **Scheduled Reports** - Schedule reports to run on a standard interval, eg. daily or monthly. Use these reports, for instance, as the basis for chargeback and showback.
+
+* **Post-Processing** - Reports are generated in either CSV, JSON, or tabular formatting and stored in persistent storage for further post-processing. Use this to send reminder emails, integrate into your ERP system, or graph on a dashboard.
+
+* **Roll-up reports** - Reports can be used as a source for other reports, allowing for more complex queries that span longer periods than those supported by the data source.
+
+* **HTTP API** - Reports can be queried from an in-cluster HTTP API in addition to reading from persistent storage.
+
+* **Integration with AWS EC2 billing** - Connect metering to AWS to calculate the EC2 costs of your resources.
+
+### Before you start
+
+Metering runs a big data stack to crunch your data and requires at least 4GB of RAM and 4 CPU cores.
+At least one Node should have 2GB of RAM and 2 CPU cores.
+Memory and CPU consumption may often be lower, but will spike when running reports, or collecting data for larger clusters.
+
+Metering requires configuring storage, please review the [configuring persistent storage documentation](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html) before proceeding.
+
+### Common Configurations
+
+* **Store data in object storage or in a PersistentVolume** - Store your report output [in an object storage bucket or in a PersistentVolume](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html).
+
+* **Configure AWS Billing Data Source** - Assign Pod $$ costs on using your [AWS billing reports stored in S3](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-aws-billing-correlation.html).
+
+* **Use Reports** - Customize what how you process data. [Specify what you want to report on, set the schedule, and reporting time period](https://docs.openshift.com/container-platform/4.6/metering/reports/metering-about-reports.html#metering-reports_metering-about-reports).
+
+      Display Name:  Metering
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  false
+        Type:       AllNamespaces
+      Keywords:
+        metering metrics reporting prometheus chargeback
+      Links:
+        Name:  Documentation
+        URL:   https://docs.openshift.com/container-platform/4.6/metering/metering-about-metering.html
+      Maintainers:
+        Email:           sd-operator-metering@redhat.com
+        Name:            Red Hat
+      Maturity:          stable
+      Min Kube Version:  1.18.3
+      Provider:
+        Name:  Red Hat
+      Related Images:
+        registry.redhat.io/openshift4/ose-metering-presto@sha256:6e3d9382da0f521181c27c7b1806e5638620f426f1f460bb9e8157f18f9dd570
+        registry.redhat.io/openshift4/ose-metering-reporting-operator@sha256:ca5652994e24efe43a695d1b1d01b2c8d0db26f2c0ac7496683efea9615691a3
+        registry.redhat.io/openshift4/ose-oauth-proxy@sha256:0347409b0f4387f93b96b7cc6e72709bb5a7db049a791007c6d520f84c6ae4df
+        registry.redhat.io/openshift4/ose-ghostunnel@sha256:6cb9f3d49718c129d75d88babdd62768df135ca2398b393c2bb32db0d158aba0
+        registry.redhat.io/openshift4/ose-metering-hadoop@sha256:8eb55a8e393f928518f12719e6cfa06e5119b78aeea958bed26e8cabdf47fa05
+        registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        registry.redhat.io/openshift4/ose-metering-hive@sha256:d251b519b6b8356159cccf0bac1e38e311608c1cdc9089fa99bbe2d880250065
+      Version:    4.6.0-202203011845
+    Name:         4.6
+    Current CSV:  metering-operator.4.6.0-202203011845
+    Current CSV Desc:
+      Annotations:
+        Alm - Examples:  [
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "MeteringConfig",
+    "metadata": {
+      "name": "operator-metering"
+    },
+    "spec": {
+      "storage": {
+        "hive": {
+          "s3": {
+            "bucket": "bucketname/path/",
+            "createBucket": true,
+            "region": "us-west-1",
+            "secretName": "my-aws-secret"
+          },
+          "type": "s3"
+        },
+        "type": "hive"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "Report",
+    "metadata": {
+      "name": "unready-deployment-replicas-hourly"
+    },
+    "spec": {
+      "query": "unready-deployment-replicas",
+      "schedule": {
+        "period": "hourly"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportQuery",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "period_start",
+          "type": "timestamp"
+        },
+        {
+          "name": "period_end",
+          "type": "timestamp"
+        },
+        {
+          "name": "namespace",
+          "type": "varchar"
+        },
+        {
+          "name": "deployment",
+          "type": "varchar"
+        },
+        {
+          "name": "total_replica_unready_seconds",
+          "type": "double"
+        },
+        {
+          "name": "avg_replica_unready_seconds",
+          "type": "double"
+        }
+      ],
+      "inputs": [
+        {
+          "name": "ReportingStart",
+          "type": "time"
+        },
+        {
+          "name": "ReportingEnd",
+          "type": "time"
+        },
+        {
+          "default": "unready-deployment-replicas",
+          "name": "UnreadyDeploymentReplicasDataSourceName",
+          "type": "ReportDataSource"
+        }
+      ],
+      "query": "SELECT\n    timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}' AS period_start,\n    timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}' AS period_end,\n    labels['namespace'] AS namespace,\n    labels['deployment'] AS deployment,\n    sum(amount * \"timeprecision\") AS total_replica_unready_seconds,\n    avg(amount * \"timeprecision\") AS avg_replica_unready_seconds\nFROM {| dataSourceTableName .Report.Inputs.UnreadyDeploymentReplicasDataSourceName |}\nWHERE \"timestamp\" >= timestamp '{| default .Report.ReportingStart .Report.Inputs.ReportingStart | prestoTimestamp |}'\nAND \"timestamp\" < timestamp '{| default .Report.ReportingEnd .Report.Inputs.ReportingEnd | prestoTimestamp |}'\nGROUP BY labels['namespace'], labels['deployment']\nORDER BY total_replica_unready_seconds DESC, avg_replica_unready_seconds DESC, namespace ASC, deployment ASC\n"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "ReportDataSource",
+    "metadata": {
+      "name": "unready-deployment-replicas"
+    },
+    "spec": {
+      "prometheusMetricsImporter": {
+        "query": "sum(kube_deployment_status_replicas_unavailable) by (namespace, deployment)\n"
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "StorageLocation",
+    "metadata": {
+      "name": "s3-storage-example"
+    },
+    "spec": {
+      "hive": {
+        "databaseName": "metering-s3",
+        "location": "s3a://bucketName/pathInBucket",
+        "unmanagedDatabase": true
+      }
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "PrestoTable",
+    "metadata": {
+      "name": "example-baremetal-cost"
+    },
+    "spec": {
+      "catalog": "hive",
+      "columns": [
+        {
+          "name": "cost_per_gigabyte_hour",
+          "type": "double"
+        },
+        {
+          "name": "cost_per_cpu_hour",
+          "type": "double"
+        },
+        {
+          "name": "currency",
+          "type": "varchar"
+        }
+      ],
+      "createTableAs": true,
+      "query": "SELECT * FROM (\n  VALUES (10.00, 50.00, 'USD')\n) AS t (cost_per_gigabyte_hour, cost_per_cpu_hour, currency)\n",
+      "schema": "default",
+      "tableName": "example_baremetal_cost"
+    }
+  },
+  {
+    "apiVersion": "metering.openshift.io/v1",
+    "kind": "HiveTable",
+    "metadata": {
+      "name": "apache-log",
+      "annotations": {
+        "reference": "based on the RegEx example from https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-RowFormats&SerDe"
+      }
+    },
+    "spec": {
+      "columns": [
+        {
+          "name": "host",
+          "type": "string"
+        },
+        {
+          "name": "identity",
+          "type": "string"
+        },
+        {
+          "name": "user",
+          "type": "string"
+        },
+        {
+          "name": "time",
+          "type": "string"
+        },
+        {
+          "name": "request",
+          "type": "string"
+        },
+        {
+          "name": "status",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "type": "string"
+        },
+        {
+          "name": "referer",
+          "type": "string"
+        },
+        {
+          "name": "agent",
+          "type": "string"
+        }
+      ],
+      "databaseName": "default",
+      "external": true,
+      "fileFormat": "TEXTFILE",
+      "location": "s3a://my-bucket/apache_logs",
+      "rowFormat": "SERDE 'org.apache.hadoop.hive.serde2.RegexSerDe'\nWITH SERDEPROPERTIES (\n  \"input.regex\" = \"([^ ]*) ([^ ]*) ([^ ]*) (-|\\\\[[^\\\\]]*\\\\]) ([^ \\\"]*|\\\"[^\\\"]*\\\") (-|[0-9]*) (-|[0-9]*)(?: ([^ \\\"]*|\\\"[^\\\"]*\\\") ([^ \\\"]*|\\\"[^\\\"]*\\\"))?\"\n)\n",
+      "tableName": "apache_log"
+    }
+  }
+]
+        Capabilities:                              Seamless Upgrades
+        Categories:                                OpenShift Optional, Monitoring
+        Certified:                                 false
+        Container Image:                           registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        Created At:                                2019-01-01T11:59:59Z
+        Description:                               Chargeback and reporting tool to provide accountability for how resources are used across a cluster
+        olm.skipRange:                             >=4.3.0 <4.6.0-202203011845
+        operatorframework.io/cluster-monitoring:   true
+        operatorframework.io/suggested-namespace:  openshift-metering
+        operators.openshift.io/capability:         ["fips", "cluster-proxy"]
+        Repository:                                https://github.com/kube-reporting/metering-operator
+        Support:                                   Red Hat, Inc.
+      Apiservicedefinitions:
+      Customresourcedefinitions:
+        Owned:
+          Description:   An instance of Metering with high-level configuration
+          Display Name:  Metering Configuration
+          Kind:          MeteringConfig
+          Name:          meteringconfigs.metering.openshift.io
+          Version:       v1
+          Description:   A scheduled or on-off Metering Report summarizes data based on the query specified.
+          Display Name:  Metering Report
+          Kind:          Report
+          Name:          reports.metering.openshift.io
+          Version:       v1
+          Description:   A SQL query used by Metering to generate reports.
+          Display Name:  Metering Report Query
+          Kind:          ReportQuery
+          Name:          reportqueries.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Presto. Used by ReportQueries to determine what tables exist, and by the HTTP API to determine how to query a table.
+          Display Name:  Metering Data Source
+          Kind:          ReportDataSource
+          Name:          reportdatasources.metering.openshift.io
+          Version:       v1
+          Description:   Represents a configurable storage location for Metering to store metering and report data.
+          Display Name:  Metering Storage Location
+          Kind:          StorageLocation
+          Name:          storagelocations.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource describing a source of data for usage by Report Queries.
+          Display Name:  Metering Presto Table
+          Kind:          PrestoTable
+          Name:          prestotables.metering.openshift.io
+          Version:       v1
+          Description:   Used under-the-hood. A resource representing a database table in Hive.
+          Display Name:  Metering Hive Table
+          Kind:          HiveTable
+          Name:          hivetables.metering.openshift.io
+          Version:       v1
+      Description:       The Metering Operator is a generic reporting tool to provide accountability for how resources are used across a cluster cherry-picking and storing information from different sources. Cluster admins can schedule reports based on historical usage data by Pod, Namespace, and Cluster for storage. The Metering Operator is a part of the [Kubernetes Reporting organization](https://github.com/kube-reporting).
+
+Read the user guide for more details on [running and viewing your first report](https://docs.openshift.com/container-platform/4.6/metering/metering-using-metering.html).
+
+### Core capabilities
+
+* **Long term storage** - Break down the reserved and utlized resources requested by applications and store the information as long as needed.
+
+* **Pod, Namespace & Cluster Reports** - Built in reports exist to break down CPU and RAM in any way you desire.
+
+* **Scheduled Reports** - Schedule reports to run on a standard interval, eg. daily or monthly. Use these reports, for instance, as the basis for chargeback and showback.
+
+* **Post-Processing** - Reports are generated in either CSV, JSON, or tabular formatting and stored in persistent storage for further post-processing. Use this to send reminder emails, integrate into your ERP system, or graph on a dashboard.
+
+* **Roll-up reports** - Reports can be used as a source for other reports, allowing for more complex queries that span longer periods than those supported by the data source.
+
+* **HTTP API** - Reports can be queried from an in-cluster HTTP API in addition to reading from persistent storage.
+
+* **Integration with AWS EC2 billing** - Connect metering to AWS to calculate the EC2 costs of your resources.
+
+### Before you start
+
+Metering runs a big data stack to crunch your data and requires at least 4GB of RAM and 4 CPU cores.
+At least one Node should have 2GB of RAM and 2 CPU cores.
+Memory and CPU consumption may often be lower, but will spike when running reports, or collecting data for larger clusters.
+
+Metering requires configuring storage, please review the [configuring persistent storage documentation](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html) before proceeding.
+
+### Common Configurations
+
+* **Store data in object storage or in a PersistentVolume** - Store your report output [in an object storage bucket or in a PersistentVolume](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-persistent-storage.html).
+
+* **Configure AWS Billing Data Source** - Assign Pod $$ costs on using your [AWS billing reports stored in S3](https://docs.openshift.com/container-platform/4.6/metering/configuring-metering/metering-configure-aws-billing-correlation.html).
+
+* **Use Reports** - Customize what how you process data. [Specify what you want to report on, set the schedule, and reporting time period](https://docs.openshift.com/container-platform/4.6/metering/reports/metering-about-reports.html#metering-reports_metering-about-reports).
+
+      Display Name:  Metering
+      Install Modes:
+        Supported:  true
+        Type:       OwnNamespace
+        Supported:  true
+        Type:       SingleNamespace
+        Supported:  false
+        Type:       MultiNamespace
+        Supported:  false
+        Type:       AllNamespaces
+      Keywords:
+        metering metrics reporting prometheus chargeback
+      Links:
+        Name:  Documentation
+        URL:   https://docs.openshift.com/container-platform/4.6/metering/metering-about-metering.html
+      Maintainers:
+        Email:           sd-operator-metering@redhat.com
+        Name:            Red Hat
+      Maturity:          stable
+      Min Kube Version:  1.18.3
+      Provider:
+        Name:  Red Hat
+      Related Images:
+        registry.redhat.io/openshift4/ose-metering-hive@sha256:d251b519b6b8356159cccf0bac1e38e311608c1cdc9089fa99bbe2d880250065
+        registry.redhat.io/openshift4/ose-metering-presto@sha256:6e3d9382da0f521181c27c7b1806e5638620f426f1f460bb9e8157f18f9dd570
+        registry.redhat.io/openshift4/ose-metering-reporting-operator@sha256:ca5652994e24efe43a695d1b1d01b2c8d0db26f2c0ac7496683efea9615691a3
+        registry.redhat.io/openshift4/ose-oauth-proxy@sha256:0347409b0f4387f93b96b7cc6e72709bb5a7db049a791007c6d520f84c6ae4df
+        registry.redhat.io/openshift4/ose-metering-ansible-operator@sha256:f596420ccdd7a182bac4d7d5c1c4a5b9d50f21805a3271b830f4a21f610fc704
+        registry.redhat.io/openshift4/ose-ghostunnel@sha256:6cb9f3d49718c129d75d88babdd62768df135ca2398b393c2bb32db0d158aba0
+        registry.redhat.io/openshift4/ose-metering-hadoop@sha256:8eb55a8e393f928518f12719e6cfa06e5119b78aeea958bed26e8cabdf47fa05
+      Version:      4.6.0-202203011845
+    Name:           stable
+  Default Channel:  4.6
+  Package Name:     metering-ocp
+  Provider:
+    Name:  Red Hat
+Events:    <none>
+[student@workstation ~]$ oc describe packagemanifests.packages.operators.coreos.com metering-ocp | head -n 15 
+Name:         metering-ocp
+Namespace:    openshift-metering
+Labels:       catalog=redhat-operators
+              catalog-namespace=openshift-marketplace
+              operatorframework.io/arch.amd64=supported
+              operatorframework.io/os.linux=supported
+              provider=Red Hat
+              provider-url=
+Annotations:  <none>
+API Version:  packages.operators.coreos.com/v1
+Kind:         PackageManifest
+Metadata:
+  Creation Timestamp:  2021-07-13T12:16:39Z
+  Self Link:           /apis/packages.operators.coreos.com/v1/namespaces/openshift-metering/packagemanifests/metering-ocp
+Spec:
+[student@workstation ~]$ #Default Channel:  4.6
+[student@workstation ~]$ Package Name:     metering-ocp
+bash: Package: command not found...
+[student@workstation ~]$ #Default Channel:  4.6
+[student@workstation ~]$ #Package Name:     metering-ocp
+[student@workstation ~]$ # catalog=redhat-operators
+[student@workstation ~]$ # catalog-namespace=openshift-marketplace
+[student@workstation ~]$ cat mysubscription.yaml 
+kind: Subscription
+apiVersion: operators.coreos.com/v1alpha1
+metadata:
+  name: sub-openshift-metering
+  namespace: openshift-metering
+spec:
+  name:
+  source:
+  sourceNamespace:
+  channel:
+
+[student@workstation ~]$ vim mysubscription.yaml
+[student@workstation ~]$ cat mysubscription.yaml
+kind: Subscription
+apiVersion: operators.coreos.com/v1alpha1
+metadata:
+  name: sub-openshift-metering
+  namespace: openshift-metering
+spec:
+  name: metering-ocp
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  channel: "4.6"
+
+[student@workstation ~]$ 
+[student@workstation ~]$ 
+[student@workstation ~]$ oc apply -f mysubscription.yaml
+subscription.operators.coreos.com/sub-openshift-metering created
+[student@workstation ~]$ oc get sub 
+NAME                     PACKAGE        SOURCE             CHANNEL
+sub-openshift-metering   metering-ocp   redhat-operators   4.6
+[student@workstation ~]$ oc get MeterConfig 
+error: the server doesn't have a resource type "MeterConfig"
+[student@workstation ~]$ oc get MeterConfig 
+error: the server doesn't have a resource type "MeterConfig"
+[student@workstation ~]$ oc get all
+No resources found in openshift-metering namespace.
+[student@workstation ~]$ oc get crd | grep Meter
+[student@workstation ~]$ oc get crd | grep Meter
+[student@workstation ~]$ oc describe subscriptions.operators.coreos.com sub-openshift-metering
+Name:         sub-openshift-metering
+Namespace:    openshift-metering
+Labels:       operators.coreos.com/metering-ocp.openshift-metering=
+Annotations:  <none>
+API Version:  operators.coreos.com/v1alpha1
+Kind:         Subscription
+Metadata:
+  Creation Timestamp:  2022-04-14T08:37:11Z
+  Generation:          1
+  Managed Fields:
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .:
+          f:kubectl.kubernetes.io/last-applied-configuration:
+      f:spec:
+        .:
+        f:channel:
+        f:name:
+        f:source:
+        f:sourceNamespace:
+    Manager:      kubectl-client-side-apply
+    Operation:    Update
+    Time:         2022-04-14T08:37:11Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .:
+          f:operators.coreos.com/metering-ocp.openshift-metering:
+    Manager:      olm
+    Operation:    Update
+    Time:         2022-04-14T08:37:11Z
+    API Version:  operators.coreos.com/v1alpha1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:status:
+        .:
+        f:catalogHealth:
+        f:conditions:
+        f:currentCSV:
+        f:installPlanGeneration:
+        f:installPlanRef:
+          .:
+          f:apiVersion:
+          f:kind:
+          f:name:
+          f:namespace:
+          f:resourceVersion:
+          f:uid:
+        f:installedCSV:
+        f:installplan:
+          .:
+          f:apiVersion:
+          f:kind:
+          f:name:
+          f:uuid:
+        f:lastUpdated:
+        f:state:
+    Manager:         catalog
+    Operation:       Update
+    Time:            2022-04-14T08:37:40Z
+  Resource Version:  307540
+  Self Link:         /apis/operators.coreos.com/v1alpha1/namespaces/openshift-metering/subscriptions/sub-openshift-metering
+  UID:               3c3287f2-42fd-47f3-807e-59945c7d922c
+Spec:
+  Channel:           4.6
+  Name:              metering-ocp
+  Source:            redhat-operators
+  Source Namespace:  openshift-marketplace
+Status:
+  Catalog Health:
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              certified-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  306732
+      UID:               3fd383ec-5f1d-4712-a169-c3e5ec5f45c9
+    Healthy:             true
+    Last Updated:        2022-04-14T08:37:26Z
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              community-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  307008
+      UID:               eda63f21-ac16-4912-868e-e1595713b531
+    Healthy:             true
+    Last Updated:        2022-04-14T08:37:26Z
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              redhat-marketplace
+      Namespace:         openshift-marketplace
+      Resource Version:  306923
+      UID:               abf01ee4-fc9b-4a0c-8f64-e3e846d3fd71
+    Healthy:             true
+    Last Updated:        2022-04-14T08:37:26Z
+    Catalog Source Ref:
+      API Version:       operators.coreos.com/v1alpha1
+      Kind:              CatalogSource
+      Name:              redhat-operators
+      Namespace:         openshift-marketplace
+      Resource Version:  306842
+      UID:               ded42bc7-f6c4-43ac-ae03-145bd5bcf7b6
+    Healthy:             true
+    Last Updated:        2022-04-14T08:37:26Z
+  Conditions:
+    Last Transition Time:   2022-04-14T08:37:26Z
+    Message:                all available catalogsources are healthy
+    Reason:                 AllCatalogSourcesHealthy
+    Status:                 False
+    Type:                   CatalogSourcesUnhealthy
+  Current CSV:              metering-operator.4.6.0-202203011845
+  Install Plan Generation:  1
+  Install Plan Ref:
+    API Version:       operators.coreos.com/v1alpha1
+    Kind:              InstallPlan
+    Name:              install-s2h9h
+    Namespace:         openshift-metering
+    Resource Version:  307374
+    UID:               cb3977df-a2b2-402a-9b82-f407b77bd9a1
+  Installed CSV:       metering-operator.4.6.0-202203011845
+  Installplan:
+    API Version:  operators.coreos.com/v1alpha1
+    Kind:         InstallPlan
+    Name:         install-s2h9h
+    Uuid:         cb3977df-a2b2-402a-9b82-f407b77bd9a1
+  Last Updated:   2022-04-14T08:37:39Z
+  State:          AtLatestKnown
+Events:           <none>
+[student@workstation ~]$ 
+[student@workstation ~]$ cat mysubscription.yaml 
+kind: Subscription
+apiVersion: operators.coreos.com/v1alpha1
+metadata:
+  name: sub-openshift-metering
+  namespace: openshift-metering
+spec:
+  name: metering-ocp
+  source: redhat-operators
+  sourceNamespace: openshift-marketplace
+  channel: "4.6"
+
+[student@workstation ~]$ 
+[student@workstation ~]$ cat myoperatorgroup.yaml 
+kind: OperatorGroup
+apiVersion: operators.coreos.com/v1
+metadata:
+  name: openshift-metering
+  namespace: openshift-metering 
+spec:
+  targetNamespaces:
+    - openshift-metering
+[student@workstation ~]$ 
+

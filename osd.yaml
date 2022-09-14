@@ -1,0 +1,13 @@
+service_type: osd
+service_id: mydrive
+placement:
+  hosts:
+    - serverd.lab.example.com
+    - servere.lab.example.com
+    - serverf.lab.example.com
+osds_per_device: 4
+data_devices:
+  paths:
+    - /dev/vdb
+    - /dev/vdc
+    - /dev/vdd
